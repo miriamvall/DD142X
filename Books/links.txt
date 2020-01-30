@@ -1,0 +1,3 @@
+Machine Learning DD2421
+	http://www.computervisionmodels.com/
+	https://page.mi.fu-berlin.de/rojas/neural/
