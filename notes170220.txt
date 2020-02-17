@@ -1,0 +1,39 @@
+Parkinssons
+genetic
+neurons die
+dopamine
+movement
+learing
+desicion making
+initially everywhere
+motor areas
+symptoms
+severe - cant move
+slow, tremors, posture
+no or slow movement
+movement initiation
+complex hard
+brain signatures
+oscillations in lfp, beta-oscillations
+	very prominent
+beta - biomarker treat disease (symptomatically)
+stimulation device
+brain dynamics
+
+Peter Brown - beta oscillations 2001
+
+Three brain regions simultaneously
+basal ganglea
+How different is the population activity in these different regions in the same patient
+	very different in terms of local structure
+	however similar interconnected
+	similarity measure
+Based on available data can we classify patients into different categories, pref on severity
+Information on 40 sessions and 100s recording each several animals 10ish
+
+spectral domain
+wavelet
+temporal
+beta-bursts
+amplitude, length
+stronger beta longer
