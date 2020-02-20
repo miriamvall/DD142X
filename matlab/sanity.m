@@ -11,8 +11,13 @@ lim = 400;
 % n-point DFFT
 Y = fft(y, n);
 % Take output of DFFT multiplied by its' complex conjugate
-% Divide by input size(why?)
+% Divide by input size (for scaing?)
 Pyy = Y.*conj(Y)/n;
 % Plot x-axis
 f = Fs/n*(0:lim);
 plot(f, Pyy(1:lim + 1))
+
+% Time series clustering    G
+% Brain regions             M
+% Feature extraction        G
+% k-Means                   M
