@@ -16,8 +16,3 @@ Pyy = Y.*conj(Y)/n;
 % Plot x-axis
 f = Fs/n*(0:lim);
 plot(f, Pyy(1:lim + 1))
-
-% Time series clustering    G
-% Brain regions             M
-% Feature extraction        G
-% k-Means                   M
