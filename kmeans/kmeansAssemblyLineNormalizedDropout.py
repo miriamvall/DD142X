@@ -5,6 +5,14 @@ from sklearn.metrics import pairwise_distances_argmin_min
 from mpl_toolkits.mplot3d import Axes3D
 from os import walk
 from math import floor
+from random import sample
+
+#####
+
+# Normalize the data before running old tests
+# Also use dropout
+
+#####
 
 inputX = 193                    # Currently time points
 inputY = 28                     # Frequencies per file
@@ -12,6 +20,8 @@ chunks = 35                     # 100s/chunks length chunks
 Xchunkd = floor(193/chunks)     # Amount of time points per chunk
 inputN = 27                     # Amount of files
 Nclusters = 8                   # Number of clusters
+
+fracForFit = 0.5                # Fraction of samples used for k-Means fit
 
 # Shape: (files * chunks/file) * (frequencies * N time measurments)
 data = np.zeros((inputN * chunks, inputY * Xchunkd))
@@ -27,10 +37,19 @@ for (dirpath, dirnames, filenames) in walk("../fourierdata/"):
         for j in range(0, chunks):
             # i = range 0:(inputN-1), j = range 0:(chunks-1)
             # Read each chunk, reshape to be vector instead of matrix
-            data[i * chunks + j] = arr[:, j * Xchunkd   :   (j + 1) * Xchunkd].reshape((inputY * Xchunkd, ))
+
+            # Normalization:    x_i_normalized = (x_i - x_mean)/x_stdiv
+            preNormalized = arr[:, j * Xchunkd   :   (j + 1) * Xchunkd].reshape((inputY * Xchunkd, ))
+            postNormalized = (preNormalized - preNormalized.mean()) / preNormalized.std()
+            data[i * chunks + j] = postNormalized
             
 # Generate k-Means model
-kmeans = KMeans(n_clusters = Nclusters).fit(data)
+kmeans = KMeans(n_clusters = Nclusters).fit(
+    np.array(
+        # Only take sample of rows
+        sample([row for row in data], floor(fracForFit * data.shape[0]))
+    )
+)
 # Predictions
 predictions = kmeans.predict(data).reshape((inputN, chunks))
 # Amount of equal-prediction columns
@@ -79,4 +98,4 @@ files = [
 ]
 
 for (fn, xs) in files:
-    np.savetxt("out/" + fn + ".csv", xs, delimiter = ",")
+    np.savetxt("outNormalizedDropout/" + fn + ".csv", xs, delimiter = ",")
