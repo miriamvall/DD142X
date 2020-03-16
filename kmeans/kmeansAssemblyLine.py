@@ -1,6 +1,7 @@
 import pandas as pd 
 import numpy as np 
 from sklearn.cluster import KMeans
+import matplotlib.pyplot as plt 
 from sklearn.metrics import pairwise_distances_argmin_min
 from mpl_toolkits.mplot3d import Axes3D
 from os import walk
@@ -20,7 +21,7 @@ for (dirpath, dirnames, filenames) in walk("../fourierdata/"):
 
     # For each filename, and it's "index"
     for (i, fn) in enumerate(sorted(filenames)):
-        # Read the data, limit it to chunks * length of a chunk length
+        # Read the data, limit it to chunks * length of a chunk 
         arr = np.genfromtxt(dirpath + fn, delimiter = ",")[:,0:chunks * Xchunkd]
         # For the amount of chunks you want...
         for j in range(0, chunks):
