@@ -120,7 +120,7 @@ def makePredictions(
 def main():
 
     model, trainingdata, predictions = makePredictions(
-        "temp/NPR-075.b11.mat",
+        "../_data/matlabData/NPR-075.b11.mat",
         ["str_lfp", "gp_lfp"],
         12, 32,
         epochWidth=2**13,
