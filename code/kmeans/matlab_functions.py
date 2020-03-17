@@ -75,4 +75,4 @@ def allToCsv(inDir, outDir):
                     print("\tFinished " + str(done) + "/" + str(amount))
                 print("Finished: " + fn)
 
-allToCsv("matlabData", "csvData")
+allToCsv("../_data/matlabData", "../_data/csvData")
