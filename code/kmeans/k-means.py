@@ -124,9 +124,9 @@ def main():
         ["str_lfp", "gp_lfp"],
         12, 32,
         epochWidth=2**13,
-        dropout = 0.7,
+        dropout = 0.1,
         normalize=True,
-        epochGroupsSize=2
+        epochGroupsSize=4
     )
 
     plt.imshow(predictions)
