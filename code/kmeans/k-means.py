@@ -4,10 +4,11 @@ from random import sample
 from math import floor
 import matplotlib.pyplot as plt
 
-from matlab_functions import *
-from fourier import *
-from normalize import *
-from grouping import *
+from matlab_functions import getMatlabValues
+from fourier import fftEpochsSpecFreq
+from normalize import normalizedRows
+from grouping import groupColumns
+from scrambleRows import scrambleRows
 
 # Returns a k-Means model fitted to the input values.
 # The values should be a 2D numpy array, where the rows are considered inputs to k-Means.
@@ -51,8 +52,10 @@ def makePredictions(
     dropout = 0,                # Ratio (0 to 1) of data to exclude during training
     normalize = False,          # If normalization is wanted, set to True
                                 #   Affects model training and trainingData output
-    epochGroupsSize = 1         # If set to n > 1, groups epochs into larger vectors
+    epochGroupsSize = 1,        # If set to n > 1, groups epochs into larger vectors
                                 # For example, two frequency samples at times t0 and t1 are concatenated
+    scramble = (False, 0)       # One method of "destroying" the input data. Should kill any and all results.
+                                # Boolean for yes/no, integer for intensity.
 ):
     # Dictionary channel : values
     # Ex:   "str_lfp1" : np.array((0.1, 0.2, ....))
@@ -111,26 +114,36 @@ def makePredictions(
     # Normalization, if any
     if normalize:
         trainingData = normalizedRows(trainingData)
+
+    # Scrambling of data
+    if scramble[0]:
+        trainingData = scrambleRows(trainingData, scramble[1])
     
     model = fitted_kmeans(trainingData, nClusters, dropout)
     predictions = model.predict(trainingData).reshape((nChannels, nEpochs))
 
     return model, trainingData, predictions
 
-def main():
-
-    model, trainingdata, predictions = makePredictions(
-        "../_data/matlabData/NPR-075.b11.mat",
-        ["str_lfp", "gp_lfp"],
-        12, 32,
-        epochWidth=2**13,
-        dropout = 0.1,
-        normalize=True,
-        epochGroupsSize=4
-    )
-
+def savePredictions(predictions, outFile):
     plt.imshow(predictions)
     plt.colorbar()
-    plt.show()
+    plt.savefig(outFile)
+    plt.clf()
+
+def main():
+    for i in [1, 2, 3, 4, 5]:
+        model, trainingdata, predictions = makePredictions(
+            "../_data/matlabData/NPR-075.b11.mat",
+            ["str_lfp", "gp_lfp"],
+            12, 32,
+            epochWidth=2**13,
+            dropout = 0.5,
+            normalize=True,
+            epochGroupsSize=i,
+            scramble=(True, 3)
+        )
+        print(trainingdata.shape)
+        
+        savePredictions(predictions, "k-meansFigures/scrambled/groupSize" + str(i) + ".png")
 
 main()
