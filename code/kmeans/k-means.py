@@ -8,7 +8,7 @@ from matlab_functions import getMatlabValues
 from fourier import fftEpochsSpecFreq
 from normalize import normalizedRows
 from grouping import groupColumns
-from scrambleRows import scrambleRows
+from scrambling import scrambleRows, trashData, pickAndMix
 
 # Returns a k-Means model fitted to the input values.
 # The values should be a 2D numpy array, where the rows are considered inputs to k-Means.
@@ -23,7 +23,7 @@ def fitted_kmeans(values, Nclusters, dropout = 0):
 #
 # Produces:
 #   A k-Means model
-#   training data for said model
+#   testing data for said model
 #   predictions on training data for said model and training data
 # 
 # Currently exclusively adapted to our specific method of:
@@ -38,7 +38,8 @@ def fitted_kmeans(values, Nclusters, dropout = 0):
 #       Epoch grouping 
 #
 def makePredictions(
-    fileName,                       # A .mat file
+    allValues,                      # Dictionary channel : values
+                                    # Ex:   "str_lfp1" : np.array((0.1, 0.2, ....))
     channelPatterns,                # Example: [str_lfp, gp_lfp]; only channels that match a pattern
     loFreq, hiFreq,                 # Frequencies to extract
     epochWidth = 2 ** 13,           # Width of epochs
@@ -57,9 +58,7 @@ def makePredictions(
     scramble = (False, 0)       # One method of "destroying" the input data. Should kill any and all results.
                                 # Boolean for yes/no, integer for intensity.
 ):
-    # Dictionary channel : values
-    # Ex:   "str_lfp1" : np.array((0.1, 0.2, ....))
-    allValues = getMatlabValues(fileName)
+
     values = {}
     # Clean out non- str_lfp, gp_lfp
     for pattern in channelPatterns:
@@ -115,35 +114,84 @@ def makePredictions(
     if normalize:
         trainingData = normalizedRows(trainingData)
 
+    testingData = trainingData.copy()
+
     # Scrambling of data
-    if scramble[0]:
+    if scramble[0] == "trash":
+        trainingData = trashData(trainingData)
+    elif scramble[0] == "pickAndMix":
+        trainingData == pickAndMix(trainingData)
+    elif scramble[0]:
         trainingData = scrambleRows(trainingData, scramble[1])
     
     model = fitted_kmeans(trainingData, nClusters, dropout)
-    predictions = model.predict(trainingData).reshape((nChannels, nEpochs))
+    predictions = model.predict(testingData).reshape((nChannels, nEpochs))
 
-    return model, trainingData, predictions
+    return model, testingData, predictions
 
-def savePredictions(predictions, outFile):
+def saveMatrix(predictions, outFile):
     plt.imshow(predictions)
     plt.colorbar()
     plt.savefig(outFile)
     plt.clf()
 
 def main():
-    for i in [1, 2, 3, 4, 5]:
-        model, trainingdata, predictions = makePredictions(
-            "../_data/matlabData/NPR-075.b11.mat",
-            ["str_lfp", "gp_lfp"],
-            12, 32,
-            epochWidth=2**13,
-            dropout = 0.5,
-            normalize=True,
-            epochGroupsSize=i,
-            scramble=(True, 3)
-        )
-        print(trainingdata.shape)
-        
-        savePredictions(predictions, "k-meansFigures/scrambled/groupSize" + str(i) + ".png")
 
+    allValues = getMatlabValues("../_data/matlabData/NPR-075.b11.mat")
+
+    configurations = [
+        ("normal", (False, None)),
+        ("pickAndMix", ("pickAndMix", None)),
+        ("randomScrambled", (True, "random")),
+        ("scrambled", (True, 17))
+    ]
+
+    # Directory for output of a certain data scrambling configuration
+    for (outDir, scrambleConf) in configurations:
+        # Several epoch-groupsizes for each configuration
+        for i in [1, 2, 3, 4, 5]:
+            model, testingData, predictions = makePredictions(
+                allValues,
+                ["str_lfp", "gp_lfp"],
+                12, 32,
+                epochWidth=2**13,
+                dropout = 0.5,
+                normalize=False,
+                epochGroupsSize=i,
+                scramble=scrambleConf,
+                nClusters=8
+            )
+            out = "k-meansFiguresNotNormalized/" + outDir + "/"
+            saveMatrix(predictions, out + "groupSize" + str(i) + ".png")
+
+            predictionsAs1D = predictions.reshape((
+                predictions.shape[0] *
+                predictions.shape[1]
+            ))
+
+            centers = model.cluster_centers_
+            nC = len(centers)
+
+            # # Calculate average distance of (x - center_c) for each x predicted to each cluster c
+            # # Not sure this is working
+            # allDistances = {
+            #     idx: [] for idx in range(0, nC)
+            # }
+            # for (sample, c) in zip(testingData, predictionsAs1D):
+            #     allDistances[c].append(
+            #         np.linalg.norm(sample - centers[c])
+            #     )
+            # for idx in range(0, nC):
+            #     allDistances[idx] = np.array(allDistances[idx])
+
+            # Distances between cluster centers, divided by mean center-to-prediction distance for that cluster
+            distMatr = np.zeros((nC, nC))
+            for p in range(0, nC):
+                for q in range(0, nC):
+                    distMatr[p, q] = np.linalg.norm(centers[p] - centers[q])
+            saveMatrix(distMatr, out + "centerGroupSize" + str(i) + ".png")
+            saveMatrix(centers, out + "allCentersGroupSize" + str(i) + ".png")
+
+            print("Finished " + outDir + " " + str(i))
+            
 main()
