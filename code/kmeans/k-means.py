@@ -129,11 +129,52 @@ def makePredictions(
 
     return model, testingData, predictions
 
-def saveMatrix(predictions, outFile):
-    plt.imshow(predictions)
+# Saves a 2D numpy array as a color-coded graph
+def saveMatrix(matrix, outFile):
+    plt.imshow(matrix)
     plt.colorbar()
     plt.savefig(outFile)
     plt.clf()
+
+# Calculates the distances between arrays and returns a distance (norm) matrix
+# The input should be a 2D numpy array, where rows are arrays for which you want distances
+def distanceMatrix(arrays):
+    r = arrays.shape[0]
+    out = np.zeros((r, r))
+    for i in range(0, r):
+        for j in range(0, r):
+            out[i, j] = np.linalg.norm(arrays[i] - arrays[j])
+    return out
+
+# Returns an array of the average distance (norm) from cluster centers for some data.
+# The amount of rows in data (samples) should be equal to the amount of predictions.
+# Centers should be a 2D numpy array where each row is a cluster center.
+# Data should be a 2D numpy array where each row is a sample.
+# Predictions should be a 1D numpy array assigning each sample a class (distinct cluster)
+def centerDistances(centers, data, predictions):
+    nClasses = centers.shape[0]
+    byPrediction = [
+        [] for i in range(0, nClasses)
+    ]
+    # Group by class
+    for (row, prediction) in zip(data, predictions):
+        byPrediction[prediction].append(row)
+    for i in range(0, nClasses):
+        # Broadcast subtraction of centers[i] over all class i samples
+        if len(byPrediction[i]) > 0:
+            byPrediction[i] =  np.array(byPrediction[i]) - centers[i]
+        else:
+            # If no sample assigned this class, make arbitrarily large
+            # Must have at least two elements
+            print("No assignment indicator class " + str(i))
+            byPrediction[i] = np.array((1e10, 1e10))
+        # Map to norms
+        byPrediction[i] = np.array([
+            np.linalg.norm(row) for row in byPrediction[i]
+        # Take mean
+        ]).mean()
+    return np.array(byPrediction)
+
 
 def main():
 
@@ -156,40 +197,26 @@ def main():
                 12, 32,
                 epochWidth=2**13,
                 dropout = 0.5,
-                normalize=False,
+                normalize=True,
                 epochGroupsSize=i,
                 scramble=scrambleConf,
-                nClusters=8
+                nClusters=4
             )
-            out = "k-meansFiguresNotNormalized/" + outDir + "/"
+            out = "k-meansFigures/" + outDir + "/"
             saveMatrix(predictions, out + "groupSize" + str(i) + ".png")
 
             predictionsAs1D = predictions.reshape((
                 predictions.shape[0] *
                 predictions.shape[1]
             ))
-
             centers = model.cluster_centers_
             nC = len(centers)
+            
+            centDist = centerDistances(centers, testingData, predictionsAs1D)
+            distMatr = distanceMatrix(centers)
+            weightedDistMatr = distMatr / centDist # Broadcasts
 
-            # # Calculate average distance of (x - center_c) for each x predicted to each cluster c
-            # # Not sure this is working
-            # allDistances = {
-            #     idx: [] for idx in range(0, nC)
-            # }
-            # for (sample, c) in zip(testingData, predictionsAs1D):
-            #     allDistances[c].append(
-            #         np.linalg.norm(sample - centers[c])
-            #     )
-            # for idx in range(0, nC):
-            #     allDistances[idx] = np.array(allDistances[idx])
-
-            # Distances between cluster centers, divided by mean center-to-prediction distance for that cluster
-            distMatr = np.zeros((nC, nC))
-            for p in range(0, nC):
-                for q in range(0, nC):
-                    distMatr[p, q] = np.linalg.norm(centers[p] - centers[q])
-            saveMatrix(distMatr, out + "centerGroupSize" + str(i) + ".png")
+            saveMatrix(weightedDistMatr, out + "centerWeightedGroupSize" + str(i) + ".png")
             saveMatrix(centers, out + "allCentersGroupSize" + str(i) + ".png")
 
             print("Finished " + outDir + " " + str(i))
