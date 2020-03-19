@@ -3,12 +3,14 @@ import numpy as np
 from random import sample
 from math import floor
 import matplotlib.pyplot as plt
+from os import mkdir
 
 from matlab_functions import getMatlabValues
 from fourier import fftEpochsSpecFreq
 from normalize import normalizedRows
 from grouping import groupColumns
 from scrambling import scrambleRows, trashData, pickAndMix
+from genData import genWaves
 
 # Returns a k-Means model fitted to the input values.
 # The values should be a 2D numpy array, where the rows are considered inputs to k-Means.
@@ -151,7 +153,7 @@ def distanceMatrix(arrays):
 # Centers should be a 2D numpy array where each row is a cluster center.
 # Data should be a 2D numpy array where each row is a sample.
 # Predictions should be a 1D numpy array assigning each sample a class (distinct cluster)
-def centerDistances(centers, data, predictions):
+def centerDistances(centers, data, predictions, verbose = False):
     nClasses = centers.shape[0]
     byPrediction = [
         [] for i in range(0, nClasses)
@@ -166,7 +168,8 @@ def centerDistances(centers, data, predictions):
         else:
             # If no sample assigned this class, make arbitrarily large
             # Must have at least two elements
-            print("No assignment indicator class " + str(i))
+            if verbose:
+                print("No assignment indicator class " + str(i))
             byPrediction[i] = np.array((1e10, 1e10))
         # Map to norms
         byPrediction[i] = np.array([
@@ -175,22 +178,53 @@ def centerDistances(centers, data, predictions):
         ]).mean()
     return np.array(byPrediction)
 
+def weightedDistanceMatrix(centers, testingData, predictions):
+    predictionsAs1D = predictions.reshape((
+        predictions.shape[0] *
+        predictions.shape[1]
+    ))
+    centDist = centerDistances(centers, testingData, predictionsAs1D)
+    distMatr = distanceMatrix(centers)
+    return distMatr / centDist
+
+def touchDir(dirPath):
+    try:
+        mkdir(dirPath)
+    except:
+        pass
+    return dirPath
 
 def main():
 
-    allValues = getMatlabValues("../_data/matlabData/NPR-075.b11.mat")
+    channels = 25
+    length = 100
+    fs = 16000
 
-    configurations = [
-        ("normal", (False, None)),
-        ("pickAndMix", ("pickAndMix", None)),
-        ("randomScrambled", (True, "random")),
-        ("scrambled", (True, 17))
-    ]
+    sigmas = [i / 10 for i in range(1, 101)]
+    done = 0
+    for sigma in sigmas:
+        allValues = np.zeros((channels, length * fs))
 
-    # Directory for output of a certain data scrambling configuration
-    for (outDir, scrambleConf) in configurations:
+        # Relevant frequencies
+        for f in range(12, 30):
+            allValues += genWaves(10, sigma, channels, f, length, fs)
+
+        # Loud, relatively chaotic noise
+        for f in range(4, 8):
+            allValues += genWaves(20, 3 * sigma, channels, f, length, fs)
+
+        # Quiet, relatively calm noise
+        for f in range(35, 100):
+            allValues += genWaves(3, sigma / 3, channels, f, length, fs)
+
+        # Workaround for not being a matlab file
+        # Might fix later, but works!
+        allValues = {
+            "str_lfp" + str(index): row for index, row in enumerate(allValues)
+        }
+
         # Several epoch-groupsizes for each configuration
-        for i in [1, 2, 3, 4, 5]:
+        for epGrSz in [1, 2, 3, 4, 5]:
             model, testingData, predictions = makePredictions(
                 allValues,
                 ["str_lfp", "gp_lfp"],
@@ -198,27 +232,30 @@ def main():
                 epochWidth=2**13,
                 dropout = 0.5,
                 normalize=True,
-                epochGroupsSize=i,
-                scramble=scrambleConf,
-                nClusters=4
+                epochGroupsSize=epGrSz,
+                scramble=(False, 0),
+                nClusters=8
             )
-            out = "k-meansFigures/" + outDir + "/"
-            saveMatrix(predictions, out + "groupSize" + str(i) + ".png")
+            out = touchDir("wavesFigures2/")
+            out = touchDir(out + "sigma" + str(sigma) + "/")
+            mkstr = lambda epGrSz: "groupSize" + str(epGrSz) + ".png"
 
-            predictionsAs1D = predictions.reshape((
-                predictions.shape[0] *
-                predictions.shape[1]
-            ))
+            # Output prediction
+            predictionsOut = touchDir(out + "predictions/")
+            saveMatrix(predictions, predictionsOut + mkstr(epGrSz))
+
+            # Output cluster center
             centers = model.cluster_centers_
-            nC = len(centers)
-            
-            centDist = centerDistances(centers, testingData, predictionsAs1D)
-            distMatr = distanceMatrix(centers)
-            weightedDistMatr = distMatr / centDist # Broadcasts
+            centersOut = touchDir(out + "centers/")
+            saveMatrix(centers, centersOut + mkstr(epGrSz))
 
-            saveMatrix(weightedDistMatr, out + "centerWeightedGroupSize" + str(i) + ".png")
-            saveMatrix(centers, out + "allCentersGroupSize" + str(i) + ".png")
+            # Output weighted distance matrix
+            weightedDistMatr = weightedDistanceMatrix(centers, testingData, predictions)
+            distMatrOut = touchDir(out + "weighted_distance_matrix/")
+            saveMatrix(weightedDistMatr, distMatrOut + mkstr(epGrSz))
 
-            print("Finished " + outDir + " " + str(i))
+            print("Finished sigma " + str(sigma) + " with epoch group size " + str(epGrSz))
+        done += 1
+        print("Overall progress is " + str(done) + " of " + str(len(sigmas)))
             
 main()
