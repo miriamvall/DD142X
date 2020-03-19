@@ -178,6 +178,7 @@ def centerDistances(centers, data, predictions, verbose = False):
         ]).mean()
     return np.array(byPrediction)
 
+# Cluster center distances weighted by within-cluster mean distance
 def weightedDistanceMatrix(centers, testingData, predictions):
     predictionsAs1D = predictions.reshape((
         predictions.shape[0] *
@@ -187,6 +188,9 @@ def weightedDistanceMatrix(centers, testingData, predictions):
     distMatr = distanceMatrix(centers)
     return distMatr / centDist
 
+# Ensures the existence of a directory at a given path and returns that path.
+# Example usage:
+# myOutDirectory = touchDir("makeSureThisExists/")
 def touchDir(dirPath):
     try:
         mkdir(dirPath)
