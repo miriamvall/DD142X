@@ -235,12 +235,12 @@ def main():
                 12, 32,
                 epochWidth=2**13,
                 dropout = 0.5,
-                normalize=True,
+                normalize=False,
                 epochGroupsSize=epGrSz,
                 scramble=(False, 0),
                 nClusters=8
             )
-            out = touchDir("wavesFigures2/")
+            out = touchDir("wavesFiguresNoNormalization/")
             out = touchDir(out + "sigma" + str(sigma) + "/")
             mkstr = lambda epGrSz: "groupSize" + str(epGrSz) + ".png"
 
@@ -258,7 +258,6 @@ def main():
             distMatrOut = touchDir(out + "weighted_distance_matrix/")
             saveMatrix(weightedDistMatr, distMatrOut + mkstr(epGrSz))
 
-            print("Finished sigma " + str(sigma) + " with epoch group size " + str(epGrSz))
         done += 1
         print("Overall progress is " + str(done) + " of " + str(len(sigmas)))
             
