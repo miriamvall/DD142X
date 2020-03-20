@@ -16,19 +16,19 @@ def makeTimes(length, fs, dims = 4):
     return np.tile(np.linspace(0, length, fs * length), (dims, 1))
 
 # Sine over an array with a specified frequency
-def sines(values, freq = 1.):
-    return np.sin(values * 2. * pi * freq)
+def sines(values, freq = 1., phase = 0.):
+    return np.sin(values * 2. * pi * freq + phase)
 
 # Generates wave data
 # The amplitudes of the waves are sampled from a multivariate gaussian
 # There are dims independent waves
 # The waves have frequency freq
-# The wave last for length time with fs sampling frequency
+# The wave lasts for length time with fs sampling frequency
 # If an outString is given, the waves are saved as a figure
-def genWaves(mean, var, dims, freq, length, fs, outString = None):
+def genWaves(mean, var, dims, freq, length, fs, outString = None, phase = 0.):
     amps = makeMeanAndCovar(mean, var, dims)
     times = makeTimes(length, fs, dims)
-    wavesUnscaled = sines(times, freq)
+    wavesUnscaled = sines(times, freq, phase)
     waves = (wavesUnscaled.transpose() * amps).transpose()
     if outString != None:
         for wave in waves:

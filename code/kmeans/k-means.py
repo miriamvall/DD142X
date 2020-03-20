@@ -1,9 +1,10 @@
 from sklearn.cluster import KMeans
 import numpy as np
 from random import sample
-from math import floor
+from math import floor, pi
 import matplotlib.pyplot as plt
 from os import mkdir
+import time
 
 from matlab_functions import getMatlabValues
 from fourier import fftEpochsSpecFreq
@@ -132,11 +133,17 @@ def makePredictions(
     return model, testingData, predictions
 
 # Saves a 2D numpy array as a color-coded graph
-def saveMatrix(matrix, outFile):
+def saveMatrix(matrix, outFile, colorbar = True, label = None):
     plt.imshow(matrix)
-    plt.colorbar()
+    if colorbar:
+        plt.colorbar()
+    if label != None:
+        plt.xlabel(label)
     plt.savefig(outFile)
     plt.clf()
+
+def saveCsv(matrix, outFile):
+    np.savetxt(outFile, matrix, delimiter = ",")
 
 # Calculates the distances between arrays and returns a distance (norm) matrix
 # The input should be a 2D numpy array, where rows are arrays for which you want distances
@@ -198,28 +205,33 @@ def touchDir(dirPath):
         pass
     return dirPath
 
-def main():
+def waves():
 
     channels = 25
-    length = 100
+    length = 60
     fs = 16000
+    nClasses = 8
+    phase = lambda: np.random.uniform(0, pi)
 
-    sigmas = [i / 10 for i in range(1, 101)]
+    sigmas = [i / 2 for i in range(1, 21)]
     done = 0
     for sigma in sigmas:
+        NOW = time.localtime()
+        print(f"%s:%s:%s" % (NOW.tm_hour, NOW.tm_min, NOW.tm_sec))
         allValues = np.zeros((channels, length * fs))
 
         # Relevant frequencies
-        for f in range(12, 30):
-            allValues += genWaves(10, sigma, channels, f, length, fs)
+        for f in range(12, 31):
+            allValues += genWaves(10, sigma, channels, f, length, fs, phase=phase())
 
         # Loud, relatively chaotic noise
-        for f in range(4, 8):
-            allValues += genWaves(20, 3 * sigma, channels, f, length, fs)
+        for f in range(2, 9):
+            allValues += genWaves(20, 3 * sigma, channels, f, length, fs, phase=phase())
+        for f in range(35, 400):
+            allValues += genWaves(20, 3 * sigma, channels, f, length, fs, phase=phase())
 
-        # Quiet, relatively calm noise
-        for f in range(35, 100):
-            allValues += genWaves(3, sigma / 3, channels, f, length, fs)
+        # N(0, 10) noise to all data
+        allValues += np.random.normal(size = (channels, length * fs))
 
         # Workaround for not being a matlab file
         # Might fix later, but works!
@@ -235,30 +247,101 @@ def main():
                 12, 32,
                 epochWidth=2**13,
                 dropout = 0.5,
-                normalize=False,
+                normalize=True,
                 epochGroupsSize=epGrSz,
                 scramble=(False, 0),
-                nClusters=8
+                nClusters=nClasses
             )
-            out = touchDir("wavesFiguresNoNormalization/")
+            out = touchDir("wavesFigures5/")
             out = touchDir(out + "sigma" + str(sigma) + "/")
-            mkstr = lambda epGrSz: "groupSize" + str(epGrSz) + ".png"
+            mkpng = lambda epGrSz: "groupSize" + str(epGrSz) + ".png"
+            mkcsv = lambda epGrSz: "groupSize" + str(epGrSz) + ".csv"
 
             # Output prediction
             predictionsOut = touchDir(out + "predictions/")
-            saveMatrix(predictions, predictionsOut + mkstr(epGrSz))
+            saveMatrix(predictions, predictionsOut + mkpng(epGrSz), 
+                colorbar = False, 
+                label = "Class colors are not indicative of class similarity, n classes = " + str(nClasses)
+            )
+            predictionsCsv = touchDir(predictionsOut + "csv/")
+            saveCsv(predictions, predictionsCsv + mkcsv(epGrSz))
 
             # Output cluster center
             centers = model.cluster_centers_
             centersOut = touchDir(out + "centers/")
-            saveMatrix(centers, centersOut + mkstr(epGrSz))
+            saveMatrix(centers, centersOut + mkpng(epGrSz),
+                label = "Each row represents a cluster center vector"
+            )
+            centersCsv = touchDir(centersOut + "csv/")
+            saveCsv(centers, centersCsv + mkcsv(epGrSz))
 
             # Output weighted distance matrix
             weightedDistMatr = weightedDistanceMatrix(centers, testingData, predictions)
             distMatrOut = touchDir(out + "weighted_distance_matrix/")
-            saveMatrix(weightedDistMatr, distMatrOut + mkstr(epGrSz))
+            saveMatrix(weightedDistMatr, distMatrOut + mkpng(epGrSz),
+                label = "[i, j] = norm for (c[i] - c[j]) / (mean norm (c[i] - x) for x in class i)"
+            )
+            distMatrCsv = touchDir(distMatrOut + "csv/")
+            saveCsv(weightedDistMatr, distMatrCsv + mkcsv(epGrSz))
 
         done += 1
         print("Overall progress is " + str(done) + " of " + str(len(sigmas)))
-            
-main()
+
+def matlab(inFile):
+
+    nClasses = 8
+    allValues = getMatlabValues("../_data/matlabData/" + inFile)
+
+    # Several epoch-groupsizes for each configuration
+    for epGrSz in [1, 2, 3, 4, 5]:
+        model, testingData, predictions = makePredictions(
+            allValues,
+            ["str_lfp", "gp_lfp"],
+            12, 32,
+            epochWidth=2**13,
+            dropout = 0.5,
+            normalize=True,
+            epochGroupsSize=epGrSz,
+            scramble=(False, 0),
+            nClusters=nClasses
+        )
+        out = touchDir("newData/run3/" + inFile.replace(".mat", "/"))
+        mkpng = lambda epGrSz: "groupSize" + str(epGrSz) + ".png"
+        mkcsv = lambda epGrSz: "groupSize" + str(epGrSz) + ".csv"
+
+        # Output prediction
+        predictionsOut = touchDir(out + "predictions/")
+        saveMatrix(predictions, predictionsOut + mkpng(epGrSz), 
+            colorbar = False, 
+            label = "Class colors are not indicative of class similarity, n classes = " + str(nClasses)
+        )
+        predictionsCsv = touchDir(predictionsOut + "csv/")
+        saveCsv(predictions, predictionsCsv + mkcsv(epGrSz))
+
+        # Output cluster center
+        centers = model.cluster_centers_
+        centersOut = touchDir(out + "centers/")
+        saveMatrix(centers, centersOut + mkpng(epGrSz),
+            label = "Each row represents a cluster center vector"
+        )
+        centersCsv = touchDir(centersOut + "csv/")
+        saveCsv(centers, centersCsv + mkcsv(epGrSz))
+
+        # Output weighted distance matrix
+        weightedDistMatr = weightedDistanceMatrix(centers, testingData, predictions)
+        distMatrOut = touchDir(out + "weighted_distance_matrix/")
+        saveMatrix(weightedDistMatr, distMatrOut + mkpng(epGrSz),
+            label = "[i, j] = norm for (c[i] - c[j]) / (mean norm (c[i] - x) for x in class i)"
+        )
+        distMatrCsv = touchDir(distMatrOut + "csv/")
+        saveCsv(weightedDistMatr, distMatrCsv + mkcsv(epGrSz))
+
+done = 0
+for mlf in [
+    "NPR-075.b11.mat", "NPR-075.c08.mat", "NPR-076.b09.mat",
+    "NPR-075.b13.mat", "NPR-075.d07.mat", "NPR-076.c09.mat",
+    "NPR-075.c013.mat", "NPR-076.b05.mat", "NPR-076.d07.mat"
+]:
+    matlab(mlf)
+    done += 1
+    print("Finished " + str(done) + "/9")
