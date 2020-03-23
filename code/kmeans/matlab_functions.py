@@ -4,17 +4,31 @@ import numpy as np
 
 # Can be used to skip to any I/O steps of extracting matlab data.
 # If a channel is chosen (e.g. str_lfp1) returns values from that channel as a numpy array. (1D)
+# channel can also be a list of patterns to filter on
+#   Example: ["str_lfp", "gp_lfp"] will give channels "str_lfp1", "str_lfp2", ... "gp_lfp1", ...
+#   In this scenario the return value is a 2D numpy array
 # Else, return a dict of <channel: str> : <values: 1D numpy array>
+# Also returns a documentation wtring for README
 def getMatlabValues(fileName, channel = None):
 
+    docString = "### Matlab Data ###" + \
+        "\nFILE " + fileName + \
+        "\nCHANNEL " + str(channel) + "\n"
+
     with File(fileName, "r") as data:
-        if channel != None:
-            return np.array(data[channel]["values"]).flatten()
+        if isinstance(channel, str):
+            return np.array(data[channel]["values"]).flatten(), docString
         else:
             values = {
                 key: np.array(data[key]["values"]).flatten() for key in data.keys()
             }
-            return values
+            if isinstance(channel, list):
+                out = []
+                for pattern in channel:
+                    out += [v for (k, v) in values.items() if pattern in k]
+                return np.array(out), docString
+
+            return values, docString
 
 # Returns all keys in a matlab file. Ex [gp_lfp1, gp_lfp2, ... str_lfp1, str_lfp2, ...]
 def getMatlabKeys(fileName):
@@ -75,4 +89,20 @@ def allToCsv(inDir, outDir):
                     print("\tFinished " + str(done) + "/" + str(amount))
                 print("Finished: " + fn)
 
-#allToCsv("../_data/matlabData", "../_data/csvData")
+def test():
+    # As dictionary
+    arr1 = getMatlabValues("../_data/matlabData/NPR-075.b11.mat")
+    # Specific channel
+    print(arr1["gp_lfp1"])
+
+    # Specific channel
+    arr2 = getMatlabValues("../_data/matlabData/NPR-075.b11.mat", "gp_lfp1")
+    print(arr2)
+
+    # Will have gp_lfp1, gp_lfp17, gp_lfp18
+    arr3 = getMatlabValues("../_data/matlabData/NPR-075.b11.mat", ["gp_lfp1"])
+    print(arr3[0])
+
+    # Use channel = ["gp_lfp", "str_lfp"] for relevant data
+
+#test()

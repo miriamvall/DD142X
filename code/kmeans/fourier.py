@@ -21,7 +21,7 @@ def fftEpochs(values, width):
 # Returns only the values between (approximately) the specified frequencies, as calculated using FS = sampling frequency
 #   When using, adjusting "lo" and "hi" based on output could be wise.
 # The values are returned in a list of tuples (f, arr) where f is the frequency and arr are the values.
-def fftEpochsSpecFreq(values, width, lo, hi, FS):
+def fftEpochsSpecFreq_t_list(values, width, lo, hi, FS):
     dfft = fftEpochs(values, width)
     loIndex = math.floor(width * lo / FS)
     hiIndex = math.floor(width * hi / FS)
@@ -30,8 +30,8 @@ def fftEpochsSpecFreq(values, width, lo, hi, FS):
         out.append((i * FS / width, dfft[i,:]))
     return out
 
-# As fftEpochsSpecFreq, but returns a 2D-array and a list of frequencies instead
-def fftEpochsSpecFreqAlt(values, width, lo, hi, FS):
+# As fftEpochsSpecFreq, but returns a 2D numpy array and a list of frequencies instead
+def fftEpochsSpecFreq_matrix_and_list(values, width, lo, hi, FS):
     dfft = fftEpochs(values, width)
     loIndex = math.floor(width * lo / FS)
     hiIndex = math.floor(width * hi / FS)
@@ -53,9 +53,9 @@ def test():
     # Note amplitudes, frequencies
     signal1 = 10 * np.sin(2 * math.pi * 10 * times)
     signal2 = 20 * np.cos(2 * math.pi * 20 * times)
-    out = fftEpochsSpecFreq(signal1 + signal2, width, lo, hi, FS)
+    out = fftEpochsSpecFreq_t_list(signal1 + signal2, width, lo, hi, FS)
     for t in out:
         print(t)
-    matr, freq = fftEpochsSpecFreqAlt(signal1 + signal2, width, lo, hi, FS)
+    matr, freq = fftEpochsSpecFreq_matrix_and_list(signal1 + signal2, width, lo, hi, FS)
     print(matr)
     print(freq)
