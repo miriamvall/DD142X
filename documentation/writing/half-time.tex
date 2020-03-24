@@ -1,0 +1,119 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\title{Classification of Population Activity in Parkinson's Disease}
+\author{Gustav Röhss, Míriam Vall}
+\date{VT 2020}
+\begin{document}
+\maketitle
+
+\section*{Abstract}
+\section*{Sammanfattning}
+
+\newpage
+\tableofcontents
+
+\newpage
+\section{Introduction}
+Something about usage of machine learning in relation to medicine and diagnosis.
+Something about usage of data analysis in relation to medical datasets.
+
+\subsection{Parkinson's disease}
+A quick primer on what it is.
+Some symptoms it causes.
+Parkinson's in relation to the Basal Ganglia (shorter).
+Focus on introduction of different regions, beta activity, and beta oscillations.
+Possibly something about treatment methods (if based on similar phenomena).
+
+\subsection{Dataset}
+The dataset contents.
+The relevance of the dataset in relation to Parkinson's.
+
+\subsection{Purpose and research question}
+Achieve better understanding of activity in Basal Ganglia in Parkinson's-affected brains.
+Is beta activity synchronized, and if so, to what degree?
+Can activity in different animals be clustered?
+
+\newpage
+\section{Background}
+Something about concepts needign to be understood in order to understand methods.
+
+\subsection{Parkinson's disease}
+Parkinson's in relation to the Basal Ganglia (longer).
+The relationship(s) between different regions as they are understood currently.
+Ensure decent glossary (GP, STR, STN, ...).
+We don't want to introduce any additional medical terminology past this point.
+
+\subsection{Feature extraction}
+High dimensional dataset. 
+Reducing the amount of dimensions by selecting most relevant ones.
+
+\subsection{Clustering}
+Unsupervised learning.
+Finding (mathematically) natural groups/groupings of data.
+
+\newpage
+\section{Methods}
+Several methods employed in order to create novel model.
+
+\subsection{Discrete Fourier transform}
+Transform from temporal to spectral domain.
+Short introduction; implicitly understood by reader. 
+Refer to more extensive reading.
+
+\subsection{k-Means}
+Higher-dimensional centroid-based clustering.
+Used on extracted features to find clusters.
+
+\subsection{Model}
+Glossary: channels, values, epochs, epoch groups.
+Splitting of channel values into epochs, fourier transform usage.
+Model parameters, normalization, epoch group size, dropout.
+k-Means, cluster centers, weighted cluster centers.
+Basically, describe the assembly line.
+
+\subsection{Custom datasets}
+Construction of custom datasets for evaluation with the model.
+
+\subsubsection{Purpose}
+Seeking "ground truth".
+Synchronized data should be classified as such.
+Unsynchronized should not.
+Goal it to attempt to create a dataset similar to real dataset.
+Similar both in terms of output and heuristically/medically based on known truths about LFP.
+
+\subsubsection{Dataset types}
+Table/description of datasets.
+
+\newpage
+\section{Results}
+Might (will probably) require subsectioning.
+Results for real datasets.
+Results for dummy data.
+Bringing it together.
+Cool graphs.
+
+\newpage
+\section{Discussion}
+Model has limitations, dummy data has limitations.
+Nearly impossible to "pure-math" prove anything.
+Pending further research best bet might be to attempt to reproduce synchronization phenomena.
+
+\subsection{Synchronization}
+Does it seem likely?
+
+\subsection{Model limitations}
+Nigh impossible to work with mathematically.
+Somewhat possible to work with statistically.
+May require much further research.
+Time could be spent better on other models.
+
+\subsection{Custom dataset limitations}
+Simplicity, "distance" from real LFP.
+Stochasticity influencing results.
+
+\newpage
+\section{Conclusion}
+Synchronization proven, yay or nay?
+Further research required, always.
+
+\end{document}
