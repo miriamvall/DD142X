@@ -1,5 +1,8 @@
 \documentclass{article}
 \usepackage[utf8]{inputenc}
+\usepackage{natbib}
+\usepackage{url}
+\bibliographystyle{agsm}
 \title{Classification of Population Activity in Parkinson's Disease}
 \author{Gustav Röhss, Míriam Vall}
 \date{VT 2020}
@@ -35,7 +38,7 @@ Can activity in different animals be clustered?
 
 \newpage
 \section{Background}
-Something about concepts needign to be understood in order to understand methods.
+Something about concepts needing to be understood in order to understand methods.
 
 \subsection{Parkinson's disease}
 Parkinson's in relation to the Basal Ganglia (longer).
@@ -43,26 +46,28 @@ The relationship(s) between different regions as they are understood currently.
 Ensure decent glossary (GP, STR, STN, ...).
 We don't want to introduce any additional medical terminology past this point.
 
-\subsection{Feature extraction}
-High dimensional dataset. 
-Reducing the amount of dimensions by selecting most relevant ones.
-
 \subsection{Clustering}
-Unsupervised learning.
-Finding (mathematically) natural groups/groupings of data.
+Clustering, or cluster analysis of a dataset is a process by which the samples are separated into different subsets (clusters). These clusters are produced with the principle that the samples belonging to some cluster should be more similar to each other than those of the other clusters. There are several methods for cluster analysis, and the similarity of different samples can be measured in several ways. One example of clustering is the ways that people are sometimes grouped together by age, sometimes referred to as "generations" or "age brackets".
+
+\subsection{k-Means}
+The k-Means algorithm is a clustering algorithm. The goal of the algorithm is to minimize the \textit{within-cluster sum of squares} of samples assigned to each cluster. One noticeable peculiarity of the k-Means algorithm is that the user makes a choice of \textit{k}, the amount of clusters. The algorithm works by first randomly generating \textit{k} different cluster \textit{cluster mean vectors}. These are vectors with the same dimensionality as the data samples to be clustered. The algorithm then works iteratively. \citep[p258-260]{PractStats}
+\begin{itemize}
+    \item Each sample is assigned to the cluster for which the square distance is minimized.
+    \item New cluster mean vectors are created from the new assignments of samples to clusters.
+\end{itemize}
+The iteration ends when the cluster mean vectors no longer change (possibly within some tolerance). Note that \textit{distance} in this context is Euclidean distance.
+
+\subsection{Feature extraction}
+Feature extraction is a term used to describe the process of producing some set of values (features) from some input. The features produced (extracted) are generally much lower in dimensionality than the original input. The process of selecting a means of feature extraction is based on what features are most relevant for the task at hand. Consider, for example, some dataset with some dimensionality \textit{n}. If for one of these dimensions, all the samples of the dataset are equal, a means of feature extraction would be to select the remaining \textit{n - 1} dimensions as features.
+
+The data we work with is very high in dimensionality. For each session and channel in our dataset there are approximately 1 600 000 recorded values. For any sort of clustering algorithm to produce relevant results, the effective number of dimensions has to be decreased. 
+
+\subsection{Discrete Fourier transform}
+The Fourier transform, or more specifically, the family of Fourier transforms are mathematical tools with a long and rich history and many use cases. One use case of the Fourier transform is to convert a function of time into a function of frequency. Specifically, the Fourier transform can be used to approximate a function as composed of a large number of waves of different frequencies. \citep{Fourier} This method can be used to approximate the \textit{amplitude} or \textit{power} of activity in specific frequencies in a signal made up of waves of many frequencies.
 
 \newpage
 \section{Methods}
-Several methods employed in order to create novel model.
-
-\subsection{Discrete Fourier transform}
-Transform from temporal to spectral domain.
-Short introduction; implicitly understood by reader. 
-Refer to more extensive reading.
-
-\subsection{k-Means}
-Higher-dimensional centroid-based clustering.
-Used on extracted features to find clusters.
+For the purpose of measuring synchronization in beta-activity over different channels, we create a model. This model takes the input data from our dataset as samples, and produces a cluster assignment for each of the samples. This model is constructed in such a way that synchronization over different channels should be visible.
 
 \subsection{Model}
 Glossary: channels, values, epochs, epoch groups.
@@ -115,5 +120,9 @@ Stochasticity influencing results.
 \section{Conclusion}
 Synchronization proven, yay or nay?
 Further research required, always.
+
+\newpage
+\section{References}
+\bibliography{sources}
 
 \end{document}
