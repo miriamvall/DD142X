@@ -17,8 +17,6 @@
 
 \newpage
 \section{Introduction}
-Something about usage of machine learning in relation to medicine and diagnosis.
-Something about usage of data analysis in relation to medical datasets.
 
 \subsection{Parkinson's disease}
 Parkinson’s disease (PD) is a progressive neurodegenerative disorder of movement that is age-related. It is second in frequency only to Alzheimer’s disease. It affects tens of millions of people worldwide, and the frequency and associated socioeconomic burden of the condition are set to increase as the elderly population grows.
@@ -37,39 +35,40 @@ Local field potential (LFP) recordings in patients withdrawn from their antipark
 
 These exaggerated beta oscillations are reduced during voluntary movements and are attenuated, together with motor symptoms, by therapeutic interventions \citep{Cagnan}. 
 
-PD is treated today with dopaminergic drugs, deep-brain surgery (DBS) or lesioning of the basal ganglia. All of these methods supress spontaneous beta activity at the operation target. The dopamine prodrug levodopa remains he gold standard for the treatment of PD, but its long-term use is associated with the development of motor complications in up to 80% of patients \citep{Hammond}.
+PD is treated today with dopaminergic drugs, deep-brain surgery (DBS) or lesioning of the basal ganglia. All of these methods supress spontaneous beta activity at the operation target. The dopamine prodrug levodopa remains the gold standard for the treatment of PD, but its long-term use is associated with the development of motor complications in up to 80\% of patients \citep{Hammond}.
 
-As a result, there has been a resurgence of interest in functional neurosurgery. In particular, DBS of the STN can be an effective treatment. There is increasing evidence that high-frequency DBS suppresses pathologically synchronized beta activity at both BG and cortical levels. At least in the cortical level, the relationship between DBS-induced beta suppression and improvement in bradykinesia and rigidity is approximately linear (Cagnan et al., 2019). 
-
+As a result, there has been a resurgence of interest in functional neurosurgery. In particular, DBS of the subthalamic nucleus (STN) can be an effective treatment. There is increasing evidence that high-frequency DBS suppresses pathologically synchronized beta activity at both BG and cortical levels. At least in the cortical level, the relationship between DBS-induced beta suppression and improvement in bradykinesia and rigidity is approximately linear (Cagnan et al., 2019). 
 
 \subsection{Dataset}
 The dataset we have acquired for this project consist of several different measurements of brain activity in dopamine-depleted rodents (referred to as patients). 
 
-In rodents, the most popular way to obtain a selective lesion of the BG that mimics the ef-fects of PD is based on the intracerebral injection of a neurotoxin that causes massive cell death as a consequence of its antioxidant properties. That produces a dopaminergic dener-vation of the STR, which alters the balance of the BG activity and leads to excessive oscillatory activity that can be suppressed by treatment \citep{Mallet}.
+In rodents, the most popular way to obtain a selective lesion of the BG that mimics the effects of PD is based on the intracerebral injection of a neurotoxin that causes massive cell death as a consequence of its antioxidant properties. That produces a dopaminergic denervation of the STR, which alters the balance of the BG activity and leads to excessive oscillatory activity that can be suppressed by treatment \citep{Mallet}.
 
 The data was obtained by researchers in Oxford that performed experimental procedures on adult male Sprague Dawley rats, and was provided to us by our supervisor.
 
-The used measurements of brain activity are LFP and spiking activity (also called unit activity) in the form of background unit activity (BUA) and signal unit activity (SUA), and they were recorded simultaneously from three different regions of the BG (STR, GP and STN).
+The used measurements of brain activity are LFP and spiking activity (also called unit activity) in the form of background unit activity (BUA) and signal unit activity (SUA), and they were recorded simultaneously from three different regions of the BG; globus pallidus (GP), striatum (STR) and the previously mentioned subthalamic nucleus (STN).
 
-Therefore, for these parts of the BG we dispose of information on LFP and unit activity; each specific type of recording (e.g. LFP in the GP) will be called a “channel”.
+Therefore, for these parts of the BG we dispose of information on LFP and unit activity; the data for each specific type of recording (e.g. LFP in the GP), for a specific animal and recording session will be called a “channel”.
 
-These continuous time series provide insight into the synchronous spike discharges of local neuronal ensembles, and are relevant to us as we aim to study the variation and synchrony of simultaneous brain activity in different regions of the BG and attempt to classify patients into different categories. We’ll process the signals taking discrete samples from the continuous series, with a sampling frequency of 16000 Hz.
+These continuous time series provide insight into the synchronous spike discharges of local neuronal ensembles, and are relevant to us as we aim to study the variation and synchrony of simultaneous brain activity in different regions of the BG and attempt to classify patients into different categories. 
 
+The data is recorded in sessions of 100 seconds at a sampling frequency of 16000 Hz.
 
-\subsection{Purpose and research question}
-Achieve better understanding of activity in Basal Ganglia in Parkinson's-affected brains.
-Is beta activity synchronized, and if so, to what degree?
-Can activity in different animals be clustered?
+\subsection{Purpose}
+This project studies the beta-oscillation activity patients in our dataset. This project focuses on attempting to specify to what degree beta-oscillations are synchronized in different regions of the BG.
+
+\subsection{Research question}
+Is beta-oscillation activity in different regions of the Basal Ganglia of patients in our dataset synchronized, and if so, to what degree?
 
 \newpage
 \section{Background}
-Something about concepts needing to be understood in order to understand methods.
+In this section additional background about PD in relation to the project is introduced. Additionally, we discuss some of the background necessary to understand the software model with which we work with the dataset.
 
 \subsection{Parkinson's disease}
-The BG consists of a few interconnected nuclei: the striatum (STR), globus pallidus (GP), subthalamic nucleus (STN) and substantia nigra (SN). The operation of the BG network in health and in disease is heavily determined by its dual composition: the STR on the one hand and all the other BG nuclei on the other \citep{DeMaags}. These two neuronal populations have different properties and organizational principles.
+The BG consists of a few interconnected nuclei: the STR, GP, STN, and substantia nigra (SN). The operation of the BG network in health and in disease is heavily determined by its dual composition: the STR on the one hand and all the other BG nuclei on the other \citep{DeMaags}. These two neuronal populations have different properties and organizational principles.
 The STR is the main input structure of the BG circuit, while the GP is the output one. The STN plays an important role in the context of BG functional organization.
 
-The neurodegenerative process of PD causes a functional re-arrangement of the BG circuitry. The current model predicts that the cascade of events started by the dopaminergic depriva-tion of the STR ultimately leads to the increased activity of the BG output nuclei \citep{Cagnan}. 
+The neurodegenerative process of PD causes a functional re-arrangement of the BG circuitry. The current model predicts that the cascade of events started by the dopaminergic deprivation of the STR ultimately leads to the increased activity of the BG output nuclei \citep{Cagnan}. 
 
 Synchronization and oscillation might occur together or separately within the dopamine-depleted BG, probably reflecting a variety of pathophysiological mechanisms in the parkinsonian state. Even weak pairwise correlation can imply a highly synchronized network state \citep{Hammond}. In this regard, studies of LFP activity in the BG might be more informative.
 
@@ -82,12 +81,11 @@ The most valuable contribution to the clarification of the functional changes oc
 In rodents, chronic and acute dopaminergic denervation leads to excessive beta oscillatory activity in the BG’s LFP that can be suppressed by treatment \citep{Mallet}. The frequency of synchronization tends to be higher in the parkinsonian rodents than in the primates, and similar to that seen in patients with PD \citep{Hammond}.
 In healthy animals, there’s a relative lack of beta LFP activity in the STN and GP. That, together with the fact that the oscillatory LFP activity in the beta band in PD patients is suppressed with dopaminergic drugs in tandem with clinical improvement, is the basis for presuming that beta activity in untreated patients is pathologically exaggerated \citep{Mallet}.
 
-
 \subsection{Clustering}
-Clustering, or cluster analysis of a dataset is a process by which the samples are separated into different subsets (clusters). These clusters are produced with the principle that the samples belonging to some cluster should be more similar to each other than those of the other clusters. There are several methods for cluster analysis, and the similarity of different samples can be measured in several ways. One example of clustering is the ways that people are sometimes grouped together by age, sometimes referred to as "generations" or "age brackets".
+"Clustering" or "cluster analysis" of a dataset is a process by which the individual samples are separated into different subsets (clusters). These clusters are produced with the principle that the samples belonging to some cluster should be more similar to each other than those of the other clusters. There are several methods for cluster analysis, and the similarity of different samples can be measured in several ways. One example of clustering is the ways that people are sometimes grouped together by age, sometimes referred to as "generations" or "age brackets".
 
 \subsection{k-Means}
-The k-Means algorithm is a clustering algorithm. The goal of the algorithm is to minimize the \textit{within-cluster sum of squares} of samples assigned to each cluster. One noticeable peculiarity of the k-Means algorithm is that the user makes a choice of \textit{k}, the amount of clusters. The algorithm works by first randomly generating \textit{k} different cluster \textit{cluster mean vectors}. These are vectors with the same dimensionality as the data samples to be clustered. The algorithm then works iteratively. \citep[p258-260]{PractStats}
+The k-Means algorithm is a clustering algorithm. The goal of the algorithm is to minimize the \textit{within-cluster sum of squares} of samples assigned to each cluster. One noticeable peculiarity of the k-Means algorithm is that the user makes a choice of \textit{k}, the amount of clusters. The algorithm works by first randomly generating \textit{k} different \textit{cluster mean vectors}. These are vectors with the same dimensionality as the data samples to be clustered. The algorithm then works iteratively \citep[p258-260]{PractStats}.
 \begin{itemize}
     \item Each sample is assigned to the cluster for which the square distance is minimized.
     \item New cluster mean vectors are created from the new assignments of samples to clusters.
@@ -95,68 +93,52 @@ The k-Means algorithm is a clustering algorithm. The goal of the algorithm is to
 The iteration ends when the cluster mean vectors no longer change (possibly within some tolerance). Note that \textit{distance} in this context is Euclidean distance.
 
 \subsection{Feature extraction}
-Feature extraction is a term used to describe the process of producing some set of values (features) from some input. The features produced (extracted) are generally much lower in dimensionality than the original input. The process of selecting a means of feature extraction is based on what features are most relevant for the task at hand. Consider, for example, some dataset with some dimensionality \textit{n}. If for one of these dimensions, all the samples of the dataset are equal, a means of feature extraction would be to select the remaining \textit{n - 1} dimensions as features.
+Feature extraction is a term used to describe the process of producing some set of values (features) from some input. The features produced (extracted) are generally much lower in dimensionality than the original input, and this is often the purpose of feature extraction. The process of selecting a means of feature extraction is based on what features are most relevant for the task at hand. Consider, for example, some dataset with some dimensionality \textit{n}. If for one of these dimensions, all the samples of the dataset are equal, a means of feature extraction would be to select the remaining \textit{n - 1} dimensions as features. 
 
-The data we work with is very high in dimensionality. For each session and channel in our dataset there are approximately 1 600 000 recorded values. For any sort of clustering algorithm to produce relevant results, the effective number of dimensions has to be decreased. 
+The data we work with is very high in dimensionality. For each channel in our dataset there are approximately 1 600 000 recorded values. For any sort of clustering algorithm to produce relevant results, the effective number of dimensions has to be decreased. 
 
 \subsection{Discrete Fourier transform}
-The Fourier transform, or more specifically, the family of Fourier transforms are mathematical tools with a long and rich history and many use cases. One use case of the Fourier transform is to convert a function of time into a function of frequency. Specifically, the Fourier transform can be used to approximate a function as composed of a large number of waves of different frequencies. \citep{Fourier} This method can be used to approximate the \textit{amplitude} or \textit{power} of activity in specific frequencies in a signal made up of waves of many frequencies.
+The Fourier transform, or more specifically, the family of Fourier transforms, are mathematical tools with a long and rich history and many use cases. One use case of the Fourier transform is to convert a function of time into a function of frequency. Specifically, the Fourier transform can be used to approximate a function as composed of a large number of sine or cosine waves of different frequencies and amplitudes \citep{Fourier}. This method can be used to approximate the amplitude or \textit{"power"} of activity in specific frequencies in a signal made up of waves of many frequencies. 
 
 \newpage
 \section{Methods}
-For the purpose of measuring synchronization in beta-activity over different channels, we create a model. This model takes the input data from our dataset as samples, and produces a cluster assignment for each of the samples. This model is constructed in such a way that synchronization over different channels should be visible.
+A custom model was used for the purpose of measuring the synchronization of beta-oscillation activity. The model takes the recorded values for several channels as input, and for each segment of some length of a channel, assigns a cluster assignment to this segment. For example, a channel recorded over 100 seconds could be split into 10 separate segments of 10 seconds, each of which would be assigned a cluster. We refer to these segments as \textit{epochs}. If beta-oscillation activity is synchronized, then simultaneous epochs over different channels should be assigned to the same cluster.
 
 \subsection{Model}
-Glossary: channels, values, epochs, epoch groups.
-Splitting of channel values into epochs, fourier transform usage.
-Model parameters, normalization, epoch group size, dropout.
-k-Means, cluster centers, weighted cluster centers.
-Basically, describe the assembly line.
+"The model" as it's referred to here specifies a software model that takes channel recordings as input. The model, in stages, performs feature extraction, clustering, and produces some additional information about the produced clusters for help in evaluation of the model. 
+
+The model first segments the values of all channels into epochs of a specified epoch length. For each of these epochs, a discrete Fourier transform is used to approximate the beta-oscillation activity in that epoch. Specifically, the amplitudes for output frequencies of the Fourier transform in the beta-range are saved, and other frequencies are discarded. This produces, for each channel and epoch, a feature vector of much lower dimensionality than that of the epoch itself. The dimensionality of these feature vectors is much lower than the amount of feature vectors produced. 
+
+At this points the model can optionally generate \textit{epoch groups} from these feature vectors. If the \textit{epoch group size} is set to some integer \textit{n} greater than 1, then feature vectors generated from \textit{n} consecutive epochs will be concatenated into a larger feature vector. This increases dimensionality of the feature vectors, and reduces the amount of feature vectors available. The heuristic reasoning behind the inclusion of this option in the model is that the Fourier transform "removes" information about change over time. Concatenating consecutive feature vectors could allow some retention of "change over time" information.
+
+Once the feature vectors are produced the model also allows for optional normalization of these. The mean and standard deviation of the vector is calculated. Each feature in the vector is then subtracted by the mean, and the result is divided by the the standard deviation. The normalized vector has mean 0 and standard deviation 1.
+
+From the generated feature vectors, k-Means is used for clustering. The model can take a specified fraction of \textit{dropout}, disregarding that proportion of the generated feature vectors during training of the k-Means model (note that "the model" refers to the entire software model, while "the k-Means model" is a specific instance of k-Means output clusters).
+
+The model outputs the set of produced feature vectors (\textit{training data}), the k-Means model generated from these feature vectors, and the predicted cluster assignment for each feature vectors by the k-Means model.
 
 \subsection{Custom datasets}
-Construction of custom datasets for evaluation with the model.
-
-\subsubsection{Purpose}
-Seeking "ground truth".
-Synchronized data should be classified as such.
-Unsynchronized should not.
-Goal it to attempt to create a dataset similar to real dataset.
-Similar both in terms of output and heuristically/medically based on known truths about LFP.
-
-\subsubsection{Dataset types}
-Table/description of datasets.
+Attempting to work with the model mathematically is very challenging. Instead, \textit{custom datasets} approximating BG-activity were generated. These datasets were constructed in such a way that they were either known to be synchronized in the beta-range, or known not to be. Evaluation of the model, and the results it produced for patient inputs, was performed by comparing the output for the model for real patient data, and for these custom datasets. 
 
 \newpage
 \section{Results}
-Might (will probably) require subsectioning.
-Results for real datasets.
-Results for dummy data.
-Bringing it together.
-Cool graphs.
+\textit{The work is in progress, and results are not yet presentable. The model seems to show somewhat strong synchronization of beta-oscillation activity over many different channels recorded simultaneously. The statistical significance of this outcome is not yet ascertained. Custom datasets are currently being produced. Parameters for result evaluation have yet to be specified.}
 
 \newpage
 \section{Discussion}
-Model has limitations, dummy data has limitations.
-Nearly impossible to "pure-math" prove anything.
-Pending further research best bet might be to attempt to reproduce synchronization phenomena.
 
 \subsection{Synchronization}
-Does it seem likely?
+\textit{Evaluation of results.}
 
 \subsection{Model limitations}
-Nigh impossible to work with mathematically.
-Somewhat possible to work with statistically.
-May require much further research.
-Time could be spent better on other models.
+\textit{Limitations of the model.}
 
 \subsection{Custom dataset limitations}
-Simplicity, "distance" from real LFP.
-Stochasticity influencing results.
+\textit{Limitations of the custom datasets.}
 
 \newpage
 \section{Conclusion}
-Synchronization proven, yay or nay?
-Further research required, always.
+
 
 \newpage
 \section{References}
