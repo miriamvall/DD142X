@@ -23,21 +23,21 @@ Something about usage of data analysis in relation to medical datasets.
 \subsection{Parkinson's disease}
 Parkinson’s disease (PD) is a progressive neurodegenerative disorder of movement that is age-related. It is second in frequency only to Alzheimer’s disease. It affects tens of millions of people worldwide, and the frequency and associated socioeconomic burden of the condition are set to increase as the elderly population grows.
 
-The disease is characterized by poverty if voluntary movements (akinesia), slowness and impaired scaling of voluntary movement (bradykinesia), muscle rigidity and tremor of the limbs at rest (DeMaags, 2015)
+The disease is characterized by poverty if voluntary movements (akinesia), slowness and impaired scaling of voluntary movement (bradykinesia), muscle rigidity and tremor of the limbs at rest \citep{DeMaags}.
 
-The hallmark feature of PD is the degeneration of dopamine neurons in the basal ganglia (BG), which is the region of the brain responsible for functions such as learning or movement (Hammond, 2007).
+The hallmark feature of PD is the degeneration of dopamine neurons in the basal ganglia (BG), which is the region of the brain responsible for functions such as learning or movement \citep{Hammond}.
 
 The degeneration of these neurons and the consequent dopamine deficiency leads to a cascade of functional changes in the basal ganglia circuitry, which are ultimately responsible for the development of the main features of PD. 
 
-Dopamine coordinates neuronal activity in the frequency domain. When controlled by dopamine, beta oscillations (oscillations inside the range of 15 to 30 Hz) in basal ganglia circuits are important for normal movement (Cagnan et al., 2019). 
+Dopamine coordinates neuronal activity in the frequency domain. When controlled by dopamine, beta oscillations (oscillations inside the range of 15 to 30 Hz) in basal ganglia circuits are important for normal movement \citep{Cagnan}. 
 
-However, dopamine loss in the BG may not only support but also actively promote the emergence of excessively synchronized beta oscillations at a network level (Cagnan et al., 2019). This synchronization doesn’t appear in non-parkinsonian brains.
+However, dopamine loss in the BG may not only support but also actively promote the emergence of excessively synchronized beta oscillations at a network level \citep{Cagnan}. This synchronization doesn’t appear in non-parkinsonian brains.
 
 Local field potential (LFP) recordings in patients withdrawn from their antiparkinsonian medication have consistently revealed prominent oscillations in the beta frequency band. LFP are electrical signals generated in nervous tissues by the summed and synchronous activity of the individual neurons in that tissue.
 
-These exaggerated beta oscillations are reduced during voluntary movements and are attenuated, together with motor symptoms, by therapeutic interventions (Cagnan et al., 2019). 
+These exaggerated beta oscillations are reduced during voluntary movements and are attenuated, together with motor symptoms, by therapeutic interventions \citep{Cagnan}. 
 
-PD is treated today with dopaminergic drugs, deep-brain surgery (DBS) or lesioning of the basal ganglia. All of these methods supress spontaneous beta activity at the operation target. The dopamine prodrug levodopa remains he gold standard for the treatment of PD, but its long-term use is associated with the development of motor complications in up to 80% of patients (Hammond, 2007).
+PD is treated today with dopaminergic drugs, deep-brain surgery (DBS) or lesioning of the basal ganglia. All of these methods supress spontaneous beta activity at the operation target. The dopamine prodrug levodopa remains he gold standard for the treatment of PD, but its long-term use is associated with the development of motor complications in up to 80% of patients \citep{Hammond}.
 
 As a result, there has been a resurgence of interest in functional neurosurgery. In particular, DBS of the STN can be an effective treatment. There is increasing evidence that high-frequency DBS suppresses pathologically synchronized beta activity at both BG and cortical levels. At least in the cortical level, the relationship between DBS-induced beta suppression and improvement in bradykinesia and rigidity is approximately linear (Cagnan et al., 2019). 
 
@@ -45,7 +45,7 @@ As a result, there has been a resurgence of interest in functional neurosurgery.
 \subsection{Dataset}
 The dataset we have acquired for this project consist of several different measurements of brain activity in dopamine-depleted rodents (referred to as patients). 
 
-In rodents, the most popular way to obtain a selective lesion of the BG that mimics the ef-fects of PD is based on the intracerebral injection of a neurotoxin that causes massive cell death as a consequence of its antioxidant properties. That produces a dopaminergic dener-vation of the STR, which alters the balance of the BG activity and leads to excessive oscillatory activity that can be suppressed by treatment (Mallet, 2008).
+In rodents, the most popular way to obtain a selective lesion of the BG that mimics the ef-fects of PD is based on the intracerebral injection of a neurotoxin that causes massive cell death as a consequence of its antioxidant properties. That produces a dopaminergic dener-vation of the STR, which alters the balance of the BG activity and leads to excessive oscillatory activity that can be suppressed by treatment \citep{Mallet}.
 
 The data was obtained by researchers in Oxford that performed experimental procedures on adult male Sprague Dawley rats, and was provided to us by our supervisor.
 
@@ -66,21 +66,21 @@ Can activity in different animals be clustered?
 Something about concepts needing to be understood in order to understand methods.
 
 \subsection{Parkinson's disease}
-The BG consists of a few interconnected nuclei: the striatum (STR), globus pallidus (GP), subthalamic nucleus (STN) and substantia nigra (SN). The operation of the BG network in health and in disease is heavily determined by its dual composition: the STR on the one hand and all the other BG nuclei on the other (DeMaags, 2015). These two neuronal populations have different properties and organizational principles.
+The BG consists of a few interconnected nuclei: the striatum (STR), globus pallidus (GP), subthalamic nucleus (STN) and substantia nigra (SN). The operation of the BG network in health and in disease is heavily determined by its dual composition: the STR on the one hand and all the other BG nuclei on the other \citep{DeMaags}. These two neuronal populations have different properties and organizational principles.
 The STR is the main input structure of the BG circuit, while the GP is the output one. The STN plays an important role in the context of BG functional organization.
 
-The neurodegenerative process of PD causes a functional re-arrangement of the BG circuitry. The current model predicts that the cascade of events started by the dopaminergic depriva-tion of the STR ultimately leads to the increased activity of the BG output nuclei (Cagnan et al., 2019). 
+The neurodegenerative process of PD causes a functional re-arrangement of the BG circuitry. The current model predicts that the cascade of events started by the dopaminergic depriva-tion of the STR ultimately leads to the increased activity of the BG output nuclei \citep{Cagnan}. 
 
-Synchronization and oscillation might occur together or separately within the dopamine-depleted BG, probably reflecting a variety of pathophysiological mechanisms in the parkinsonian state. Even weak pairwise correlation can imply a highly synchronized network state (Hammond, 2007). In this regard, studies of LFP activity in the BG might be more informative.
+Synchronization and oscillation might occur together or separately within the dopamine-depleted BG, probably reflecting a variety of pathophysiological mechanisms in the parkinsonian state. Even weak pairwise correlation can imply a highly synchronized network state \citep{Hammond}. In this regard, studies of LFP activity in the BG might be more informative.
 
-It has been argued that these LFP oscillations are the product of synchronized activity across large populations of local neurons, and hence, indicate pathological synchronization between the regions of the BG (Hammond, 2007).
-These exaggerated beta oscillations are reduced during voluntary movements and are attenuated, together with motor symptoms, by therapeutic interventions. This also suggests that synchronization might be related to motor impairment. Inappropriately synchronized beta oscillations in the STN accompany movement difficulties in PD (Cagnan et al., 2019). 
+It has been argued that these LFP oscillations are the product of synchronized activity across large populations of local neurons, and hence, indicate pathological synchronization between the regions of the BG \citep{Hammond}.
+These exaggerated beta oscillations are reduced during voluntary movements and are attenuated, together with motor symptoms, by therapeutic interventions. This also suggests that synchronization might be related to motor impairment. Inappropriately synchronized beta oscillations in the STN accompany movement difficulties in PD \citep{Cagnan}. 
 
-The cellular and network substrates underlying these exaggerated beta oscillations are unknown, but activity in the GP might be of particular importance. GP neurons, due to their widespread innervation of all BG nuclei and feed-back/feed-forward mechanisms, are in a central position to orchestrate the generation and propagation of exaggerated beta oscillations in the entire BG (Cagnan et al., 2019). 
+The cellular and network substrates underlying these exaggerated beta oscillations are unknown, but activity in the GP might be of particular importance. GP neurons, due to their widespread innervation of all BG nuclei and feed-back/feed-forward mechanisms, are in a central position to orchestrate the generation and propagation of exaggerated beta oscillations in the entire BG \citep{Cagnan}. 
 
-The most valuable contribution to the clarification of the functional changes occurring in PD has been provided by the animal models of the disease, particularly those applied to rodents and primates (Mallet, 2008).
-In rodents, chronic and acute dopaminergic denervation leads to excessive beta oscillatory activity in the BG’s LFP that can be suppressed by treatment (Mallet, 2008). The frequency of synchronization tends to be higher in the parkinsonian rodents than in the primates, and similar to that seen in patients with PD (Hammond, 2007).
-In healthy animals, there’s a relative lack of beta LFP activity in the STN and GP. That, together with the fact that the oscillatory LFP activity in the beta band in PD patients is suppressed with dopaminergic drugs in tandem with clinical improvement, is the basis for presuming that beta activity in untreated patients is pathologically exaggerated (Mallet, 2008).
+The most valuable contribution to the clarification of the functional changes occurring in PD has been provided by the animal models of the disease, particularly those applied to rodents and primates \citep{Mallet}.
+In rodents, chronic and acute dopaminergic denervation leads to excessive beta oscillatory activity in the BG’s LFP that can be suppressed by treatment \citep{Mallet}. The frequency of synchronization tends to be higher in the parkinsonian rodents than in the primates, and similar to that seen in patients with PD \citep{Hammond}.
+In healthy animals, there’s a relative lack of beta LFP activity in the STN and GP. That, together with the fact that the oscillatory LFP activity in the beta band in PD patients is suppressed with dopaminergic drugs in tandem with clinical improvement, is the basis for presuming that beta activity in untreated patients is pathologically exaggerated \citep{Mallet}.
 
 
 \subsection{Clustering}
