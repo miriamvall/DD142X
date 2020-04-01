@@ -106,14 +106,8 @@ def makePredictions(
     return model, trainingData, predictions, docString
 
 def runTest():
-    for sigma in [i / 10 for i in range(1, 11)]:
-        values, docStringValues = \
-            genData.generateWaveDataset_type_5(
-                var = 0.5,
-                varBeta = 3 * sigma
-            )
-        print("Values generated, sigma " + str(sigma))
-        for epGrSz in [1, 2, 3, 4, 5]:
+    values, docStringValues = genData.type_8()
+    for epGrSz in [1, 2, 3, 4, 5]:
             model, trainingData, predictions, docStringModel = \
             makePredictions(
                 values,
@@ -125,8 +119,8 @@ def runTest():
             )
 
             saveCustomKexModelOutput(
-                "model_output/type_5/",
-                "sigma_" + str(sigma) + "/",
+                "model_output/type_8/",
+                "",
                 predictions,
                 model,
                 trainingData,
