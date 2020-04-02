@@ -2,6 +2,7 @@ from os import mkdir
 import matplotlib.pyplot as plt
 from centers_dmatrix import weightedDistanceMatrix
 import numpy as np
+import csv
 
 # Saves a 2D numpy array as a color-coded graph
 def saveMatrix(matrix, outFile, colorbar = True, label = None):
@@ -41,9 +42,16 @@ def saveCustomKexModelOutput(
     model,              # The model.
     trainingData,       # The training data.
     epochGroupSize,     # The epoch group size.
-    docString           # A string from which a README specifying 
+    docString,           # A string from which a README specifying 
                         #   the parameters for the run is generated.
+    corrMatrix          # matrix with correlation coefficients between channels
 ):
+    if np.any(corrMatrix):
+        out = touchDir("model_output/")
+        with open(out + "corrCoefMatrix.csv", "w") as corrCsv:
+            csvWriter = csv.writer(corrCsv, delimiter = ',')
+            csvWriter.writerows(corrMatrix)
+
     out = touchDir(parentDir)
     out = touchDir(out + childDir)
 
@@ -55,9 +63,17 @@ def saveCustomKexModelOutput(
 
     # Output predictions
     predictionsOut = touchDir(out + "predictions/")
+    ncols = len(predictions[0])
+    vars = np.zeros(ncols)
+
+    for i in range(0, ncols):
+        vars[i] = np.var(predictions[:,i])
+
+    variance = np.var(vars)
+
     saveMatrix(predictions, predictionsOut + mkpng(epochGroupSize), 
         colorbar = False, 
-        label = "Class colors are not indicative of class similarity, n classes = " + str(len(np.unique(predictions)))
+        label = "Class colors are not indicative of class similarity, n classes = " + str(len(np.unique(predictions))) +'\n'+ "Variance = " + str(variance)
     )
     predictionsCsv = touchDir(predictionsOut + "csv/")
     saveCsv(predictions, predictionsCsv + mkcsv(epochGroupSize))

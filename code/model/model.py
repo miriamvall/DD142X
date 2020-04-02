@@ -11,6 +11,7 @@ from matlab_functions import getMatlabValues
 from fourier import fftEpochsSpecFreq_matrix_and_list
 from normalize import normalizedRows
 from grouping import groupColumns
+from corr import corrcoef
 from ioutil import saveCsv, saveMatrix, touchDir, saveCustomKexModelOutput
 
 # Returns a k-Means model fitted to the input values.
@@ -42,6 +43,7 @@ def makePredictions(
     loFreq, hiFreq,             # Frequencies to extract
                                 #   ** NOT PRECISE DUE TO ROUNDING ERRORS **
                                 #   Use fourier.py -> fftEpochSpecFreq to test output frequencies
+    corr,                       # True if we want to obtain the correlation coefficients matrix
     epochWidth = 2 ** 13,       # Width of epochs
     FS = 16000,                 # Sampling frequency
     nClusters = 8,              # Amount of clusters for k-Means
@@ -75,6 +77,11 @@ def makePredictions(
     if epochGroupsSize > 1:
         nEpochs = floor(nEpochs / epochGroupsSize)
 
+    if corr:
+        corrMatrix = corrcoef(fftValues)
+    else:
+        corrMatrix = None
+
     trainingData = []
     for freqXepoch in fftValues:
         # If epoch-grouping:
@@ -103,20 +110,24 @@ def makePredictions(
         "\nDROPOUT " + str(dropout) + \
         "\nNORMALIZATION " + str(normalize) + "\n"
 
-    return model, trainingData, predictions, docString
+    return model, trainingData, predictions, docString, corrMatrix
 
 def runTest():
     values, docStringValues = genData.type_8()
+    corr = True
     for epGrSz in [1, 2, 3, 4, 5]:
-            model, trainingData, predictions, docStringModel = \
+            model, trainingData, predictions, docStringModel, corrMatrix = \
             makePredictions(
                 values,
                 12, 32,
+                corr,
                 epochWidth=2**13,
                 dropout = 0.5,
                 normalize=False,
                 epochGroupsSize=epGrSz,
             )
+
+            corr = False
 
             saveCustomKexModelOutput(
                 "model_output/type_8/",
@@ -125,7 +136,8 @@ def runTest():
                 model,
                 trainingData,
                 epGrSz,
-                docStringValues + docStringModel
+                docStringValues + docStringModel,
+                corrMatrix
             )
 
 runTest()
