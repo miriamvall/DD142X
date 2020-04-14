@@ -75,7 +75,7 @@ def asEntropy(xs):
 
 # Spectral Entropy Vector
 # Returns a vector of Spectral Entropy* for some input
-# * Equivalent to asEntropy ( asPDF ( fpfv ( < args > )[0] ) )
+# * Equivalent to asEntropy ( fpfv ( < args > )[0] )
 def sev(
     xs,                     # Input values: 2D numpy array
     Fs = 16000.,            # Sampling frequency
@@ -85,9 +85,7 @@ def sev(
     hi = 30                 # Highest frequency to include in output (excl.)
 ):
     return asEntropy(
-        asPDF(
-            fpfv(xs, Fs, epoch_size, fft_n, lo, hi)[0]
-        )
+        fpfv(xs, Fs, epoch_size, fft_n, lo, hi)[0]
     )
 
 # Almost equivalent to ffv; equivalent in output
@@ -140,7 +138,7 @@ def alt_fpfv(
 
 # Spectral Entropy Vector
 # Returns a vector of Spectral Entropy* for some input
-# * Equivalent to asEntropy ( asPDF ( alt_fpfv ( < args > )[0] ) )
+# * Equivalent to asEntropy ( alt_fpfv ( < args > )[0] )
 def alt_sev(
     xs,                     # Input values: 2D numpy array
     Fs = 16000.,            # Sampling frequency
@@ -151,7 +149,5 @@ def alt_sev(
     memory_var = 2 ** 14
 ):
     return asEntropy(
-        asPDF(
-            alt_fpfv(xs, Fs, epoch_size, fft_n, lo, hi)[0]
-        )
+        alt_fpfv(xs, Fs, epoch_size, fft_n, lo, hi)[0]
     )
