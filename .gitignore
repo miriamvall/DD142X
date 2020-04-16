@@ -1,3 +1,4 @@
 /code/_data/csvData/*
 /code/_data/matlabData/*
 /code/kmeans/__pycache__/*
+/code/notebooks/.ipynb_checkpoints/*
