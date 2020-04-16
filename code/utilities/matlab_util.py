@@ -23,7 +23,7 @@ def by_pattern(filename, pattern, epoch_size = None):
             return out
         else:
             hi = int(out.shape[1] / epoch_size)
-            return out[ : , 0 : hi]
+            return out[ : , 0 : hi * epoch_size]
 
 # Returns the str_lfp channels contained in a .mat file
 # Returned as a numpy array
