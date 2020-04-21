@@ -98,7 +98,7 @@ def epochs_as_rows(
 # pwd
 # <...>/DD142X/code/utilities
 # Uncomment next row and run program to generate all data
-directory_script()
+# directory_script()
 ###############################
 
 ###############################
