@@ -10,9 +10,7 @@ def directory_script(
     epoch_size = 2 ** 11,
     fft_n = 2 ** 14,
     lo = 0,
-    hi = 200,
-    # Memory control variable
-    memory_rows_fft_max = 400
+    hi = 200
 ):
     for _, _, fileList in walk(directoryIn):
         for filename in fileList:
@@ -30,9 +28,7 @@ def file_script(
     epoch_size = 2 ** 11,
     fft_n = 2 ** 14,
     lo = 0,
-    hi = 300,
-    # Memory control variable
-    memory_rows_fft_max = 400
+    hi = 300
 ):
     try:
         mkdir(dirOut)
@@ -102,7 +98,7 @@ def epochs_as_rows(
 # pwd
 # <...>/DD142X/code/utilities
 # Uncomment next row and run program to generate all data
-# directory_script()
+directory_script()
 ###############################
 
 ###############################
