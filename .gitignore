@@ -1,4 +1,7 @@
 /code/_data/csvData/*
 /code/_data/matlabData/*
+/code/_data/amplitudeSpectograms/*
+/code/_data/TSNE/epochs/*/*.png
+/code/*/__pycache__/*
 /code/kmeans/__pycache__/*
 /code/notebooks/.ipynb_checkpoints/*

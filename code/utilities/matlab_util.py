@@ -11,6 +11,21 @@ def asDict(filename):
             for key in data
         }
 
+# Checks for the presence of a pattern in the set of keys for a .mat file
+def has_pattern(filename, pattern):
+    with File(filename, "r") as data:
+        keys = data.keys()
+        for key in keys:
+            if pattern in key:
+                return True
+        return False
+
+def has_str(filename):
+    return has_pattern(filename, "str_lfp")
+
+def has_gp(filename):
+    return has_pattern(filename, "gp_lfp")
+
 # Helper function
 def by_pattern(filename, pattern, epoch_size = None):
     with File(filename, "r") as data:
