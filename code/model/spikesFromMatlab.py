@@ -1,6 +1,7 @@
 from h5py import File
 from os import walk, mkdir
 import numpy as np
+import scipy.io as sio
 
 # Can be used to skip to any I/O steps of extracting matlab data.
 # If a channel is chosen (e.g. str_lfp1) returns values from that channel as a numpy array. (1D)
@@ -66,34 +67,42 @@ def allToCsv(inDir, outDir):
                 mkdir(nestedOutDir)
             except: 
                 pass
-            # Use h5py to read data MODIFICAR
-            with File(inDir + "/" + fn, "r") as data:
-                print("Starting: " + fn)
-                # The keys are different measurements. 
-                # For example gp_lfp12, str_lfp3, ...
-                done = 0
-                amount = len(data.keys())
-                for key in data.keys():
-                    # Generate .csv
+            # Use scipy to read data 
+            data = sio.loadmat(inDir + "/" + fn)
+            print("Starting: " + fn)
+            # The keys are different measurements. 
+            # For example gp_lfp12, str_lfp3, ...
+            done = 0
+            amount = len(data.keys())
+            #print("keys: " + str(amount))
+            #print(data.keys())
+            for key in data.keys():
+                 # Generate .csv
+                #print(key)
+                #print(data[key])
+                if(key == "sp_count_gp_sua") or (key == "sp_count_str_sua") or (key == "sp_count_stn_sua") \
+                or (key == "spect_ent_gp") or (key == "spect_ent_str") or (key == "spect_ent_stn"):
+                    print(key)
+                    print(data[key])
                     np.savetxt(
                         # Output is dir/key.csv
                         nestedOutDir + key + ".csv",
                         # data[key] contains metadata. ["values"] for relevant data.
-                        np.array(data[key]["values"]),
-                        # Value separator. No spaces, actually saves a lot of storage and I/O.
+                        np.array(data[key]),
+                         # Value separator. No spaces, actually saves a lot of storage and I/O.
                         delimiter = ",",
                         # Avoid values like "3e-1", prefer "0.3" for portability
                         fmt = "%f"
                     )
-                    done += 1
-                    print("\tFinished " + str(done) + "/" + str(amount))
-                print("Finished: " + fn)
+                done += 1
+                print("\tFinished " + str(done) + "/" + str(amount))
+            print("Finished: " + fn)
 
 def test():
     # As dictionary
-    arr1 = getMatlabValues("../_data/matlabData/entr/Summary_NPR-075.b11.mat")
+    #arr1 = getMatlabValues("../_data/matlabData/entr/Summary_NPR-075.b11.mat")
     # Specific channel
-    print(arr1["sp_count_gp_sua"])
+    #print(arr1["sp_count_gp_sua"])
 
     # Specific channel
     #arr2 = getMatlabValues("../_data/matlabData/entr/Summary_NPR-075.b11.mat", "gp_lfp1")
@@ -105,7 +114,7 @@ def test():
 
     # Use channel = ["gp_lfp", "str_lfp"] for relevant data
 
-    #allToCsv("../_data/matlabData/entr", "../_data/csvData/summary")
+    allToCsv("../_data/matlabData/entr", "../_data/csvData/summary")
 
 
 
