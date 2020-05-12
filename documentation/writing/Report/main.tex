@@ -4,6 +4,9 @@
 \usepackage{url}
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{float}
+\graphicspath{ { ./images/ } }
 \usepackage{hyperref}
 \hypersetup{
     colorlinks=false,
@@ -86,9 +89,9 @@ The algorithm works iteratively.
 \end{itemize}
 The iteration ends when the cluster mean vectors no longer change (possibly within some tolerance), or a set amount of iterations is reached \citep[p258-260]{PractStats}.
 
-The \textit{scikit learn} software library has an implementation of the k-Means algorithm in its' \texttt{sklearn.cluster.KMeans} \texttt{(KMeans)} module, and is the implementation used in this project \citep{SKLEARN}.
+The \textit{scikit learn} software library has an implementation of the k-Means algorithm in its' \texttt{sklearn.cluster.KMeans} module \texttt{(KMeans)}, and is the implementation used in this project \citep{SKLEARN}.
 
-\subsection{Principal Component Analysis}
+\subsection{Principal component analysis}
 One method for extracting lower-dimensional features from higher-dimensional data is by using principal component analysis (PCA).
 Specifically, PCA refers to the computation and use of principal components (PCs).
 For a set of data, a PC is a direction in the space of the data's features along which the data samples are highly variable.
@@ -125,11 +128,137 @@ Each value in the vector represents an amplitude of LFP activity for a specific 
 For ease of reference, these vectors will be referred to as \textit{spectrum feature vectors} (SFVs) in this report.
 
 \subsection{k-Means as a weak visualization heuristic}
+Initially, k-Means was considered as a means for clustering SFVs in an attempt at classification. 
+However, attempting to support this choice with an argument as to why it is an appropriate choice of algorithm for this particular use case proved difficult.
+The k-Means algorithm is based on higher-dimensional centroids, and uses euclidean distance as a metric for distance between samples (SFVs, in this case).
+The interpretation of this metric when dealing with the amplitude spectrum of LFP activity is vague at best.
 
-\subsection{PCA of FFVs}
+The approachability and ease of use of the k-Means algorithm was instead chosen as a reasoning behind its' use in this project.
+While a strong argument for its' use could not be produced by the authors in the classification of SFVs, a heuristic argument can be constructed.
+
+SFVs of similar activity will be similar.
+This similarity will inevitably lead to similar LFP activities producing SFVs with some proximity within the spectral domain, even when using euclidean distance as a distance metric.
+Visualizing k-Means-assigned classification of SFVs, for example over time (epochs) for different channels in a single session, could show potential for more sophisticated clustering/classification algorithms for the same dataset. 
+
+With this in mind, \texttt{KMeans} was used to produce cluster means and assignments for some subsets of SFVs produced.
+Specifically, a set of SFVs for all channels of a certain session were first produced.
+A subset of these SFVs were then used as training data for \texttt{KMeans}.
+The resulting \texttt{KMeans} model was then used to classify (predict) the entire session-SFV-set.
+\textbf{TODO: plotting.}
+This procedure was repeated for several different sessions.
+The parameters used for \textit{k} for \texttt{KMeans}, the epochs size, and the range of frequencies included in the SFVs were varied in order to produce extensive results. 
+
+\subsection{Usage of principal component analysis}
+In order to better describe the SFVs, PCA was used.
+
+The specific PCs of the SFVs are of interest, as they describe the spectrum-components along which LFP activity vary the most.
+Analyzing these specific PCs and how they differ for different subsets of SFVs might highlight key similarities and differences in the LFP activity of different brain regions or subjects.
+
+It is also interesting to consider the PCs of the total set of all SFVs produced. 
+Should a small amount of PCs prove able to explain a high ratio of variance in the dataset, this would serve as a strong means for feature reduction, which could then be used in further research.
+The PCs produced would then also describe in a more easily digestible manner the key spectral components of any LFP activity in this dataset, and have implications for using similar methods for classification of other sets of LFP activity, and possibly brain activity and time-signals in general.
+Such a set of PCs could also be used to highlight differences between different LFP categories.
+Should the distribution of SFVs transformed into PC representations under this model be considerably different for different brain regions or animals, this would have implications for classification attempts of LFP activity.
+
+The process for producing PCs was straightforward.
+Using \texttt{PCA}, either with some subset of available SFVs, or the entire set of SFVs, the PCs for these sets were produced.
 
 \newpage
 \section{Results}
+
+\textbf{TODO: Introduction to results.}
+
+\subsection{Spectrum feature vectors}
+Produced SFVs can be visualized using the \textit{matplotlib} software library's useful \texttt{matplotlib.pyplot.imshow} (\texttt{IMSHOW}) function \citep{MPL}.
+
+Figure \ref{fig:GP1} and figure \ref{fig:STR2} show SFVs for channels \texttt{gp\_lfp1} and \texttt{str\_lfp10} for sessions \texttt{NPR052e.10} and \texttt{NPR064.b08}, respectively. 
+For both figures, each column represents a single SFV. 
+For both figures, higher brightness represent higher amplitude of LFP activity in that epoch and frequency.
+For both figures, each column is the SFV generated for a specific epoch of activity, displayed chronologically. 
+Figure \ref{fig:GP1} shows 780 epochs, and figure \ref{fig:STR2} shows 778 epochs. 
+For both of these sessions the sampling frequency is 16 kHz. 
+For both of these sets of produced SFVs, the epoch size in amount of data points (sampled at sampling frequency) is 2048, resulting in an epoch size of 128 ms. 
+For each of these sets of produced SFVs, there are 46 frequencies sampled. 
+Specifically, the input was padded with to a length of 16384 in order to produce a higher fidelity output, and all frequency samples in the ranges of 5 Hz - 50 Hz were selected. 
+This results in 46 equally-spaced frequency samples, the lowest being approximately 5.86 Hz and the highest being approximately 49.8 Hz. 
+The parameters can be considered arbitrary due to easily being changed.
+\textbf{TODO: Relate range to beta-frequencies. Relate epoch size to beta-oscillation length. Consider higher fidelity in PCA model?} 
+
+These are a few details to note visually from these figures. In figure \ref{fig:GP1}, centered at approximately epoch 250, is a noticeable "band" of approximately equally spaced (in frequency) and equally wide (in time) "blobs" of heightened activity. In both figures, the very lowest frequencies have very slightly yet consistently higher amplitudes (as visible from the slightly brighter colors).
+
+These figures are, clearly, a very small subset of the total set of produced SFVs. They also represent only a very small subset of possible configurations of SFVs in regards to epoch size, sampled frequencies, and amount of frequency samples.
+
+\begin{figure}
+    \centering
+    \centerline{\includegraphics[width=1.3\textwidth]{images/GP1.png}}
+    \caption{SFVs for Globus Pallidus LFP channel of a specific session.}
+    \label{fig:GP1}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \centerline{\includegraphics[width=1.3\textwidth]{images/STR2.png}}
+    \caption{SFVs for Striatum LFP channel of a specific session.}
+    \label{fig:STR2}
+\end{figure}
+
+\subsection{k-Means}
+
+\begin{figure}
+    \centering
+    \centerline{\includegraphics[width=1.3\textwidth]{images/KM4.png}}
+    \caption{4-k-Means of channels for specific session}
+    \label{fig:KM4}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \centerline{\includegraphics[width=1.3\textwidth]{images/KM16.png}}
+    \caption{16-k-Means of channels for specific session}
+    \label{fig:KM16}
+\end{figure}
+
+\textbf{TODO: Stronger heuristic, power spectrum "sorting"?}
+\textbf{TODO: Noticeable "strange" channels; filtered in PCA5 as of 051220. Use different animal.}
+
+\subsection{Principal component analysis of spectrum feature vectors}
+
+\textbf{TODO: Specify and motivate excluded channels (see PCA5) [051220]}
+\textbf{TODO: Slightly increase height of PCS plots.}
+\textbf{TODO: Specify amount of SFVs used in PCA computation.}
+\textbf{TODO: Updated crosscorrelations within GP, STR.}
+
+The first thing to consider about the PCs computed for the set of SFVs are the PCs themselves.
+Figure \ref{fig:PCS} shows these, as well as their respective explained variance ratios. 
+In this specific case, eight PCs were produced, as this was the points where their cumulative sum of explained variance ratio was above 90\%.
+These PCs can be interpreted as being parts of which a linear combination approximately describe all of the SFVs from which they were computed.
+These specific PCs were computed using the same variable assignments as described previously in this chapter (epochs size 128 ms, 46 frequency samples limited to the range 5-50 Hz).
+
+\begin{figure}
+    \centering
+    \centerline{\includegraphics[width=1.3\textwidth]{images/PCS.png}}
+    \caption{Principal components of SFV-set}
+    \label{fig:PCS}
+\end{figure}
+
+Having computed these PCs, the approximate probability distributions of the individual components as they appear in the set of \texttt{PCA}-transformed SFVs are shown in figure \ref{fig:PCAPDF}. 
+In order to better visualize the long tails of these distributions, the logarithm of these probability distributions are also shown in this figure.
+
+\begin{figure}
+    \centering
+    \centerline{\includegraphics[width=1.3\textwidth]{images/PCAPDF.png}}
+    \caption{Approximate distributions of principal components of SFV-set}
+    \label{fig:PCAPDF}
+\end{figure}
+
+The information shown in figure \ref{fig:PCAPDF} is also shown in figure \ref{fig:PCAPDFBOTH}, except with channels from striatum kept separate from those of globus pallidus.
+
+\begin{figure}
+    \centering
+    \centerline{\includegraphics[width=1.3\textwidth]{images/PCAPDFBOTH.png}}
+    \caption{Approximate distributions of principal components of SFV-set, separated by channel type}
+    \label{fig:PCAPDFBOTH}
+\end{figure}
 
 \newpage
 \section{Discussion}
