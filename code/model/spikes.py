@@ -7,6 +7,11 @@ import matplotlib.pyplot as plt
 import math
 import seaborn as sns 
 import pandas as pd 
+from sklearn.cluster import KMeans
+from random import sample
+from math import floor, pi
+from mpl_toolkits.mplot3d import Axes3D
+import pandas as pd
 
 #---------------OBTAINING DATA---------------------------
 
@@ -66,110 +71,155 @@ def getInfoSpectEntropy():
 def getInfo1Spike():
 		data = extractTrains("spikes/collected_data/sp_count_gp_sua.csv")
 		ntrains = len(data)
-		countTrain = data[0] # take only one spike train (first one)
+		countTrain = data[0][0:50] # take only one spike train (first one)
 		rf = rateFunction(countTrain)
-		isi = ISI(countTrain)
-		lagged_isi = laggedSequence(isi,1)
-		sc = autocorrelation(isi)
-		firstOrder_returnMap = jointIntervalDensity(isi,lagged_isi)
+		lagged_rates = laggedSequence(rf,1)
+		sc = autocorrelation(rf)
+		firstOrder_returnMap = jointIntervalDensity(rf,lagged_rates)
 		ffreqs, pwspec = powerSpectrum(data[0])
-		plt.plot(isi)
-		plt.savefig("spikes/measurements/one_train/isi.png")
+		p = pdf(data[0])
+		se = spectral_entropy(p)
+		print("spectral entropy = " + str(se))
+		plt.plot(rf)
+		fig = plt.gcf()
+		fig.set_size_inches(18.5, 10.5)
+		plt.title("Spiking Rate function")
+		plt.xlabel("time window")
+		plt.ylabel("spikes/second")
+		plt.savefig("spikes/measurements/one_spike_train/rates.png")
 		plt.clf()
-		print(len(isi))
-		plt.hist(isi)
-		plt.title("ISI Probability Distribution")
-		plt.xlabel("ISI (seconds)")
-		plt.ylabel("counts")
-		plt.savefig("spikes/measurements/one_train/isiPDF.png")
+		plt.hist(rf)
+		plt.savefig("spikes/measurements/one_spike_train/ratesPDF.png")
 		plt.clf()
-		sns.jointplot(isi,lagged_isi,kind="hex")
-		plt.savefig("spikes/measurements/one_train/joint_isi.png")
+		aux = (sns.jointplot(rf,lagged_rates,kind="hex")).set_axis_labels("rate function","rate function of lag 1")
+		plt.subplots_adjust(left=0.2, right=0.8, top=0.8, bottom=0.2)  # shrink fig so cbar is visible
+		cbar_ax = aux.fig.add_axes([.85, .25, .05, .4])
+		plt.colorbar(cax=cbar_ax)
+		fig = plt.gcf()
+		fig.set_size_inches(13.5, 13.5)
+		plt.savefig("spikes/measurements/one_spike_train/joint_rates.png")
 		plt.clf()
 		plt.plot(sc)
-		plt.savefig("spikes/measurements/one_train/serialcorr.png")
+		plt.title("Serial Correlation Coefficients")
+		plt.xlabel("time window")
+		fig = plt.gcf()
+		fig.set_size_inches(16.5, 13.5)
+		plt.savefig("spikes/measurements/one_spike_train/serialcorr.png")
 		plt.clf()
 		plt.plot(ffreqs,pwspec)
-		plt.savefig("spikes/measurements/one_train/pwspec.png")
+		plt.title("Power Spectral Density")
+		plt.xlabel("freqs")
+		fig = plt.gcf()
+		fig.set_size_inches(18.5, 10.5)
+		plt.savefig("spikes/measurements/one_spike_train/pwspec.png")
+		plt.clf()
+
 
 def getInfoSpikesRegion(dataType):
 	data = extractTrains("spikes/collected_data/"+dataType)
 	ntrains = len(data)
 	# measurements
 	rates = [] 
-	isis = []
 	autocorr = []
 	pwspec = []
+	spec_entr = []
 	for row in range(0,ntrains):
 		# results 
-		rates.append(rateFunction(data[row]))
-		isi = ISI(data[row])
-		isis.append(isi)
-		autocorr.append(autocorrelation(isi))
-		aux = powerSpectrum(data[row])
+		r = rateFunction(data[row][0:50])
+		rates.append(r)
+		autocorr.append(autocorrelation(r))
+		aux = powerSpectrum(data[row][0:50])
 		np.array(aux)
 		pwspec.append(aux)
+		spec_entr.append(spectral_entropy(data[row][0:50]))
 	# correct format
 	np.stack(rates)
-	np.stack(isis)
 	np.stack(autocorr)
 	np.stack(pwspec)
-	# save into csv files
-	np.savetxt("spikes/measurements/"+ dataType[:-4] +"/spikingRates.csv", rates, delimiter = ',', fmt = "%f")
-	np.savetxt("spikes/measurements/"+ dataType[:-4] +"/isis.csv", isis, delimiter = ',', fmt = "%f")
-	np.savetxt("spikes/measurements/"+ dataType[:-4] +"/autocorrelation.csv", autocorr, delimiter = ',', fmt = "%f")
+	np.stack(spec_entr)
 	# do plots and save them into png files
 	for i in range(0,len(rates)):
 		plt.plot(rates[i], alpha = 0.5)
+	fig = plt.gcf()
+	fig.set_size_inches(18.5, 10.5)
+	plt.title("Spiking Rate function")
+	plt.xlabel("time window")
+	plt.ylabel("spikes/second")
 	plt.savefig("spikes/measurements/"+ dataType[:-4] +"/spikingRates-" + dataType[:-4] +".png")
-	plt.clf()
-	for i in range(0,len(isis)):
-		plt.plot(isis[i], alpha = 0.5)
-	plt.savefig("spikes/measurements/"+ dataType[:-4] +"/isis-" + dataType[:-4] +".png")
 	plt.clf()
 	for i in range(0,len(autocorr)):
 		plt.plot(autocorr[i], alpha = 0.5)
+	plt.title("Serial Correlation Coefficients")
+	plt.xlabel("time window")
+	fig = plt.gcf()
+	fig.set_size_inches(16.5, 13.5)
 	plt.savefig("spikes/measurements/"+ dataType[:-4] +"/autocorrelation-" + dataType[:-4] +".png")
 	plt.clf()
 	for i in range(0,len(pwspec)):
 		plt.plot(pwspec[i][0],pwspec[i][1], alpha = 0.5)
+	plt.title("Power Spectral Density")
+	plt.xlabel("freqs")
+	fig = plt.gcf()
+	fig.set_size_inches(18.5, 10.5)
 	plt.savefig("spikes/measurements/"+ dataType[:-4] +"/powerSpectrum-" + dataType[:-4] +".png")
 	plt.clf()
 	# plot histograms and scatter plot
 	for i in range(0,ntrains):
-		plt.hist(isis[i], alpha = 0.5)
-	plt.savefig("spikes/measurements/"+ dataType[:-4] +"/isiPDF-" + dataType[:-4] +".png")
+		plt.hist(rates[i], alpha = 0.5)
+	plt.savefig("spikes/measurements/"+ dataType[:-4] +"/ratesPDF-" + dataType[:-4] +".png")
 	plt.clf()
 	for i in range(0,ntrains):
-		lagged_isi = laggedSequence(isis[i],1)
-		sns.jointplot(isis[i],lagged_isi,kind="hex")
+		lagged_rates = laggedSequence(rates[i],1)
+		aux = sns.jointplot(rates[i],lagged_rates,kind="hex")
+	plt.subplots_adjust(left=0.2, right=0.8, top=0.8, bottom=0.2)  # shrink fig so cbar is visible
+	cbar_ax = aux.fig.add_axes([.85, .25, .05, .4])
+	plt.colorbar(cax=cbar_ax)
+	fig = plt.gcf()
+	fig.set_size_inches(13.5, 13.5)
 	plt.savefig("spikes/measurements/"+ dataType[:-4] +"/jointDistr-" + dataType[:-4] +".png")
 	plt.clf()
-	return rates, isis, autocorr, pwspec
+	# another type of scatter plot
+	for i in range(0,ntrains):
+		lagged_rates = laggedSequence(rates[i],1)
+		plt.scatter(rates[i],lagged_rates)
+	fig = plt.gcf()
+	fig.set_size_inches(13.5, 13.5)
+	plt.savefig("spikes/measurements/"+ dataType[:-4] +"/jointDistr2-" + dataType[:-4] +".png")
+	plt.clf()
+	# spectral entropies
+	trains = np.arange(ntrains)
+	for i in range(0,ntrains):
+		plt.scatter(trains[i], spec_entr[i], alpha = 0.5)
+		plt.savefig("spikes/measurements/"+ dataType[:-4] +"/specEntr-" + dataType[:-4] +".png")
+	plt.clf()
+
+	return rates, autocorr, pwspec, spec_entr
 
 # statistics about spikes of all available regions (gp,stn)
 def getInfoAllSpikes():
-	sr_gp, isi_gp, ac_gp, ps_gp = getInfoSpikesRegion("sp_count_gp_sua.csv")
-	sr_stn, isi_stn, ac_stn, ps_stn = getInfoSpikesRegion("sp_count_stn_sua.csv")
+	sr_gp, ac_gp, ps_gp, se_gp = getInfoSpikesRegion("sp_count_gp_sua.csv")
+	sr_stn, ac_stn, ps_stn, se_stn = getInfoSpikesRegion("sp_count_stn_sua.csv")
 	#plot the regions together
 	for i in range(0,len(sr_gp)):
 		plt.plot(sr_gp[i], 'r', alpha = 0.25)
 	for i in range(0,len(sr_stn)):
 		plt.plot(sr_stn[i], 'b', alpha = 0.25)
+	fig = plt.gcf()
+	fig.set_size_inches(18.5, 10.5)
+	plt.title("Spiking Rate function")
+	plt.xlabel("time window")
+	plt.ylabel("spikes/second")
 	plt.savefig("spikes/measurements/comp_gp_stn/spikingRates-gp_stn.png")
-	plt.clf()
-	
-	for i in range(0,len(isi_gp)):
-		plt.plot(isi_gp[i], 'r', alpha = 0.25)
-	for i in range(0,len(isi_stn)):
-		plt.plot(isi_stn[i], 'b', alpha = 0.25)
-	plt.savefig("spikes/measurements/comp_gp_stn/intervalDistr-gp_stn.png")
 	plt.clf()
 
 	for i in range(0,len(ac_gp)):
 		plt.plot(ac_gp[i], 'r', alpha = 0.25)
 	for i in range(0,len(ac_stn)):
 		plt.plot(ac_stn[i], 'b', alpha = 0.25)
+	plt.title("Serial Correlation Coefficients")
+	plt.xlabel("time window")
+	fig = plt.gcf()
+	fig.set_size_inches(16.5, 13.5)
 	plt.savefig("spikes/measurements/comp_gp_stn/autocorrelation-gp_stn.png")
 	plt.clf()
 
@@ -177,31 +227,89 @@ def getInfoAllSpikes():
 		plt.plot(ps_gp[i][0],ps_gp[i][1], 'r', alpha = 0.25)
 	for i in range(0,len(ps_stn)):
 		plt.plot(ps_stn[i][0],ps_stn[i][1], 'b', alpha = 0.25)
+	plt.title("Power Spectral Density")
+	plt.xlabel("freqs")
+	fig = plt.gcf()
+	fig.set_size_inches(18.5, 10.5)
 	plt.savefig("spikes/measurements/comp_gp_stn/powerSpectrum-gp_stn.png")
 	plt.clf()
 
-	for i in range(0,len(isi_gp)):
-		plt.hist(isi_gp[i], alpha = 0.5,color='r')
-	for i in range(0,len(isi_stn)):
-		plt.hist(isi_stn[i], alpha = 0.5,color='b')
-	plt.savefig("spikes/measurements/comp_gp_stn/isiPDF-gp_stn.png")
+	for i in range(0,len(sr_gp)):
+		plt.hist(sr_gp[i], alpha = 0.5,color='r')
+	for i in range(0,len(sr_stn)):
+		plt.hist(sr_stn[i], alpha = 0.5,color='b')
+	plt.savefig("spikes/measurements/comp_gp_stn/ratesPDF-gp_stn.png")
 	plt.clf()
 
-	for i in range(0,len(isi_gp)):
-		lagged_isi = laggedSequence(isi_gp[i],1)
-		sns.jointplot(isi_gp[i],lagged_isi,kind="hex", color='r')
-	for i in range(0,len(isi_stn)):
-		lagged_isi = laggedSequence(isi_stn[i],1)
-		sns.jointplot(isi_stn[i],lagged_isi,kind="hex", color='b')
+	trains_gp = np.arange(len(se_gp))
+	trains_stn = np.arange(len(se_stn))
+	for i in range(0,len(se_gp)):
+		plt.scatter(trains_gp[i], se_gp[i], alpha = 0.5,color='r')
+	for i in range(0,len(se_stn)):
+		plt.scatter(trains_stn[i], se_stn[i], alpha = 0.5,color='b')
+	plt.savefig("spikes/measurements/comp_gp_stn/specEntr-gp_stn.png")
+	plt.clf()
+
+	#se_all = np.concatenate((se_gp,se_stn))
+	#se_aux = np.array(se_all)
+	#se = np.reshape(se_aux,(-1,1))
+	#all_trains = np.arange(0,len(se_all))
+	#model, predictions, string, corrmat = makePredictions(se_all,False,3)
+	#print(predictions)
+
+	for i in range(0,len(sr_gp)):
+		lagged_rates = laggedSequence(sr_gp[i],1)
+		sns.jointplot(sr_gp[i],lagged_rates,kind="hex", color='r')
+	for i in range(0,len(sr_stn)):
+		lagged_rates = laggedSequence(sr_stn[i],1)
+		aux = sns.jointplot(sr_stn[i],lagged_rates,kind="hex", color='b')
+	plt.subplots_adjust(left=0.2, right=0.8, top=0.8, bottom=0.2)  # shrink fig so cbar is visible
+	cbar_ax = aux.fig.add_axes([.85, .25, .05, .4])
+	plt.colorbar(cax=cbar_ax)
+	fig = plt.gcf()
+	fig.set_size_inches(13.5, 13.5)
 	plt.savefig("spikes/measurements/comp_gp_stn/jointProb-gp_stn.png")
 	plt.clf()
 
+	for i in range(0,len(sr_gp)):
+		lagged_rates = laggedSequence(sr_gp[i],1)
+		plt.scatter(sr_gp[i],lagged_rates, color='r')
+	for i in range(0,len(sr_stn)):
+		lagged_rates = laggedSequence(sr_stn[i],1)
+		plt.scatter(sr_stn[i],lagged_rates, color='b')
+	fig = plt.gcf()
+	fig.set_size_inches(13.5, 13.5)
+	plt.savefig("spikes/measurements/comp_gp_stn/jointProb2-gp_stn.png")
+	plt.clf()
+
+	# plot the statistics about power spectrums
+	#plot_colors("rates",sr_gp, sr_stn)
+	#plot_colors("autocorr",ac_gp, ac_stn)
+	#plot_colors("pwspec",ps_gp, ps_stn)
+
+
+def kmeansOnSpikeData(dataType):
+	data = extractTrains("spikes/collected_data/"+dataType)
+	ntrains = len(data)
+	print("nTrains = " + str(ntrains))
+	# measurements
+	rates = [] 
+	for row in range(0,ntrains):
+		# results 
+		r = rateFunction(data[row])
+		rates.append(r)
+	# correct format
+	np.stack(rates)
+	model, predictions, string, corrmat = makePredictions(rates, False, 4)
+	print(predictions)
+	
 
 def test():
-	extractAllTypes()
+	#extractAllTypes()
 	#getInfo1Spike()
 	#getInfoSpikesRegion("sp_count_gp_sua.csv")
 	getInfoAllSpikes()
+	#kmeansOnSpikeData("sp_count_gp_sua.csv")
 	
 		
 
@@ -218,10 +326,10 @@ def rateFunction(spikeCountTrain):
 	return asRates
 
 
-# returns the interspike intervals of each time window
+# returns the interspike intervals of each time window (in ms)
 def ISI(spikeCountTrain):
 	nWindows = len(spikeCountTrain)
-	time = 0.005
+	time = 0.005 
 	asIntervals = np.zeros((nWindows))
 	for i in range(0,nWindows):
 		if spikeCountTrain[i] == 0:
@@ -272,24 +380,134 @@ def autocorrelation(intervalDistr):
 			result[pos] = result[pos-1]
 	#from last element
 	result[nWindows-1] = 1
-	#print(result)
 	return result
 
 
 # power spectrum (= power spectral density or noise spectrum) of spike train 
 def powerSpectrum(spikeCountTrain):
 	nWindows = len(spikeCountTrain)
-	isi = ISI(spikeCountTrain)
-	autocorr = autocorrelation(isi)
+	rates = rateFunction(spikeCountTrain)
+	autocorr = autocorrelation(rates)
 	# fft of autocorrelation
 	fourier = np.fft.fft(autocorr)
 	# amplitude spectrum = np.abs(fourier)
 	pwSpectrum = np.abs(fourier)**2
 	# frequencies associated to each fourier component
-	time_step = 1/30
-	freqs = np.fft.fftfreq(spikeCountTrain.size, time_step)
+	freqs = np.fft.fftfreq(spikeCountTrain.size)
 	idx = np.argsort(freqs)
+	n_idx = len(idx)
+	idx = idx[floor(n_idx/2):]
 	return freqs[idx], pwSpectrum[idx]
+	#return freqs, pwSpectrum
+
+# normalizes the power spectrum of a spike train to be visualized as a PDF
+def pdf(spikeCountTrain):
+	ff, ps = powerSpectrum(spikeCountTrain)
+	nWindows = len(ps)
+	pdf = np.zeros((nWindows))
+	for i in range(0,nWindows):
+		pdf[i] = ps[i] / np.sum(ps)
+	return pdf
+
+# returns spectral entropy of the probability density distribution
+# output normalized to [0, 1]
+def spectral_entropy(spikeCountTrain):
+	p = pdf(spikeCountTrain)
+	n = len(p)
+	entr = np.zeros((n))
+	for i in range(0,n):
+		entr[i] = p[i] * np.log2(p[i])
+	return - np.sum(entr)/ np.log2(n)
+
+#-------------------STATISTICS-------------------
+
+# input = power spectrum vectors of each channel
+# returns vectors with the means of the channels over the time windows
+def getMeansPw(data):
+	#(nchannels,2,197 values)
+	#correct format: (nchannels,197 values)
+	aux = np.zeros((len(data),197))
+	means = np.zeros((len(data),197))
+	for i in range(0, len(data)):
+		aux[i] = data[i][1]
+		means[i] = aux[i].mean()
+	return means
+
+def getStdDevsPw(data):
+	#(nchannels,2,197 values)
+	#correct format: (nchannels,197 values)
+	aux = np.zeros((len(data),197))
+	stds = np.zeros((len(data),197))
+	for i in range(0, len(data)):
+		aux[i] = data[i][1]
+		stds[i] = aux[i].std()
+	return stds
+
+def getMeans(data):
+	means = np.zeros((len(data),2))
+	for i in range(0,len(data)):
+		means[i][0] = data[i].mean()
+		means[i][1] = data[i].mean()
+	return means 
+
+def getStdDevs(data):
+	stds = np.zeros((len(data),2))
+	for i in range(0,len(data)):
+		stds[i][0] = data[i].std()
+		stds[i][1] = data[i].std()
+	return stds
+
+# to ease the plotting of the vectors
+# plots means, std deviations, ratio of means/std devs
+def plot_colors(type,data_gp, data_stn):
+	plt.clf()
+	
+	if type == "pwspec":
+		mean_gp = getMeansPw(data_gp)
+		mean_stn = getMeansPw(data_stn)
+		std_gp = getStdDevsPw(data_gp)
+		std_stn = getStdDevsPw(data_stn)
+	else:
+		mean_gp = getMeans(data_gp)
+		mean_stn = getMeans(data_stn)
+		std_gp = getStdDevs(data_gp)
+		std_stn = getStdDevs(data_stn)
+
+	mean_all = np.concatenate((mean_gp,mean_stn))
+	std_all = np.concatenate((std_gp,std_stn))
+
+	matrices = [
+		mean_gp, std_gp, std_gp / mean_gp,
+		mean_stn, std_stn, std_stn / mean_stn,
+		mean_all, std_all, std_all / mean_all
+	]
+
+	types = [
+	    (channel_type, measurement)
+	    for channel_type in ["gp", "stn", "all"]
+	    for measurement  in ["mean", "st. dev", "st. dev : mean"]
+	]
+
+	for matrix, (channel_type, measurement), index in zip(
+	    matrices,
+	    types,
+	    range(1, 10)
+	):
+		plt.rcParams["figure.figsize"] = (20, 10)
+		plt.subplot(5, 2, index) # plots displayed in a single image
+		# transpose to go from vertical to horizontal 
+		plt.imshow(matrix.transpose(), extent=[0, len(matrix), 0, 1]) # display data as image
+		plt.colorbar() # add colorbar to the plot
+		plt.title(str(measurement) + " of " + type + " of " + str(channel_type))
+		plt.xlabel("channels")
+		plt.yticks([])
+
+	fig = plt.gcf()
+	fig.set_size_inches(13.5, 13.5)
+	plt.savefig("spikes/measurements/statistics/" + type + ".png")
+	
+
+
 
 #---------------------MAIN---------------------------------
 
