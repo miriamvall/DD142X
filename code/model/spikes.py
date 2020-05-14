@@ -12,6 +12,8 @@ from random import sample
 from math import floor, pi
 from mpl_toolkits.mplot3d import Axes3D
 import pandas as pd
+from mpl_toolkits.axes_grid1.inset_locator import inset_axes
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 #---------------OBTAINING DATA---------------------------
 
@@ -115,6 +117,7 @@ def getInfo1Spike():
 		plt.clf()
 
 
+
 def getInfoSpikesRegion(dataType):
 	data = extractTrains("spikes/collected_data/"+dataType)
 	ntrains = len(data)
@@ -193,6 +196,43 @@ def getInfoSpikesRegion(dataType):
 		plt.savefig("spikes/measurements/"+ dataType[:-4] +"/specEntr-" + dataType[:-4] +".png")
 	plt.clf()
 
+	# attempt to plot a measurement for all channels
+
+	# rate functions
+	fig = plt.figure(1, figsize=(5, 3))
+
+	ax = plt.gca()
+	im = plt.imshow(autocorr, cmap = 'gray')
+	if dataType[9:11] == "gp":
+		plt.title("Rate function for 50 time windows for " + dataType[9:11] + " channels \n time window size = 0.5 seconds, rates in spikes/second")
+	else:
+		plt.title("Rate function for 50 time windows for " + dataType[9:12] + " channels \n time window size = 0.5 seconds, rates in spikes/second")
+	plt.xlabel("time window")
+	plt.ylabel("Channel")
+	plt.yticks(np.arange(0,len(autocorr)))
+	divider = make_axes_locatable(ax)
+	cax = divider.append_axes("right", size="3%", pad=0.25)
+	plt.colorbar(im, cax=cax)
+	plt.savefig("spikes/measurements/"+ dataType[:-4] + "/rates50tw")
+	plt.clf()
+	# rate functions
+	fig = plt.figure(1, figsize=(5, 3))
+
+	ax = plt.gca()
+	im = plt.imshow(rates, cmap = 'gray')
+	if dataType[9:11] == "gp":
+		plt.title("Serial correlation coefficients for 50 time windows for " + dataType[9:11] + " channels \n time window size = 0.5 seconds")
+	else:
+		plt.title("Serial correlation coefficients for 50 time windows for " + dataType[9:12] + " channels \n time window size = 0.5 seconds")
+	plt.xlabel("time window")
+	plt.ylabel("Channel")
+	plt.yticks(np.arange(0,len(rates)))
+	divider = make_axes_locatable(ax)
+	cax = divider.append_axes("right", size="3%", pad=0.25)
+	plt.colorbar(im, cax=cax)
+	plt.savefig("spikes/measurements/"+ dataType[:-4] + "/autocorr50tw")
+	plt.clf()
+
 	return rates, autocorr, pwspec, spec_entr
 
 # statistics about spikes of all available regions (gp,stn)
@@ -250,13 +290,6 @@ def getInfoAllSpikes():
 	plt.savefig("spikes/measurements/comp_gp_stn/specEntr-gp_stn.png")
 	plt.clf()
 
-	#se_all = np.concatenate((se_gp,se_stn))
-	#se_aux = np.array(se_all)
-	#se = np.reshape(se_aux,(-1,1))
-	#all_trains = np.arange(0,len(se_all))
-	#model, predictions, string, corrmat = makePredictions(se_all,False,3)
-	#print(predictions)
-
 	for i in range(0,len(sr_gp)):
 		lagged_rates = laggedSequence(sr_gp[i],1)
 		sns.jointplot(sr_gp[i],lagged_rates,kind="hex", color='r')
@@ -282,26 +315,38 @@ def getInfoAllSpikes():
 	plt.savefig("spikes/measurements/comp_gp_stn/jointProb2-gp_stn.png")
 	plt.clf()
 
-	# plot the statistics about power spectrums
-	#plot_colors("rates",sr_gp, sr_stn)
-	#plot_colors("autocorr",ac_gp, ac_stn)
-	#plot_colors("pwspec",ps_gp, ps_stn)
+	fig = plt.figure(1, figsize=(5, 3))
 
+	# plot rates together
+	all_r = np.concatenate((sr_gp,sr_stn))
+	ax = plt.gca()
+	im = plt.imshow(all_r, cmap = 'gray')
+	plt.title("Rate function for 50 time windows for GP and STN channels \n time window size = 0.5 seconds, rates in spikes/second")
+	plt.xlabel("time window")
+	plt.ylabel("Channel")
+	plt.yticks(np.arange(0,len(all_r)))
+	divider = make_axes_locatable(ax)
+	cax = divider.append_axes("right", size="3%", pad=0.25)
+	plt.colorbar(im, cax=cax)
+	plt.savefig("spikes/measurements/comp_gp_stn/rates50tw")
+	plt.clf()
+	# plot autocorrelations together
+	all_a = np.concatenate((ac_gp,ac_stn))
+	ax = plt.gca()
+	im = plt.imshow(all_a, cmap = 'gray')
+	plt.title("Serial correlation coefficients for 50 time windows for GP and STN channels \n time window size = 0.5 seconds")
+	plt.xlabel("time window")
+	plt.ylabel("Channel")
+	plt.yticks(np.arange(0,len(all_a)))
+	divider = make_axes_locatable(ax)
+	cax = divider.append_axes("right", size="3%", pad=0.25)
+	plt.colorbar(im, cax=cax)
+	plt.savefig("spikes/measurements/comp_gp_stn/autocorr50tw")
+	plt.clf()
 
-def kmeansOnSpikeData(dataType):
-	data = extractTrains("spikes/collected_data/"+dataType)
-	ntrains = len(data)
-	print("nTrains = " + str(ntrains))
-	# measurements
-	rates = [] 
-	for row in range(0,ntrains):
-		# results 
-		r = rateFunction(data[row])
-		rates.append(r)
-	# correct format
-	np.stack(rates)
-	model, predictions, string, corrmat = makePredictions(rates, False, 4)
-	print(predictions)
+	all_se = np.concatenate((se_gp,se_stn))
+	np.savetxt("spikes/measurements/spec_entr.csv", all_se, delimiter=',', fmt='%f')
+	
 	
 
 def test():
@@ -309,7 +354,6 @@ def test():
 	#getInfo1Spike()
 	#getInfoSpikesRegion("sp_count_gp_sua.csv")
 	getInfoAllSpikes()
-	#kmeansOnSpikeData("sp_count_gp_sua.csv")
 	
 		
 
@@ -398,7 +442,6 @@ def powerSpectrum(spikeCountTrain):
 	n_idx = len(idx)
 	idx = idx[floor(n_idx/2):]
 	return freqs[idx], pwSpectrum[idx]
-	#return freqs, pwSpectrum
 
 # normalizes the power spectrum of a spike train to be visualized as a PDF
 def pdf(spikeCountTrain):
