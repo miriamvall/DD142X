@@ -30,34 +30,32 @@
 
 \subsection{Purpose}
 
-\textbf{TODO: Using "brain activity" as supplement for LFP, spiking rates, etc}
+The purpose of this project is to attempt to find one or several methods for classification of the brain activity in patients with Parkinson's disease.
 
-The purpose of this project is to attempt to find one or several models for classification of the brain activity in patients with Parkinson's disease.
-
-Furthermore this project aims to, to some extent, use any produced model(s) to evaluate differences is brain activity of different categories.
-It is of interest to consider what differences any such model(s) show when comparing brain activity from different brain regions.
-It is also of interest to make a similar comparison for the brain activity in different patients.
+Furthermore this project aims to, to some extent, use any produced methods to evaluate differences is brain activity of different categories.
+It is of interest to consider what differences any such methods show when comparing brain activity from different brain regions.
+It is also of interest to make a similar comparison for the brain activity in different subjects.
 
 \subsection{Delimitations}
 The authors of this report are not well educated or experienced in studying brain activity.
-The model(s) produced are mainly means to serve as a strong foundation for further research into deeper understanding of Parkinson's disease.
-The authors attempt to describe and interpret output produced by the model(s), but do so outside of any broader implications the model(s) show in the further study of Parkinson's disease.
+The methods produced are mainly means to serve as a strong foundation for further research into deeper understanding of Parkinson's disease.
+The authors attempt to describe and interpret output produced by the methods, but do so outside of any broader implications the methods have for the further study of Parkinson's disease.
 
-No software used, or produced, both by others and by the authors, is subject to extensive formal verification within the scope of this project. 
+No software used, or produced, either by others or by the authors, is subject to extensive formal verification within the scope of this project. 
 The same is true for the datasets used within the scope of this project.
 The datasets used are instead assumed to have been produced/recorded to a satisfactory quality for their uses within the scope of this project.
 
 \subsection{Research questions}
 \begin{itemize}
-    \item How can effective models for classification of brain activity in patients with Parkinson's disease be produced?
-    \item How can such models be used to distinguish between brain activity from different regions of brains in patients with Parkinson's disease?
-    \item How can such models be used to distinguish between brain activity from different patients with Parkinson's disease?
+    \item How can effective methods for classification of brain activity in patients with Parkinson's disease be produced?
+    \item How can such methods be used to distinguish between brain activity from different regions of brains in patients with Parkinson's disease?
+    \item How can such methods be used to distinguish between brain activity from different patients with Parkinson's disease?
 \end{itemize}
 
 \newpage
 \section{Background}
 
-\subsection{Discrete Fourier transform}
+\subsection{Discrete Fourier transform}\label{DFT BG}
 The Fourier transform, or more specifically, the family of Fourier transforms, are mathematical tools with a long and rich history and many use cases. 
 The Discrete Fourier Transform (DFT) is the version of the Fourier Transform used on discrete points of data (rather than e.g. a continuous function). 
 One use case of the Fourier transform is to transform a function of time into a function of frequency. 
@@ -68,14 +66,14 @@ This method can be used to approximate the amplitude or power of activity in spe
 
 \textit{NumPy}, a software library, provides useful tools for usage of the DFT in its' \texttt{fft} package, specifically the \texttt{numpy.fft.fft} (\texttt{FFT}) function \citep{numpy}.
 
-\texttt{FFT} can also be given input to pad the input array with additional zeroes. 
+\texttt{FFT} can also be given an input argument to pad the input array with additional zeroes. 
 The user then receives a \textit{higher fidelity} output; output information for a larger amount of frequencies.
 This can be shown by the \texttt{FFT}-helper function, \texttt{numpy.fft.fftfreq} (\texttt{FFTFREQ}). 
 The \texttt{FFTFREQ} function takes arguments \textit{window length} and \textit{sample spacing}, and returns an array of \textit{unit frequency bin centers}. 
 
 The amplitude spectrum for \texttt{FFT} output is obtained by taking the absolute values of the output from the \texttt{FFT} complex-valued output array, specifically using the \texttt{numpy.abs} (\texttt{ABS}) function \citep{numpy}.
 
-\subsection{k-Means}
+\subsection{k-Means}\label{KM BG}
 The k-Means algorithm is a clustering algorithm. 
 One noticeable peculiarity of the k-Means algorithm is that the user makes a choice of \textit{k}, the amount of clusters. 
 
@@ -91,7 +89,7 @@ The iteration ends when the cluster mean vectors no longer change (possibly with
 
 The \textit{scikit learn} software library has an implementation of the k-Means algorithm in its' \texttt{sklearn.cluster.KMeans} module \texttt{(KMeans)}, and is the implementation used in this project \citep{SKLEARN}.
 
-\subsection{Principal component analysis}
+\subsection{Principal component analysis}\label{PCA BG}
 One method for extracting lower-dimensional features from higher-dimensional data is by using principal component analysis (PCA).
 Specifically, PCA refers to the computation and use of principal components (PCs).
 For a set of data, a PC is a direction in the space of the data's features along which the data samples are highly variable.
@@ -99,7 +97,7 @@ It's possible for a linear combination of PCs to describe all samples in a datas
 If the amount of PCs required for this is lower than the amount of features in the data samples, PCA becomes an effective means of feature reduction for that dataset.
 The PCs produced can also be used to visualize the data, and the individual components can be interesting for analyzing the data in their own right \citep[p374-380]{ISLR}.
 
-The \textit{scikit learn} software library enables easy computation of PCs using \texttt{sklearn.decomposition.PCA} (\texttt{PCA})
+The \textit{scikit learn} software library enables easy computation of PCs using \texttt{sklearn.decomposition.PCA} (\texttt{PCA}).
 It also allows the user to transform members of a dataset into their respective representation under a certain set of PCs. 
 It should be noted that such a representation is often approximate.
 Furthermore, the user is able to see the \textit{explained variance} and \textit{ratio of explained variance} for each PC produced for a specific dataset \citep{SKLEARN}.
@@ -107,24 +105,26 @@ Furthermore, the user is able to see the \textit{explained variance} and \textit
 \newpage
 \section{Methods}
 Some methods in this project focused on amplitudes of activity in the spectral domain for the data used in the scope of this project.
-The reasoning behind this is that previous research on Parkinson's disease has shown that LFP activity in the beta-range is abnormally synchronized compared to that of the same activity in subjects unaffected by Parkinson's disease. \textbf{TODO: Source}
+The reasoning behind this is that previous research on Parkinson's disease has shown that LFP activity in the basal ganglia in the beta-range is abnormally synchronized compared to that of the same activity in subjects unaffected by Parkinson's disease \citep{Cagnan}.
 This suggests that such activity might embed additional useful information for research, and possibly a means for classification. 
 
-\subsection{Spectrum feature extraction}
+\subsection{Spectrum feature extraction}\label{DFT Method}
 One important method for feature extraction used in this project was the DFT, using \texttt{FFT}. 
-The data was first split into uniform-sized (in array length) \textit{epochs}.
+The data was first split into uniform-sized (in array length, or equivalently length of time) \textit{epochs}.
 Software implemented for this end was designed such that the \textit{epoch size} could be varied.
 Each such epoch was then transformed using \texttt{FFT}.
 
-Interpreting \texttt{FFTFREQ} for the data used in this project, it takes input epoch size (in number of points) and time between samples (multiplicative inverse of sampling frequency). 
-It returns an \textit{array index-to-frequency in Hertz} mapping for the output of \texttt{FFT} \citep{numpy}.
+Interpreting \texttt{FFTFREQ} for the data used in this project, it takes input epoch size (in number of points), and time between samples (multiplicative inverse of sampling frequency). 
+It should be noted that the "epoch size" argument given to \texttt{FFTFREQ} should match the optional argument given to \texttt{FFT} which causes zero-padding (resulting in higher fidelity output).
+
+\texttt{FFTFREQ} returns an \textit{array index-to-frequency in Hertz} mapping for the output of \texttt{FFT} in this context \citep{numpy}.
 
 The \texttt{ABS} function was used to produce the amplitude spectrum of \texttt{FFT} output. 
-\texttt{FFTFREQ} was used to find indices in the \texttt{FFT} output representing frequencies in a certain range.
+\texttt{FFTFREQ} was used to find indices in the \texttt{FFT} output representing frequencies in a certain range, and selecting such values.
 This range was implemented to be variable.
 
 Using this process, for each epoch a \textit{feature vector} was produced. 
-Each value in the vector represents an amplitude of LFP activity for a specific frequency, epoch, channel, and session.
+Each value in the vector represents an amplitude of LFP activity for a specific frequency, epoch, channel, and session with a specific set of parameters for fidelity, epoch size, and range of frequencies.
 For ease of reference, these vectors will be referred to as \textit{spectrum feature vectors} (SFVs) in this report.
 
 \subsection{k-Means as a visualization heuristic}\label{KM Method}
@@ -151,29 +151,26 @@ The parameters used for \textit{k} for \texttt{KMeans}, the epochs size, and the
 In order to better describe the SFVs, PCA was used.
 
 The specific PCs of the SFVs are of interest, as they describe the spectrum-components along which LFP activity vary the most.
-Analyzing these specific PCs and how they differ for different subsets of SFVs might highlight key similarities and differences in the LFP activity of different brain regions or subjects.
+Analyzing these specific PCs and how their prominence varies in different subsets could highlight key similarities and differences in the LFP activity of different brain regions or subjects.
 
-It is also interesting to consider the PCs of the total set of all SFVs produced. 
 Should a small amount of PCs prove able to explain a high ratio of variance in the dataset, this would serve as a strong means for feature reduction, which could then be used in further research.
 The PCs produced would then also describe in a more easily digestible manner the key spectral components of any LFP activity in this dataset, and have implications for using similar methods for classification of other sets of LFP activity, and possibly brain activity and time-signals in general.
-Such a set of PCs could also be used to highlight differences between different LFP categories.
 Should the distribution of SFVs transformed into PC representations under this model be considerably different for different brain regions or animals, this would have implications for classification attempts of LFP activity.
 
 The process for producing PCs was straightforward.
-Using \texttt{PCA}, either with some subset of available SFVs, or the entire set of SFVs, the PCs for these sets were produced.
+Using \texttt{PCA} on the entire set of SFVs, the PCs for these sets were produced.
 
 \newpage
 \section{Results}
 
-\textbf{TODO: Introduction to results.}
+This subsection is dedicated to presenting results that were produced from the methods described in the previous section.
 
 \subsection{Spectrum feature vectors}\label{SFV Results}
 Produced SFVs can be visualized using the \textit{matplotlib} software library's useful \texttt{matplotlib.pyplot.imshow} (\texttt{IMSHOW}) function \citep{MPL}.
 
 Figure \ref{fig:GP1} and figure \ref{fig:STR2} show SFVs for channels \texttt{gp\_lfp1} and \texttt{str\_lfp10} for sessions \texttt{NPR052e.10} and \texttt{NPR064.b08}, respectively. 
-For both figures, each column represents a single SFV. 
+For both figures, each column represents a single SFV, generated for a specific epoch of activity, displayed chronologically. 
 For both figures, higher brightness represent higher amplitude of LFP activity in that epoch and frequency.
-For both figures, each column is the SFV generated for a specific epoch of activity, displayed chronologically. 
 Figure \ref{fig:GP1} shows 780 epochs, and figure \ref{fig:STR2} shows 778 epochs. 
 For both of these sessions the sampling frequency is 16 kHz. 
 For both of these sets of produced SFVs, the epoch size in amount of data points (sampled at sampling frequency) is 2048, resulting in an epoch size of 128 ms. 
@@ -183,6 +180,7 @@ This results in 46 equally-spaced frequency samples, the lowest being approximat
 The parameters can be considered arbitrary due to easily being changed.
 In this specific configuration, the frequency range was selected to be somewhat wider than the beta-range of frequencies.
 The epoch size was chosen to be somewhat longer than the shortest length of a beta-burst \citep{Cagnan}.
+The fidelity was chosen arbitrarily.
 
 These figures are, clearly, a very small subset of the total set of produced SFVs. They also represent only a very small subset of possible configurations of SFVs in regards to epoch size, sampled frequencies, and amount of frequency samples.
 
@@ -200,25 +198,24 @@ These figures are, clearly, a very small subset of the total set of produced SFV
     \label{fig:STR2}
 \end{figure}
 
-\subsection{k-Means}
+\subsection{k-Means-based visualization}\label{KM Results}
 
 To visualize k-Means predictions for a k-Means model trained on SFVs, \texttt{IMSHOW} was used once more.
 Some of the produced figures are figure \ref{fig:KM4} and figure \ref{fig:KM16}.
 In order to better relate to the heuristic argument presented in subsection \ref{KM Method}, the colors for class assignments were chosen to be sorted by the "sum of power spectrum" (sum of squares) of the cluster centers.
 Lower class index (refer to color bar in either figure) represents lower sum of power spectrum.
-The indices of class assignments will be presented as "low" and "high" for brevity.
 
 In the figures, each row represents the class assignments for a specific channel in the set.
 The columns represent epochs.
 Each colored "slice" is the prediction of a single SFV to a class, the result of a trained \texttt{KMeans} model.
 The particular channel names are not shown in these figures, but include both STR and GP channels.
-The SFVs are identical in production parameters to those presented in the previous section.
+The SFVs are identical in production parameters to those presented in subsection \ref{SFV Results}.
 
 The most important thing to note about these figures is how different channels in the same (or close) epochs tend to be given equal class assignments excessively. 
-The authors interpret the class assignments for adjacent epochs to often be "close", meaning that class assignments seem to be followed by slightly higher or slightly lower class assignments, this was however not researched more thoroughly and should be considered an informal observation.
+The authors interpret the class assignments for adjacent epochs to often be "close", meaning that class assignments seem to be followed by slightly higher or slightly lower class assignments (referring to class index), this was however not researched more thoroughly and should be considered an informal observation.
 Also of note are "streaks" of higher class assignments for specific channels.
-Examples include for channel 4 at about epoch 700, and channel 12 at about epochs 330-420 (rough estimates).
-There are also "pillars" of excessively similar assignments for all channels at about epochs 140, 290, and 550 (rough estimates).
+Examples include for channel 4 at about epoch 700, and channel 12 at about epochs 330-420 (rough estimates), in both figures.
+There are also "pillars" of excessively similar assignments for all channels at about epochs 140, 290, and 550 (rough estimates), in both figures.
 
 \begin{figure}[H]
     \centering
@@ -234,17 +231,14 @@ There are also "pillars" of excessively similar assignments for all channels at 
     \label{fig:KM16}
 \end{figure}
 
-\subsection{Principal component analysis of spectrum feature vectors}
-
-\textbf{TODO: Slightly increase height of PCS plots.}
-\textbf{TODO: Crosscorrelations within GP, STR.}
+\subsection{Principal component analysis of spectrum feature vectors}\label{PCA Results}
 
 The method outlined in subsection \ref{PCA Methods} was performed using a set of 362,184 SFVs produced with parameters identical to those described in subsection \ref{SFV Results}.
 Indeed, the SFVs shown in figures \ref{fig:GP1} and \ref{fig:STR2} are part of the set used to compute the \texttt{PCA} model.
 
 The first thing to consider about the PCs computed for the set of SFVs are the PCs themselves.
 Figure \ref{fig:PCS} shows these, as well as their respective explained variance ratios. 
-This figure was produced using the \texttt{matplotlib.pyplot.plot} (\texttt{PLOT}) function.
+This figure was produced using the \texttt{matplotlib.pyplot.plot} (\texttt{PLOT}) function, as were all other figures in this subsection.
 In this specific case, eight PCs were produced, as this was the points where their cumulative sum of explained variance ratio was above 90\%.
 These PCs can be interpreted as being parts of which a linear combination approximately describe all of the SFVs from which they were computed.
 
@@ -273,7 +267,7 @@ In order to better visualize the long tails of these distributions, the probabil
 \end{figure}
 
 The information shown in figures \ref{fig:PCAPDF} and \ref{fig:PCAPDFLG2} is also shown in figures \ref{fig:PCAPDFBOTH} and \ref{fig:PCAPDFBOTHLG2}, except with channels from STR kept separate from those of GP.
-Notably, GP exhibits distributions with more width and higher peaks.
+Notably, GP channels exhibit distributions with more width and higher peaks.
 
 \begin{figure}[H]
     \centering
@@ -290,8 +284,8 @@ Notably, GP exhibits distributions with more width and higher peaks.
 \end{figure}
 
 These figures, of course, don't show how these distributions correlate.
-Tables \ref{tab:corrcoefGP} and \ref{tab:corrcoefSTR} show the cross-correlation of \texttt{PCA}-transformed SFVs, for GP and STR channels respectively.
-Notably, cross-correlation within STR channels is consistently somewhat low, while it is consistently quite higher within GP channels.
+Tables \ref{tab:corrcoefGP} and \ref{tab:corrcoefSTR} show the cross-correlations of PCs of \texttt{PCA}-transformed SFVs, for GP and STR channels respectively.
+Notably, cross-correlation within STR channels is consistently low, while it is consistently considerably higher within GP channels.
 
 \begin{table}[H]
     \centering
@@ -329,9 +323,45 @@ Notably, cross-correlation within STR channels is consistently somewhat low, whi
 
 \newpage
 \section{Discussion}
+This section is dedicated to discussion and interpretation of the produced results in the context of the research questions for this project.
+
+\subsection{LFP activity based methods of classification}
+This subsection discusses the methods described in subsections \ref{DFT Method}, \ref{KM Method}, and \ref{PCA Methods}, with respective results in subsections \ref{SFV Results}, \ref{KM Results}, and \ref{PCA Results}.
+
+The authors believe that SFVs, as described in this report, are an appropriate means of feature extraction in the context of this report. 
+This is not intended to be a proclamation of a groundbreaking discovery.
+Analyzing the spectrum of brain activity has previously shown interesting results \citep{Cagnan}, and SFVs are just a generalized approach to describe the process of extracting such spectra, taking fidelity, epoch size, and range of spectra into account.
+Indeed, SFVs or similar methods have likely been described or used previously with a different name in previous research, not necessarily in this field of research.
+SFVs also provide a simple mean of visualizing LFP activity in a human-understandable way.
+
+To a layman in the study of neuroscience, the k-Means visualization heuristic applied in this project seems reasonable.
+The results produced show LFP activity being strikingly similar for different areas of the basal ganglia when compared simultaneously.
+Furthermore, the "outliers" present in figures \ref{fig:KM4} and \ref{fig:KM16} make intuitive sense, as one would expect outliers in any dataset.
+This intuition, to reiterate, is that of a layman.
+The authors imagine their chosen method and produced results may have serious flaws.
+The authors, however, consider these results to at least be a reason to consider more sophisticated methods to attempt to cluster SFVs.
+Such methods fall outside both the scope of this project, and the expertise of its' authors.
+
+The authors believe that the produced PCs, or more specifically the method by which they were produced, show great potential for similar methods in the use of classification.
+As discussed, the authors consider SFVs a reasonable means of feature extraction, and PCA proved effective in further investigating these.
+A much smaller set of PCs than the number of features of their parent SFVs can describe them with great accuracy.
+These PCs could then reasonably be interpreted, in the quite literal sense, as components making up LFP activity.
+The PCs themselves could lend themselves to study and interpretation by more experienced scholars.
+The rather extreme discrepancies between the nature of the distributions of these PCs when comparing GP channels to STR channels (see figures \ref{fig:PCAPDF}, \ref{fig:PCAPDFLG2}, tables \ref{tab:corrcoefGP}, \ref{tab:corrcoefSTR}) could also lend insight into the workings of these different brain regions.
+Notable are the consistently lesser amplitudes of activity in STR, and the consistently much lower cross-correlation of PCs in STR.
+While the PCs described in figure \ref{fig:PCS} are present almost independently in STR channels, they have clear correlation in GP channels.
+Interpreting this is beyond the experience of the authors.
 
 \newpage
 \section{Conclusion}
+
+The methods produced for classifying Parkinson's disease based on LFP activity show potential.
+While results shown have often been comparing e.g. categories of channels, or the activity within a single session, much of this can be generalized.
+Larger datasets could be used, and subjects could be compared instead of channel categories (and vice versa).
+More extensive and sophisticated attempts at interpreting the use and results of the methods developed could be undertaken, and additional regions of the brain could be considered.
+It's likely that many additional avenues for further research could be explored, that are outside the imaginations of the authors.
+
+The authors believe that the methods and results developed based on LFP activity in the basal ganglia for the purpose of classification of Parkinson's disease show definitive potential for future research.
 
 \newpage
 \section{References}
