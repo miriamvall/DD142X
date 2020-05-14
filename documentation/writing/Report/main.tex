@@ -31,7 +31,7 @@
 Parkinson's disease (PD) is a progressive neurodegenerative disorder of movement that is age-related. 
 It affects tens of millions of people worldwide, and the frequency and associated socioeconomic burden of the condition are set to increase as the elderly population grows.
 
-The disease is characterized by poverty if voluntary movements (akinesia), slowness and impaired scaling of voluntary movement (bradykinesia), muscle rigidity and tremor of the limbs at rest \citep{DeMaags}.
+The disease is characterized by poverty of voluntary movements (akinesia), slowness and impaired scaling of voluntary movement (bradykinesia), muscle rigidity and tremor of the limbs at rest \citep{DeMaags}.
 
 The hallmark feature of PD is the degeneration of dopamine neurons in the basal ganglia (BG), which is the region of the brain responsible for functions such as learning or movement \citep{Hammond}. 
 The BG consists of a few interconnected nuclei: the striatum (STR), globus pallidus (GP), subthalamic nucleus (STN), and substantia nigra (SN). 
@@ -168,7 +168,7 @@ But it is precisely for this reason that several features of spike trains cannot
 
 \subsection{Inhomogeneous Poisson processes for spike count train modelling}
 
-In the case of this project's dataset, the process is clearly non-stationary as the firing rate varies depending on the time windows. 
+As is likely the case with this project's dataset, the process could be non-stationary as the firing rate could vary depending on the time windows. 
 One of the easiest ways to take into account this non-stationarity is to allow the Poisson process to be inhomogeneous. 
 In this case, the firing rate is now time-dependent and is modelled by a function \begin{math}\lambda(t)\end{math}, which is the spiking rate (or intensity) of the inhomogeneous Poisson process. 
 This function is constituted by the quotients of the spike counts and the time length of the windows.
@@ -177,7 +177,7 @@ Assuming that a spike count train is an inhomogeneous Poisson process with time-
 
 \begin{itemize}
     \item For two disjoint time windows \textit{I} and \textit{J}, their spike counts \textit{N(I)} and \textit{N(J)} are independent.
-    \item For any time window \textit{I}, \textit{N(I)} is a Poisson variable .
+    \item For any time window \textit{I}, \textit{N(I)} is a Poisson variable.
 \end{itemize}
 
 As a result of the independence assumption, this process still has a memory-less property, by which the probability of spiking at any instant does not depend on occurrences or timing of past spikes; there is no history dependence. 
@@ -188,14 +188,13 @@ Therefore, it is necessary to further generalize the point process model by remo
 
 The simplest type of point process with history dependence is the renewal process. 
 A renewal process is a point process for which the probability of firing a spike at any point in time can depend on the occurrence time of the last spike, but not on any spikes before then  \citep{Perkel}. 
-Consequently, from now on it is assumed that the rate at which a neuron fires depends on the intensity of firing that it had just before.        
 
 Joint firing rate scattergrams can be employed in determining serial correlations between spiking intensities, where each point on the diagram then represents a pair of “adjacent” rates. 
 
 A quantitative measure of such correlation is provided by the serial correlation coefficient of firing rates, which are statistics based on the joint distributions of the rates. 
 The set of serial correlation coefficients is usually called a serial correlogram; it has sometimes been called "autocorrelogram" or simply "autocorrelation"  \citep{Perkel}. 
 
-Given the autocorrelation function \textit{x(n)}, the power spectral density \begin{math}S(m) = |X(m)|^2\end{math}, where \textit{X(m)} is the discrete Fourier transform of \textit{x(n)}. 
+Given the autocorrelation function \textit{x(n)}, the power spectral density \begin{math}S(m) = |X(m)|^2\end{math}, where \textit{X(m)} is the DFT of \textit{x(n)}. 
 It is also called power spectrum or noise spectrum. 
 Noise is a limiting factor to all forms of information transmission; in this particular case, information transmission by neurons \citep{Gerstner}. 
 An important concept of the theory of signal transmission is the signal-to-noise ratio. 
@@ -231,7 +230,7 @@ The denominator \begin{math}log_2 N\end{math} represents the maximal spectral en
 \section{Methods}
 
 Some methods in this project focused on amplitudes of activity in the spectral domain for the data used in the scope of this project.
-The reasoning behind this is that previous research on Parkinson's disease has shown that LFP activity in the basal ganglia in the beta-range is abnormally synchronized compared to that of the same activity in subjects unaffected by Parkinson's disease \citep{Cagnan}.
+The reasoning behind this is that previous research on Parkinson's disease has shown that LFP activity in the basal ganglia in the beta-range is abnormally synchronized compared to that of the same activity in subjects unaffected by Parkinson's disease, as was discussed in subsection \ref{BG BetaOsc NeurSyn} \citep{Cagnan}.
 This suggests that such activity might embed additional useful information for research, and possibly a means for classification. 
 
 Apart from focusing on LFP recordings, the analysis of spiking rates also provides insight into the activity and synchronization of the different basal ganglia regions, and can be used to extract relevant features which are apt for classification.
@@ -296,10 +295,10 @@ Using \texttt{PCA} on the entire set of SFVs, the PCs for these sets were produc
 The original dataset consists of the number of spikes counted during successive time windows (each of them being half a second). 
 For each recorded channel in different regions of the basal ganglia, which in this case are the globus pallidus and subthalamic nucleus, 393 recorded time windows were available.
 
-The non-stationarity of the spiking rate over time makes it impossible to model the spike count trains as a homogeneous Poisson process with a constant rate; therefore, it will be regarded as an inhomogeneous Poisson process.
+The non-stationarity of the spiking rate over time makes it impossible to model the spike count trains as a homogeneous Poisson process with a constant rate; therefore, it was regarded as an inhomogeneous Poisson process.
 
 It is possible to obtain the time-dependent spiking rate function by dividing each spike count by the duration of the time windows, namely 0.5 seconds. 
-We can also see an estimation of the rate probability distribution by plotting a histogram of the time series.
+We also produced an estimation of the rate probability distribution by plotting a histogram of the time series.
 
 \subsection{Renewal process}
 
@@ -310,8 +309,8 @@ They were obtained in a sequential manner, as one measurement often depends on t
 
 Joint firing rate scattergrams were employed to determine serial correlations between spiking intensities. 
 To quantify these serial correlations between spiking rates, the autocorrelation (or serial correlation coefficients) of the spiking rate function was then calculated. 
-Next, the power spectral density was drawn from the autocorrelation measure, by calculating the square of its Fourier transform. 
-Lastly, using the power spectral density values, the spectral entropy of each channel were obtained.
+Next, the power spectral density was drawn from the autocorrelation measure, by calculating the square of its DFT. 
+Lastly, using the power spectral density values, the spectral entropy of each channel was obtained.
 
 \newpage
 \section{Results}
