@@ -483,6 +483,7 @@ All results are produced taking 50 successive time windows of 0.5 seconds each.
 \subsubsection{Spiking rates}
 
 The figures in this sub-subsection were produced using \texttt{IMSHOW}.
+The histograms were obtained with the {matplotlib.pyplot.hist} function.
 
 For all figures plots, rows represent channels and columns represent time windows. 
 Figure \ref{fig:ratesGP1} and figure \ref{fig:ratesSTN1} show the spiking rates for the channels in the GP and STN, respectively.
@@ -490,30 +491,154 @@ Figure \ref{fig:ratesBoth1} shows the spiking rate functions of the channels of 
 
 \begin{figure}[H]
     \centering
-    \centerline{\includegraphics[width=1.2\textwidth]{images/spiking/rates_gp2.png}}
+    \centerline{\includegraphics[width=1\textwidth]{images/spiking/SR_gp.png}}
     \caption{Spiking rates of GP channels.}
     \label{fig:ratesGP1}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \centerline{\includegraphics[width=1.2\textwidth]{images/spiking/rates_stn2.png}}
+    \centerline{\includegraphics[width=1\textwidth]{images/spiking/SR_stn.png}}
     \caption{Spiking rates of STN channels.}
     \label{fig:ratesSTN1}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \centerline{\includegraphics[width=1.2\textwidth]{images/spiking/rates_both2.png}}
+    \centerline{\includegraphics[width=1\textwidth]{images/spiking/SR_all.png}}
     \caption{Spiking rates of GP and STN channels.}
     \label{fig:ratesBoth1}
 \end{figure}
 
+\subsubsection{Joint rate distributions}
+
+The data is displayed in the form of scatter diagrams, in which the sequence of firing rates (represented by the abscissa) is plotted against the same sequence with a lag of one time window (represented by the ordinate). 
+Each point on the diagram then represents a pair of “adjacent” rates.
+
+The hexagonal scatterplots in this sub-subsection were produced with the Seaborn library's \texttt{seaborn.jointplot} \citep{Seaborn} function, and the normal ones with the \texttt{matplotlib.pyplot.scatter} function.
+
+The hexagonal scatterplots are better at showing the density of the overall joint distribution, whereas the normal ones differentiate among channels (in the case they are all from the same region), or among regions (if both regions are plotted together).
+
+Figure \ref{fig:JP1} and figure \ref{fig:JP2} respectively show the joint probability distributions of the channels in the GP and STN, whereas figure \ref{fig:JP3} displays the joint distribution of every channel in both regions. 
+In the non-hexagonal scatterplots, there is one color per channel (in the case of Figure 1 and 2), or red for GP and blue for STN (in Figure 3).
+
+\begin{figure}[H]
+    \centering
+    \centerline{\includegraphics[width=1\textwidth]{images/spiking/JP_gp.png}}
+    \caption{}
+    \label{fig:JP1}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \centerline{\includegraphics[width=1\textwidth]{images/spiking/JP_stn.png}}
+    \caption{}
+    \label{fig:JP2}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \centerline{\includegraphics[width=1\textwidth]{images/spiking/JP_all.png}}
+    \caption{}
+    \label{fig:JP3}
+\end{figure}
+
+\subsubsection{Serial correlation coefficients}
+
+All plots in this sub-subsection were produced using the \texttt{IMSHOW} function. 
+The correlation coefficients are normalized to the range \textit{[-1,1]}.  
+The closer the value of the coefficient is to zero, the less correlation there is between the variables.
+Figure \ref{fig:corr1} and figure \ref{fig:corr2} display the serial correlogram for one single spike count train (channel) in the GP. 
+Figure \ref{fig:corr3} shows the same information for all channels.
+Rows represent channels and columns represent time windows.
+
+\begin{figure}[H]
+    \centering
+    \centerline{\includegraphics[width=1\textwidth]{images/spiking/autocorr_gp.png}}
+    \caption{}
+    \label{fig:corr1}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \centerline{\includegraphics[width=1\textwidth]{images/spiking/autocorr_stn.png}}
+    \caption{}
+    \label{fig:corr2}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \centerline{\includegraphics[width=1\textwidth]{images/spiking/autocorr_all.png}}
+    \caption{}
+    \label{fig:corr3}
+\end{figure}
+
+\subsubsection{Power spectral density}
+
+All plots in this sub-subsection were produced with the \texttt{PLOT} function.
+Figure \ref{fig:PS1} and figure \ref{fig:PS2} show the power spectral density channels in the GP and STN (one color per channel). 
+Figure \ref{fig:PS3} shows the power spectrum of both regions (red for GP, blue for STN).
+The original spike data was recorded with a sampling frequency of 1 Hz, so the maximum frequency that is observable is 1 Hz.
+
+\begin{figure}[H]
+    \centering
+    \centerline{\includegraphics[width=1\textwidth]{images/spiking/powerSpec_gp.png}}
+    \caption{}
+    \label{fig:PS1}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \centerline{\includegraphics[width=1\textwidth]{images/spiking/powerSpect_stn.png}}
+    \caption{}
+    \label{fig:PS2}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \centerline{\includegraphics[width=1\textwidth]{images/spiking/powerSpect_all.png}}
+    \caption{}
+    \label{fig:PS3}
+\end{figure}
+
+\subsubsection{Spectral entropies}
+
+Presented here is a list of spectral entropies of select channels (channels 0-6 from the GP, channels 7-16 from the STN).
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|c|c|}
+    \hline
+                & Spectral Entropy \\ \hline
+     Channel 0  & 0.793132         \\ \hline
+     Channel 1  & 0.898098         \\ \hline
+     Channel 2  & 0.827477         \\ \hline
+     Channel 3  & 0.662636         \\ \hline
+     Channel 4  & 0.619199         \\ \hline
+     Channel 5  & 0.740590         \\ \hline
+     Channel 6  & 0.778742         \\ \hline
+     Channel 7  & 0.903068         \\ \hline
+     Channel 8  & 0.804082         \\ \hline
+     Channel 9  & 0.852935         \\ \hline
+     Channel 10 & 0.638416         \\ \hline
+     Channel 11 & 0.719677         \\ \hline
+     Channel 12 & 0.752660         \\ \hline
+     Channel 13 & 0.863742         \\ \hline
+     Channel 14 & 0.798566         \\ \hline
+     Channel 15 & 0.594042         \\ \hline
+     Channel 16 & 0.832410         \\ \hline
+    \end{tabular}
+    \caption{Spectral entropies of select channels.}
+    \label{tab:spec_entr}
+\end{table}
+
 \newpage
 \section{Discussion}
+
 This section is dedicated to discussion and interpretation of the produced results in the context of the research questions for this project.
 
 \subsection{LFP activity based methods of classification}
+
 This subsection discusses the methods described in subsections \ref{DFT Method}, \ref{KM Method}, and \ref{PCA Methods}, with respective results in subsections \ref{SFV Results}, \ref{KM Results}, and \ref{PCA Results}.
 
 The authors believe that SFVs, as described in this report, are an appropriate means of feature extraction in the context of this report. 
@@ -559,11 +684,11 @@ A downward trend would mean the opposite.
 Not taking into account all the available time windows (393 in total) when making the calculations is more convenient to see more specific dissimilarities among channels. 
 Drawing results from a smaller time frame, for example 50 windows, allows to identify channels that are more “silent” than others at a certain range of time, as can be seen in the scattergrams that differentiate each channel with a colour as well as the hexagonal ones that quantify the density distribution. 
 
-The values of the serial correlation coefficients give proof of the original dataset not being apt to be represented by a Poisson process; if it were, due to the complete independence of every Poisson variable from all the others (the value of a neuron’s firing rate would give no information as to the likelihood of its firing rate at any other point in time), the autocorrelation histogram of the channels would have been completely flat. 
+The values of the serial correlation coefficients give proof of the original dataset not being apt to be represented by a Poisson process; if it were, due to the complete independence of every Poisson variable from all the others (the value of a neuron's firing rate would give no information as to the likelihood of its firing rate at any other point in time), the autocorrelation histogram of the channels would have been completely flat. 
 From the serial correlograms it can be deducted that it is not such case. 
 A similar thing would have happened with their power spectral densities: the power spectrum of a Poisson spike train is flat at all frequencies.
 
-Based on the power spectrums of the autocorrelation of the channels, an evident synchronization between the globus pallidus and subthalamic nucleus can be observed; in spite of a few different power “peaks”, both regions’ power spectrums vary together. 
+Based on the power spectrums of the autocorrelation of the channels, an evident synchronization between the globus pallidus and subthalamic nucleus can be observed; in spite of a few different power “peaks”, both regions' power spectrums vary together. 
 The estimated frequencies with the highest amount of variance (or noise) are between the values [0, 0.05] and [0.1, 0.2], and are common across the channels although each region can be distinguished from the other. 
 The highest observed frequency is smaller than 0.5 Hz, which is the half of the sampling frequency (1 Hz). 
 Referring to the implications of noise on signal transmission theory, a high noise at a certain frequency is a limiting factor to information transmission between neurons at that frequency. 
