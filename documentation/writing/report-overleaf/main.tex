@@ -310,7 +310,7 @@ They were obtained in a sequential manner, as one measurement often depends on t
 Joint firing rate scattergrams were employed to determine serial correlations between spiking intensities. 
 To quantify these serial correlations between spiking rates, the autocorrelation (or serial correlation coefficients) of the spiking rate function was then calculated. 
 Next, the power spectral density was drawn from the autocorrelation measure, by calculating the square of its DFT. 
-Lastly, using the power spectral density values, the spectral entropy of each channel was obtained.
+Lastly, using the power spectral density values, the spectral entropy of each channel was obtained to measure the complexity of the signals.
 
 \newpage
 \section{Results}
@@ -525,21 +525,21 @@ In the non-hexagonal scatterplots, there is one color per channel (in the case o
 \begin{figure}[H]
     \centering
     \centerline{\includegraphics[width=1\textwidth]{images/spiking/JP_gp.png}}
-    \caption{}
+    \caption{Joint probability distribution of the spiking rates of all GP channels and these same sequences with a time lag of one window. }
     \label{fig:JP1}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \centerline{\includegraphics[width=1\textwidth]{images/spiking/JP_stn.png}}
-    \caption{}
+    \caption{Joint probability distribution of the spiking rates of all STN channels and these same sequences with a time lag of one window.}
     \label{fig:JP2}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \centerline{\includegraphics[width=1\textwidth]{images/spiking/JP_all.png}}
-    \caption{}
+    \caption{Joint probability distribution of the spiking rates of all channels in the GP and STN regions and these same sequences with a time lag of one window.}
     \label{fig:JP3}
 \end{figure}
 
@@ -549,27 +549,27 @@ All plots in this sub-subsection were produced using the \texttt{IMSHOW} functio
 The correlation coefficients are normalized to the range \textit{[-1,1]}.  
 The closer the value of the coefficient is to zero, the less correlation there is between the variables.
 Figure \ref{fig:corr1} and figure \ref{fig:corr2} display the serial correlogram for one single spike count train (channel) in the GP. 
-Figure \ref{fig:corr3} shows the same information for all channels.
+Figure \ref{fig:corr3} shows the same information for all channels. Channels 0-6 are from GP, channels 7-16 are from STN
 Rows represent channels and columns represent time windows.
 
 \begin{figure}[H]
     \centering
     \centerline{\includegraphics[width=1\textwidth]{images/spiking/autocorr_gp.png}}
-    \caption{}
+    \caption{Serial correlograms of all channels in the GP.}
     \label{fig:corr1}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \centerline{\includegraphics[width=1\textwidth]{images/spiking/autocorr_stn.png}}
-    \caption{}
+    \caption{Serial correlograms of all channels in the STN.}
     \label{fig:corr2}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \centerline{\includegraphics[width=1\textwidth]{images/spiking/autocorr_all.png}}
-    \caption{}
+    \caption{Serial correlograms of all channels in the GP and STN.}
     \label{fig:corr3}
 \end{figure}
 
@@ -583,21 +583,21 @@ The original spike data was recorded with a sampling frequency of 1 Hz, so the m
 \begin{figure}[H]
     \centering
     \centerline{\includegraphics[width=1\textwidth]{images/spiking/powerSpec_gp.png}}
-    \caption{}
+    \caption{Power spectral density of all channels in the GP.}
     \label{fig:PS1}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \centerline{\includegraphics[width=1\textwidth]{images/spiking/powerSpect_stn.png}}
-    \caption{}
+    \caption{Power spectral density of all channels in the STN.}
     \label{fig:PS2}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \centerline{\includegraphics[width=1\textwidth]{images/spiking/powerSpect_all.png}}
-    \caption{}
+    \caption{Power spectral density of all channels in the GP and STN.}
     \label{fig:PS3}
 \end{figure}
 

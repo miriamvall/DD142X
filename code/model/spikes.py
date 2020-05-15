@@ -169,11 +169,14 @@ def getInfoSpikesRegion(dataType):
 	# plot histograms and scatter plot
 	for i in range(0,ntrains):
 		plt.hist(rates[i], alpha = 0.5)
+		plt.title("Rate function probability distribution")
+		plt.xlabel("Spiking rate")
+		plt.ylabel("Counts")
 	plt.savefig("spikes/measurements/"+ dataType[:-4] +"/ratesPDF-" + dataType[:-4] +".png")
 	plt.clf()
 	for i in range(0,ntrains):
 		lagged_rates = laggedSequence(rates[i],1)
-		aux = sns.jointplot(rates[i],lagged_rates,kind="hex")
+		aux = (sns.jointplot(rates[i],lagged_rates,kind="hex")).set_axis_labels("rate function","rate function of lag 1")
 	plt.subplots_adjust(left=0.2, right=0.8, top=0.8, bottom=0.2)  # shrink fig so cbar is visible
 	cbar_ax = aux.fig.add_axes([.85, .25, .05, .4])
 	plt.colorbar(cax=cbar_ax)
@@ -185,6 +188,9 @@ def getInfoSpikesRegion(dataType):
 	for i in range(0,ntrains):
 		lagged_rates = laggedSequence(rates[i],1)
 		plt.scatter(rates[i],lagged_rates)
+	plt.title("Joint rate probability distribution")
+	plt.xlabel("Rate function")
+	plt.ylabel("Rate function with time lag of 1")
 	fig = plt.gcf()
 	fig.set_size_inches(13.5, 13.5)
 	plt.savefig("spikes/measurements/"+ dataType[:-4] +"/jointDistr2-" + dataType[:-4] +".png")
@@ -202,7 +208,7 @@ def getInfoSpikesRegion(dataType):
 	fig = plt.figure(1, figsize=(5, 3))
 
 	ax = plt.gca()
-	im = plt.imshow(autocorr, cmap = 'gray')
+	im = plt.imshow(rates, cmap = 'gray')
 	if dataType[9:11] == "gp":
 		plt.title("Rate function for 50 time windows for " + dataType[9:11] + " channels \n time window size = 0.5 seconds, rates in spikes/second")
 	else:
@@ -219,7 +225,7 @@ def getInfoSpikesRegion(dataType):
 	fig = plt.figure(1, figsize=(5, 3))
 
 	ax = plt.gca()
-	im = plt.imshow(rates, cmap = 'gray')
+	im = plt.imshow(autocorr, cmap = 'gray')
 	if dataType[9:11] == "gp":
 		plt.title("Serial correlation coefficients for 50 time windows for " + dataType[9:11] + " channels \n time window size = 0.5 seconds")
 	else:
@@ -278,6 +284,9 @@ def getInfoAllSpikes():
 		plt.hist(sr_gp[i], alpha = 0.5,color='r')
 	for i in range(0,len(sr_stn)):
 		plt.hist(sr_stn[i], alpha = 0.5,color='b')
+	plt.title("Rate function probability distribution")
+	plt.xlabel("Spiking rate")
+	plt.ylabel("Counts")
 	plt.savefig("spikes/measurements/comp_gp_stn/ratesPDF-gp_stn.png")
 	plt.clf()
 
@@ -295,7 +304,7 @@ def getInfoAllSpikes():
 		sns.jointplot(sr_gp[i],lagged_rates,kind="hex", color='r')
 	for i in range(0,len(sr_stn)):
 		lagged_rates = laggedSequence(sr_stn[i],1)
-		aux = sns.jointplot(sr_stn[i],lagged_rates,kind="hex", color='b')
+		aux = (sns.jointplot(sr_stn[i],lagged_rates,kind="hex", color='b')).set_axis_labels("rate function","rate function of lag 1")
 	plt.subplots_adjust(left=0.2, right=0.8, top=0.8, bottom=0.2)  # shrink fig so cbar is visible
 	cbar_ax = aux.fig.add_axes([.85, .25, .05, .4])
 	plt.colorbar(cax=cbar_ax)
@@ -310,6 +319,9 @@ def getInfoAllSpikes():
 	for i in range(0,len(sr_stn)):
 		lagged_rates = laggedSequence(sr_stn[i],1)
 		plt.scatter(sr_stn[i],lagged_rates, color='b')
+	plt.title("Joint rate probability distribution")
+	plt.xlabel("Rate function")
+	plt.ylabel("Rate function with time lag of 1")
 	fig = plt.gcf()
 	fig.set_size_inches(13.5, 13.5)
 	plt.savefig("spikes/measurements/comp_gp_stn/jointProb2-gp_stn.png")
