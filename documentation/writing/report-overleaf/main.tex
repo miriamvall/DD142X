@@ -290,7 +290,7 @@ Should the distribution of SFVs transformed into PC representations under this m
 The process for producing PCs was straightforward.
 Using \texttt{PCA} on the entire set of SFVs, the PCs for these sets were produced.
 
-\subsection{Poisson process}
+\subsection{Poisson process}\label{Poiss Method}
 
 The original dataset consists of the number of spikes counted during successive time windows (each of them being half a second). 
 For each recorded channel in different regions of the basal ganglia, which in this case are the globus pallidus and subthalamic nucleus, 393 recorded time windows were available.
@@ -300,7 +300,7 @@ The non-stationarity of the spiking rate over time makes it impossible to model 
 It is possible to obtain the time-dependent spiking rate function by dividing each spike count by the duration of the time windows, namely 0.5 seconds. 
 We also produced an estimation of the rate probability distribution by plotting a histogram of the time series.
 
-\subsection{Renewal process}
+\subsection{Renewal process}\label{RP Method}
 
 Because of the fact that even as an inhomogeneous Poisson process the dependence between spikes cannot be accounted for, the spike count trains were also modelled as a renewal process.
 
@@ -475,6 +475,40 @@ Notably, cross-correlation within STR channels is consistently low, while it is 
     \label{tab:corrcoefSTR}
 \end{table}
 
+\subsection{Spiking analysis results}
+
+This subsection is dedicated to the results of analysis of spiking rate data, by methods described in 
+All results are produced taking 50 successive time windows of 0.5 seconds each.
+
+\subsubsection{Spiking rates}
+
+The figures in this sub-subsection were produced using \texttt{IMSHOW}.
+
+For all figures plots, rows represent channels and columns represent time windows. 
+Figure \ref{fig:ratesGP1} and figure \ref{fig:ratesSTN1} show the spiking rates for the channels in the GP and STN, respectively.
+Figure \ref{fig:ratesBoth1} shows the spiking rate functions of the channels of both regions (channels 0-6 are from the GP, channels 7-16 are from the STN).
+
+\begin{figure}[H]
+    \centering
+    \centerline{\includegraphics[width=1.2\textwidth]{images/spiking/rates_gp2.png}}
+    \caption{Spiking rates of GP channels.}
+    \label{fig:ratesGP1}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \centerline{\includegraphics[width=1.2\textwidth]{images/spiking/rates_stn2.png}}
+    \caption{Spiking rates of STN channels.}
+    \label{fig:ratesSTN1}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \centerline{\includegraphics[width=1.2\textwidth]{images/spiking/rates_both2.png}}
+    \caption{Spiking rates of GP and STN channels.}
+    \label{fig:ratesBoth1}
+\end{figure}
+
 \newpage
 \section{Discussion}
 This section is dedicated to discussion and interpretation of the produced results in the context of the research questions for this project.
@@ -506,8 +540,43 @@ Notable are the consistently lesser amplitudes of activity in STR, and the consi
 While the PCs described in figure \ref{fig:PCS} are present almost independently in STR channels, they have clear correlation in GP channels.
 Interpreting this is beyond the experience of the authors.
 
+\subsection{Spiking rate based methods of classification}
+
+The model used to analyse spikes provides a set of measurements that can be used as a reference to make distinctions in a broad collection of spiking activity data recorded as time-series, from various inter-related perspectives that focus on the independence between consecutive spikes.
+
+With regard to the spiking rates, each region seems to have a specific range of rates that remain constant across channels, except for two individual channels in the subthalamic nucleus that show independent activity, with significantly higher values. 
+On the grayscale plots, a not entirely explicit but moderately identifiable firing pattern for each channel can be seen. 
+
+The joint probability scatter diagrams may provide the best insight on how successive spiking rates relate and depend on each other. 
+When it comes to different regions, they can be very clearly distinguished from each other in their common diagram. 
+Although the serial correlation coefficients allow a quantification of the time-dependent correlation of rates, they are not so useful to identify any inherent patterns in the scattergrams; identifying (and quantifying in terms of density) clustered structures in such scattergrams is instead a better solution. 
+
+Departures from independence between spiking rates are reflected in the symmetries of the scatter diagram itself. 
+The diagrams show an overall upward trend, which indicates positive correlations between successive rates. 
+That loosely means that short intervals between consecutive spikes tend to be followed by short ones, and long intervals by long ones. 
+A downward trend would mean the opposite.
+
+Not taking into account all the available time windows (393 in total) when making the calculations is more convenient to see more specific dissimilarities among channels. 
+Drawing results from a smaller time frame, for example 50 windows, allows to identify channels that are more “silent” than others at a certain range of time, as can be seen in the scattergrams that differentiate each channel with a colour as well as the hexagonal ones that quantify the density distribution. 
+
+The values of the serial correlation coefficients give proof of the original dataset not being apt to be represented by a Poisson process; if it were, due to the complete independence of every Poisson variable from all the others (the value of a neuron’s firing rate would give no information as to the likelihood of its firing rate at any other point in time), the autocorrelation histogram of the channels would have been completely flat. 
+From the serial correlograms it can be deducted that it is not such case. 
+A similar thing would have happened with their power spectral densities: the power spectrum of a Poisson spike train is flat at all frequencies.
+
+Based on the power spectrums of the autocorrelation of the channels, an evident synchronization between the globus pallidus and subthalamic nucleus can be observed; in spite of a few different power “peaks”, both regions’ power spectrums vary together. 
+The estimated frequencies with the highest amount of variance (or noise) are between the values [0, 0.05] and [0.1, 0.2], and are common across the channels although each region can be distinguished from the other. 
+The highest observed frequency is smaller than 0.5 Hz, which is the half of the sampling frequency (1 Hz). 
+Referring to the implications of noise on signal transmission theory, a high noise at a certain frequency is a limiting factor to information transmission between neurons at that frequency. 
+
+The spectral entropy values are then useful to quantify the general level of disorder or noise of each channel, based on the power spectrums. 
+Since the results are normalized to be shown in the range [0,1], it can be affirmed that all channels have moderately high spectral entropies going from approximately 0.6 to 0.9, which indicates their complexity. 
+Nonetheless, most of them remain moderately far from having a value of 1, which would belong to white noise; they still have some level of predictability. 
+The subthalamic nucleus channels show overall higher values of spectral entropy than those in the globus pallidus, which indicates that in spite of the synchronization between these regions, their neuronal behaviour is different, perhaps due to different levels of excitatory activity.
+
 \newpage
 \section{Conclusion}
+
+\textbf{This section is not at the same level of completion as previous sections.}
 
 The methods produced for classifying Parkinson's disease based on LFP activity show potential.
 While results shown have often been comparing e.g. categories of channels, or the activity within a single session, much of this can be generalized.
