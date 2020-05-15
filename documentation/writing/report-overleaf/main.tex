@@ -9,8 +9,7 @@
 \graphicspath{ { ./images/ } }
 \usepackage{hyperref}
 \hypersetup{
-    colorlinks=false,
-    linktoc=all
+hidelinks
 }
 \bibliographystyle{agsm}
 \title{Classification of Population Activity in Parkinson's Disease}
@@ -20,7 +19,19 @@
 \maketitle
 
 \section*{Abstract}
+
+This project has been concerned with creating methods for feature extraction for the purpose of classification of brain activity in parkinsonian brains. 
+Classification of LFP activity was based on feature vectors produced from the DFT of activity, and a heuristic-motivated visualization of these using the k-Means algorithm for prediction and classification.
+These feature vectors were also subject to principal component analysis as a further means of feature extraction and classification, highlighting differences in brain regions. 
+Classification of spiking activity was based on spiking rates, joint rate distributions, serial correlation coefficients, power spectral density, and spectral entropy.
+
 \section*{Sammanfattning}
+
+\textit{Vissa korrekta översättningar okända.}
+Detta projekt har syftat att skapa metoder för att utvinna särdrag och att klassifiera hjärnaktivitet i parkinsonska hjärnor.
+Klassificering av lokal fältpotential baserades på särdragsvektorer producerade från DFT:n av aktivitet, och en heuristiskt motiverad visualisering av dessa användande k-Means algoritmen för förutsägning och klassificering.
+Dessa särdragsvektorer analyserades även med principalkomponentanalys för att utvinna ytterligare särdrag samt för klassificering, vilket påvisade skillnader i olika regioner av hjärnan.
+Klassificering av spetsaktivitet baserades på spetstakt, beroende taktfördelning, seriella korrelationskoefficenter, spektral effektdensitet, och spektral entropi.
 
 \newpage
 \tableofcontents
@@ -603,7 +614,7 @@ The original spike data was recorded with a sampling frequency of 1 Hz, so the m
 
 \subsubsection{Spectral entropies}
 
-Presented here is a list of spectral entropies of select channels (channels 0-6 from the GP, channels 7-16 from the STN).
+Table \ref{tab:spec_entr} show a list of spectral entropies of select channels (channels 0-6 from the GP, channels 7-16 from the STN).
 
 \begin{table}[H]
     \centering
