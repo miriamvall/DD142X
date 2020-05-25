@@ -380,26 +380,26 @@ Lower class index (refer to color bar in either figure) represents lower sum of 
 In the figures, each row represents the class assignments for a specific channel in the set.
 The columns represent epochs.
 Each colored "slice" is the prediction of a single SFV to a class, the result of a trained k-Means model.
-The particular channel names are not shown in these figures, but include both STR and GP channels.
+The particular channel names are not shown in these figures, but include both STR and GP channels, sorted such that channels 0 - 10 are GP channels and 11 - 14 are STR channels.
 The SFVs are identical in production parameters to those presented in subsection \ref{SFV Results}.
 
 The most important thing to note about these figures is how different channels in the same (or close) epochs tend to be given equal class assignments excessively. 
 The authors interpret the class assignments for adjacent epochs to often be "close", meaning that class assignments seem to be followed by slightly higher or slightly lower class assignments (referring to class index), this was however not researched more thoroughly and should be considered an informal observation.
 Also of note are "streaks" of higher class assignments for specific channels.
-Examples include for channel 4 at about epoch 700, and channel 12 at about epochs 330-420 (rough estimates), in both figures.
-There are also "pillars" of excessively similar assignments for all channels at about epochs 140, 290, and 550 (rough estimates), in both figures.
+Channel 11, notably, has multiple such streaks.
+Informally, there also appears to be a certain "verticality" to most epochs, where assignments over multiple channels are excessively similar at simultaneous times.
 
 \begin{figure}[H]
     \centering
     \centerline{\includegraphics[width=1\textwidth]{images/KM4.png}}
-    \caption{4-k-Means of channels for specific session}
+    \caption{4-k-Means of channels for specific session.}
     \label{fig:KM4}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \centerline{\includegraphics[width=1\textwidth]{images/KM16.png}}
-    \caption{16-k-Means of channels for specific session}
+    \caption{16-k-Means of channels for specific session.}
     \label{fig:KM16}
 \end{figure}
 
@@ -416,7 +416,7 @@ A linear combination of these PCs can describe the entire set of SFVs with a gre
 \begin{figure}[H]
     \centering
     \centerline{\includegraphics[width=1\textwidth]{images/PCA/PCS.png}}
-    \caption{Principal components of SFV-set}
+    \caption{Principal components of SFV-set.}
     \label{fig:PCS}
 \end{figure}
 
@@ -426,14 +426,14 @@ In order to better visualize the long tails of these distributions, the probabil
 \begin{figure}[H]
     \centering
     \centerline{\includegraphics[width=1\textwidth]{images/PCA/PCAPDF.png}}
-    \caption{Approximate distributions of principal components of SFV-set}
+    \caption{Approximate distributions of principal components of SFV-set.}
     \label{fig:PCAPDF}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \centerline{\includegraphics[width=1\textwidth]{images/PCA/PCAPDFLG2.png}}
-    \caption{Approximate distributions of \begin{math}log_2\end{math} of principal components of SFV-set}
+    \caption{Approximate distributions of \begin{math}log_2\end{math} of principal components of SFV-set.}
     \label{fig:PCAPDFLG2}
 \end{figure}
 
@@ -443,15 +443,32 @@ Notably, GP channels exhibit distributions with more width and higher peaks.
 \begin{figure}[H]
     \centering
     \centerline{\includegraphics[width=1\textwidth]{images/PCA/PCABOTH.png}}
-    \caption{Approximate distributions of principal components of SFV-set, separated by channel type}
+    \caption{Approximate distributions of principal components of SFV-set, separated by channel type.}
     \label{fig:PCAPDFBOTH}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \centerline{\includegraphics[width=1\textwidth]{images/PCA/PCABOTHLG2.png}}
-    \caption{Approximate distributions of \begin{math}log_2\end{math} of principal components of SFV-set, separated by channel type}
+    \caption{Approximate distributions of \begin{math}log_2\end{math} of principal components of SFV-set, separated by channel type.}
     \label{fig:PCAPDFBOTHLG2}
+\end{figure}
+
+Additionally, equivalent figures can be used to consider differences in the LFP activity of different animals, by producing the distributions (and differences of such) in different sessions.
+Figures \ref{fig:PCAAnimals} and \ref{fig:PCAAnimalslg2} show such visualizations, for sessions \textit{NPR-076.c09} in red, \textit{NPR064.c09} in blue, and \textit{NPR065e.03} in green.
+
+\begin{figure}[H]
+    \centering
+    \centerline{\includegraphics[width=1\textwidth]{images/PCA/PCAAnimalsnormal.png}}
+    \caption{Approximate distributions of \begin{math}log_2\end{math} of principal components of SFV-set, separated by session.}
+    \label{fig:PCAAnimals}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \centerline{\includegraphics[width=1\textwidth]{images/PCA/PCAAnimalslg2.png}}
+    \caption{Approximate distributions of \begin{math}log_2\end{math} of principal components of SFV-set, separated by session.}
+    \label{fig:PCAAnimalslg2}
 \end{figure}
 
 These figures, of course, don't show how these distributions correlate.
