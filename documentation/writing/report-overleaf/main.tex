@@ -32,19 +32,24 @@ hidelinks
 
 \begin{abstract}
 
-This project has been concerned with creating methods for feature extraction for the purpose of classification of brain activity in parkinsonian brains. 
-Classification of LFP activity was based on feature vectors produced from the DFT of activity, and a heuristic-motivated visualization of these using the k-Means algorithm for prediction and classification.
-These feature vectors were also subject to principal component analysis as a further means of feature extraction and classification, highlighting differences in brain regions. 
+This project has been concerned with developing methods for feature extraction for the purpose of classification of brain activity in the basal ganglia in parkinsonian brains. 
+Classification of local field potential activity was based on feature vectors produced from the discrete Fourier transform of activity.
+A heuristic-motivated visualization of these feature vectors using the k-Means algorithm for prediction and classification was used.
+The feature vectors were also subject to principal component analysis as a further means of feature extraction and classification.
 Classification of spiking activity was based on spiking rates, joint rate distributions, serial correlation coefficients, power spectral density, and spectral entropy.
+The methods for feature extraction and classification developed were used to show similarities in simultaneous brain activity, notable characteristics of brain activity, and notable similarities and differences in the brain activity when comparing activity from different sub-regions of the basal ganglia and when comparing brain activity from different animals.
+We believe that the methods developed in this project show promise in further research of Parkinson's disease.
 \end{abstract}
 
 \begin{otherlanguage}{swedish}
 \begin{abstract}
-\textit{Vissa korrekta översättningar okända.}
-Detta projekt har syftat att skapa metoder för att utvinna särdrag och att klassifiera hjärnaktivitet i parkinsonska hjärnor.
-Klassificering av lokal fältpotential baserades på särdragsvektorer producerade från DFT:n av aktivitet, och en heuristiskt motiverad visualisering av dessa användande k-Means algoritmen för förutsägning och klassificering.
-Dessa särdragsvektorer analyserades även med principalkomponentanalys för att utvinna ytterligare särdrag samt för klassificering, vilket påvisade skillnader i olika regioner av hjärnan.
-Klassificering av spetsaktivitet baserades på spetstakt, beroende taktfördelning, seriella korrelationskoefficenter, spektral effektdensitet, och spektral entropi.
+Detta projekt har syftat till att utveckla metoder för att utvinna särdrag och att klassifiera hjärnaktivitet i basala ganglierna i hjärnor med parkinsonism.
+Klassificering av lokal fältpotential baserades på särdragsvektorer producerade från diskret Fouriertransform av aktivitet. 
+En heuristiskt motiverad visualisering av dessa användande k-Means algoritmen för förutsägning och klassificering användes.
+Dessa särdragsvektorer analyserades även med principalkomponentanalys för att utvinna ytterligare särdrag, samt för klassificering.
+Klassificering av nervimpulser baserades på impulsfrekvens, betingad impulsfrekvensfördelning, seriella korrelationskoefficenter, effektspektrum, och spektral entropi.
+Metoderna som togs fram för särdragsutvinning och klassificering användes för att visa likheter i simultan hjärnaktivitet, viss karakteristik av hjärnaktivitet, och vissa likheter och skillnader i hjärnaktivitet vid jämförelse av aktivitet från olika delar av basala ganglierna och vid jämförande av aktivitet från olika djur.
+Vi tror att metoderna som har utvecklats i detta projekt visar potential i vidare forskning av Parkinsons sjukdom.
 \end{abstract}
 \end{otherlanguage}
 
@@ -669,7 +674,7 @@ This chapter is dedicated to discussion and interpretation of the produced resul
 
 This section discusses the methods described in sections \ref{DFT Method}, \ref{KM Method}, and \ref{PCA Methods}, with respective results in sections \ref{SFV Results}, \ref{KM Results}, and \ref{PCA Results}.
 
-\subsection{About spectrum feature vectors}
+\subsection{Spectrum feature vectors}
 
 The authors believe that SFVs, as described in this report, are an appropriate means of feature extraction in the context of this report. 
 This is not intended to be a proclamation of a groundbreaking discovery.
@@ -687,7 +692,7 @@ The authors imagine their chosen method and produced results may have serious fl
 The authors, however, consider these results to at least be a reason to consider more sophisticated methods to attempt to cluster SFVs.
 Such methods fall outside both the scope of this project, and the expertise of its' authors.
 
-\subsection{About the use of PCA}
+\subsection{On PCA results}
 
 The authors believe that the produced PCs, or more specifically the method by which they were produced, show great potential for similar methods in the use of classification.
 As discussed, the authors consider SFVs a reasonable means of feature extraction, and PCA proved effective in further investigating these.
@@ -721,8 +726,6 @@ The spectral entropy values are then useful to quantify the general level of dis
 
 \newpage
 \chapter{Conclusion}
-
-\textbf{This section is not at the same level of completion as previous sections.}
 
 The methods produced for classifying Parkinson's disease based on brain activity show potential.
 Many ideas considered in this project were never pursued due to limitations of time. 
