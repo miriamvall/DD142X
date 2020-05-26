@@ -134,6 +134,11 @@ It's possible for a linear combination of PCs to describe all samples in a datas
 If the amount of PCs required for this is lower than the amount of features in the data samples, PCA becomes an effective means of feature reduction for that dataset.
 The PCs produced can also be used to visualize the data, and the individual components can be interesting for analyzing the data in their own right \citep[p374-380]{ISLR}.
 
+\subsection{Spiking rates and spike bursts in Parkinson's disease}\label{BG SpikeRates}
+
+The symptoms of PD are accompanied by various changes in the neuronal activity in the basal ganglia: besides the increase in the power and duration of beta band oscillations, there is also an increased firing rate of neurons, increase of spike bursts, and increased synchrony in all BG regions \citep{Bahu}. They are correlated with PD symptoms and their suppression ameliorates these symptoms; therefore, there is a great interest in understanding the mechanisms underlying their origin, which are still unclear. Several experimental results indicate that the GP-STN network plays an integral role in generating and modulating the oscillations\citep{Bahu}.
+In PD models of rodents, increased spike bursting in the GP and STN is significantly higher than in healthy animals \citep{Bahu}, but it remains unclear how increased spike bursting affects the duration and power of beta oscillations. Doing so in future research will be crucial to better understand the pathophysiology of PD.
+
 \subsection{Spiking activity as a simple Poisson process}
 
 In neurosciences, the action potentials (spikes) are the main components for the real-time information processing in the brain \citep{Eden}. 
@@ -196,6 +201,12 @@ An important concept of the theory of signal transmission is the signal-to-noise
 A signal that is transmitted at a certain frequency \begin{math}\omega\end{math} should be stronger than (or at least of the same order of magnitude as) the noise at the same frequency \citep{Gerstner}. 
 For this reason, the noise spectrum \begin{math}S(\omega)\end{math} of the transmission channel is of interest. 
 By observing the noise spectrum, the frequencies at which the variance or noise is higher (and lower) are identified.
+
+\subsection{Spectral entropy}
+
+Since the beta oscillations are hypothesised to depend on the firing rate of the STN and GP neurons, to better visualize this relationship it is relevant to measure the spectral entropy of the network activity as a function of STN and GP firing rates. 
+It is a popular measure for the characterization of the complexity of Parkinsonian spike trains is the spectral entropy, which diminishes due to pharmacologic or stimulation treatment \citep{Andres}. 
+The values for the spectral entropy of the channels in the GP and STN are expected to be high for this particular spiking data, given the fact that it has been recorded from Parkinsonian rodents, and the results for both regions will show the state of the STN-GP network and their synchronization. From an information theory perspective, the higher the value, the more difficult the transmission of information between neurons, hence the symptoms of the disease are manifested. Therefore, spectral entropy is a critical parameter for the control of information transmission and information deterioration in the Parkinsonian, and could be viewed as a “diffusion coefficient” of the neuronal signals being transmitted.
 
 By normalizing the power spectrum to be seen as a probability density function, and later applying the standard formula for Shannon entropy to it, the spectral entropy of the spike train (or channel) can be obtained. 
 It serves as an entropy related index able to measure part of the structural complexity of the time series, as it quantifies the degree of order and predictability derived by the series' power spectrum \citep{Zacca}.
@@ -694,36 +705,20 @@ Interpreting this is beyond the experience of the authors.
 
 \subsection{Spiking rate based methods of classification}
 
-The model used to analyse spikes provides a set of measurements that can be used as a reference to make distinctions in a broad collection of spiking activity data recorded as time-series, from various inter-related perspectives that focus on the independence between consecutive spikes.
+The model used to analyse spikes provides a set of measurements in both time and spectral domains that are used to attempt an observation of the distinctions in a broad collection of spiking activity data. These properties cannot be understood isolated, but related to each other, and this is reflected in the way they were obtained, since the values of the spectral measurements are drawn from the spiking rate sequences. The measurements were taken in order to examine the spiking activity of the STN and GP regions, since the STN-GP network is relevant for PD, and to know whether there are differences in the activity of both regions. The results remain of interest even if their activity is finally found to be similar. Relying on previous research, another aim is to note a big degree of complexity or disorder in all channels, which belongs to a Parkinsonian state.
 
-With regard to the spiking rates, each region seems to have a specific range of rates that remain constant across channels, except for two individual channels in the subthalamic nucleus that show independent activity, with significantly higher values. 
-On the grayscale plots, a not entirely explicit but moderately identifiable firing pattern for each channel can be seen. 
+With regard to the spiking rates that were obtained, no clear distinctions can be drawn between different regions, since their spiking rates remain within a range that stays constant across channels, except for two individual channels in the subthalamic nucleus that show significantly higher values. On the grayscale plots, a not entirely explicit but moderately identifiable firing pattern for each channel can be seen, with semi-regular spiking bursts (periods of time where the neuron fires more frequently). 
 
-The joint probability scatter diagrams may provide the best insight on how successive spiking rates relate and depend on each other. 
-When it comes to different regions, they can be very clearly distinguished from each other in their common diagram. 
-Although the serial correlation coefficients allow a quantification of the time-dependent correlation of rates, they are not so useful to identify any inherent patterns in the scattergrams; identifying (and quantifying in terms of density) clustered structures in such scattergrams is instead a better solution. 
+Although the differences between channels and regions in spiking rates are not easily visible in the grayscale plots for the most part, the scatter diagrams of adjacent rates do show differences among channels and especially regions, which can be very clearly distinguished from each other in their common diagram. The spiking rate of the neurons in the STN varies in a range which is higher than those in the GP. 
+These scatter diagrams may provide the best insight on how successive spiking rates relate and depend on each other. Although the serial correlation coefficients allow a quantification of the time-dependent correlation of rates, they are not so useful to identify any inherent patterns in the scattergrams; identifying and quantifying in terms of density the clustered structures in such scattergrams is instead a better solution. 
+Departures from independence between spiking rates are reflected in the symmetries of the scatter diagram itself. The diagrams show an overall upward trend, which indicates positive correlations between successive rates. That loosely means that short intervals between consecutive spikes tend to be followed by short ones, and long intervals by long ones. A downward trend would mean the opposite.
+Not taking into account all the available time windows when making the calculations is more convenient to see more specific dissimilarities among channels. Drawing results from a smaller time frame, for example 50 windows, allows to identify channels that are more “silent” than others at a certain range of time, as can be seen in the scattergrams that differentiate each channel with a colour as well as the hexagonal ones that quantify the density distribution. 
 
-Departures from independence between spiking rates are reflected in the symmetries of the scatter diagram itself. 
-The diagrams show an overall upward trend, which indicates positive correlations between successive rates. 
-That loosely means that short intervals between consecutive spikes tend to be followed by short ones, and long intervals by long ones. 
-A downward trend would mean the opposite.
+The values of the serial correlation coefficients give proof of the original dataset not being apt to be represented by a Poisson process; if it were, due to the complete independence of every Poisson variable from all the others (the value of a neuron’s firing rate would give no information as to the likelihood of its firing rate at any other point in time), the autocorrelation histogram of the channels would have been completely flat. From the serial correlograms it can be deducted that it is not such case. A similar thing would have happened with their power spectral densities; the power spectrum of a Poisson spike train is flat at all frequencies.
 
-Not taking into account all the available time windows (393 in total) when making the calculations is more convenient to see more specific dissimilarities among channels. 
-Drawing results from a smaller time frame, for example 50 windows, allows to identify channels that are more “silent” than others at a certain range of time, as can be seen in the scattergrams that differentiate each channel with a colour as well as the hexagonal ones that quantify the density distribution. 
+Apart from properties in the time domain, other complex properties are present in basal ganglia spike sequences, like those in the spectral domain. Based on the power spectrums of the autocorrelation of the channels, an evident synchronization between the globus pallidus and subthalamic nucleus can be observed; both regions share similar power spectrograms, and the peaks in frequency stay within the same range of values; the estimated frequencies with the highest amount of variance (or noise) are between the values [0, 0.05] and [0.1, 0.2], and are common across all channels. Referring to the implications of noise on signal transmission theory which were mentioned in early sections, a high noise at a certain frequency is a limiting factor to information transmission between neurons at that frequency. 
+The spectral entropy values are then useful to quantify the general level of disorder or noise of each channel, based on the power spectrums. When computing the spectral entropies in bins of 25 time windows, both regions vary in the same way over time, and their estimated probability distributions are similar. Likewise, when calculating the spectral entropies using all 393 time windows, the values show no significant differences between the spectral entropies in the GP and those in the STN. They are all evenly distributed, and it can be affirmed that all channels have generally high spectral entropies going from approximately 0.6 to 0.9 (with 1 being the highest possible value). Despite having a high quantity of noise, they still have some small level of predictability. 
 
-The values of the serial correlation coefficients give proof of the original dataset not being apt to be represented by a Poisson process; if it were, due to the complete independence of every Poisson variable from all the others (the value of a neuron's firing rate would give no information as to the likelihood of its firing rate at any other point in time), the autocorrelation histogram of the channels would have been completely flat. 
-From the serial correlograms it can be deducted that it is not such case. 
-A similar thing would have happened with their power spectral densities: the power spectrum of a Poisson spike train is flat at all frequencies.
-
-Based on the power spectrums of the autocorrelation of the channels, an evident synchronization between the globus pallidus and subthalamic nucleus can be observed; in spite of a few different power “peaks”, both regions' power spectrums vary together. 
-The estimated frequencies with the highest amount of variance (or noise) are between the values [0, 0.05] and [0.1, 0.2], and are common across the channels although each region can be distinguished from the other. 
-The highest observed frequency is smaller than 0.5 Hz, which is the half of the sampling frequency (1 Hz). 
-Referring to the implications of noise on signal transmission theory, a high noise at a certain frequency is a limiting factor to information transmission between neurons at that frequency. 
-
-The spectral entropy values are then useful to quantify the general level of disorder or noise of each channel, based on the power spectrums. 
-Since the results are normalized to be shown in the range [0,1], it can be affirmed that all channels have moderately high spectral entropies going from approximately 0.6 to 0.9, which indicates their complexity. 
-Nonetheless, most of them remain moderately far from having a value of 1, which would belong to white noise; they still have some level of predictability. 
-The subthalamic nucleus channels show overall higher values of spectral entropy than those in the globus pallidus, which indicates that in spite of the synchronization between these regions, their neuronal behaviour is different, perhaps due to different levels of excitatory activity.
 
 \newpage
 \section{Conclusion}

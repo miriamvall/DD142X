@@ -15,6 +15,8 @@ import pandas as pd
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
+from toolbox import aprx_pdf_1d
+
 #---------------OBTAINING DATA---------------------------
 
 #returns spiking rates as ints
@@ -58,17 +60,21 @@ def extractAllTypes():
 #---------------------------GETTING MEASUREMENTS---------------------------
 
 # get plots for spectral entropies of the regions (gp,str)
+# returns normalized spectral entropies of LFP of channels in GP
 def getInfoSpectEntropy():
 	data_gp = extractTrains("spikes/collected_data/spect_ent_gp.csv")
 	data_str = extractTrains("spikes/collected_data/spect_ent_str.csv")
-	ntrains_gp = len(data_gp)
-	ntrains_str = len(data_str)
+	ntrains_gp = len(data_gp) # 126 trains in total (393 time windows)
+	norm = np.zeros((ntrains_gp,393))
 	for i in range(0,ntrains_gp):
-		plt.plot(data_gp[i], 'r', alpha = 0.5)
-	for i in range(0,ntrains_str):
-		plt.plot(data_str[i], 'b', alpha = 0.5)
-	plt.savefig("spikes/measurements/entropy_gp_str/entropy_gp_str.png")
+		norm[i] = normalize_sequence(data_gp[i])
+	for i in range(0, ntrains_gp):
+		xs,ys = aprx_pdf_1d(norm[i],1000,False)
+		plt.plot(xs,ys,'.',alpha = 0.5,color = 'r')
+	plt.savefig("spikes/measurements/comp_gp_stn/lfp_gp.png")
 	plt.clf()
+
+	return norm
 
 def getInfo1Spike():
 		data = extractTrains("spikes/collected_data/sp_count_gp_sua.csv")
@@ -80,8 +86,8 @@ def getInfo1Spike():
 		firstOrder_returnMap = jointIntervalDensity(rf,lagged_rates)
 		ffreqs, pwspec = powerSpectrum(data[0])
 		p = pdf(data[0])
-		se = spectral_entropy(p)
-		print("spectral entropy = " + str(se))
+		se = spectral_entropy(data[0])
+		print(se)
 		plt.plot(rf)
 		fig = plt.gcf()
 		fig.set_size_inches(18.5, 10.5)
@@ -115,6 +121,12 @@ def getInfo1Spike():
 		fig.set_size_inches(18.5, 10.5)
 		plt.savefig("spikes/measurements/one_spike_train/pwspec.png")
 		plt.clf()
+		# pdf of spectral entropy
+		xs, ys = aprx_pdf_1d(se,1000,False)
+		print(ys)
+		plt.plot(xs,ys,'.')
+		plt.savefig("spikes/measurements/one_spike_train/pdf_spec.png")
+		plt.clf()
 
 
 
@@ -134,7 +146,7 @@ def getInfoSpikesRegion(dataType):
 		aux = powerSpectrum(data[row][0:50])
 		np.array(aux)
 		pwspec.append(aux)
-		spec_entr.append(spectral_entropy(data[row][0:50]))
+		spec_entr.append(spectral_entropy(data[row]))
 	# correct format
 	np.stack(rates)
 	np.stack(autocorr)
@@ -195,12 +207,6 @@ def getInfoSpikesRegion(dataType):
 	fig.set_size_inches(13.5, 13.5)
 	plt.savefig("spikes/measurements/"+ dataType[:-4] +"/jointDistr2-" + dataType[:-4] +".png")
 	plt.clf()
-	# spectral entropies
-	trains = np.arange(ntrains)
-	for i in range(0,ntrains):
-		plt.scatter(trains[i], spec_entr[i], alpha = 0.5)
-		plt.savefig("spikes/measurements/"+ dataType[:-4] +"/specEntr-" + dataType[:-4] +".png")
-	plt.clf()
 
 	# attempt to plot a measurement for all channels
 
@@ -237,6 +243,13 @@ def getInfoSpikesRegion(dataType):
 	cax = divider.append_axes("right", size="3%", pad=0.25)
 	plt.colorbar(im, cax=cax)
 	plt.savefig("spikes/measurements/"+ dataType[:-4] + "/autocorr50tw")
+	plt.clf()
+
+	# PDF of spectral entropies
+	for i in range(0,ntrains):
+		xs, ys = aprx_pdf_1d(spec_entr[i],1000,False)
+		plt.plot(xs,ys,'.')
+	plt.savefig("spikes/measurements/"+ dataType[:-4] + "/pdf_spec_entr")
 	plt.clf()
 
 	return rates, autocorr, pwspec, spec_entr
@@ -288,15 +301,6 @@ def getInfoAllSpikes():
 	plt.xlabel("Spiking rate")
 	plt.ylabel("Counts")
 	plt.savefig("spikes/measurements/comp_gp_stn/ratesPDF-gp_stn.png")
-	plt.clf()
-
-	trains_gp = np.arange(len(se_gp))
-	trains_stn = np.arange(len(se_stn))
-	for i in range(0,len(se_gp)):
-		plt.scatter(trains_gp[i], se_gp[i], alpha = 0.5,color='r')
-	for i in range(0,len(se_stn)):
-		plt.scatter(trains_stn[i], se_stn[i], alpha = 0.5,color='b')
-	plt.savefig("spikes/measurements/comp_gp_stn/specEntr-gp_stn.png")
 	plt.clf()
 
 	for i in range(0,len(sr_gp)):
@@ -359,6 +363,62 @@ def getInfoAllSpikes():
 	all_se = np.concatenate((se_gp,se_stn))
 	np.savetxt("spikes/measurements/spec_entr.csv", all_se, delimiter=',', fmt='%f')
 	
+	# PDF of spectral entropies
+	for i in range(0,len(se_gp)):
+		xs, ys = aprx_pdf_1d(se_gp[i],1000,False)
+		plt.plot(xs,ys,'.',color='r')
+	for i in range(0,len(se_stn)):
+		xs, ys = aprx_pdf_1d(se_stn[i],1000,False)
+		plt.plot(xs,ys,'.',alpha = 0.5,color='b')
+	plt.savefig("spikes/measurements/comp_gp_stn/pdf_spec_entr")
+	plt.clf()
+
+	# another scatter plot for spectral entropies
+	blocks = np.arange(1,79)
+	for i in range(0,len(se_gp)):
+		plt.scatter(blocks,se_gp[i],color='r',alpha=0.5)
+	for i in range(0,len(se_stn)):
+		plt.scatter(blocks,se_stn[i],color='b',alpha=0.5)
+	plt.savefig("spikes/measurements/comp_gp_stn/scatter_spect.png")
+	plt.clf()
+
+	# plot LFP against spiking spect entr
+
+	lfps = getInfoSpectEntropy()[0:8] # take just 7 channels
+	for i in range(0,len(se_gp)):
+		plt.scatter(lfps[i][0:78],se_gp[i],color='r',alpha=0.5)
+	plt.savefig("spikes/measurements/comp_gp_stn/lfp_spike.png")
+	plt.clf()
+
+	# histograms
+
+	# of channels in each region
+	for i in range(0,len(se_gp)):
+		plt.hist(se_gp[i], alpha=0.25)
+	plt.savefig("spikes/measurements/comp_gp_stn/hist_channels_gp.png")
+	plt.clf()
+	for i in range(0,len(se_gp)):
+		plt.hist(se_gp[i], alpha=0.25, color = 'r')
+	plt.savefig("spikes/measurements/comp_gp_stn/hist_gp.png")
+	plt.clf()
+	for i in range(0,len(se_stn)):
+		plt.hist(se_stn[i], alpha=0.25)
+	plt.savefig("spikes/measurements/comp_gp_stn/hist_channels_stn.png")
+	plt.clf()
+	for i in range(0,len(se_stn)):
+		plt.hist(se_stn[i], alpha=0.25, color='b')
+	plt.savefig("spikes/measurements/comp_gp_stn/hist_stn.png")
+	plt.clf()
+	# of channels in both regions
+	for i in range(0,len(se_gp)):
+		plt.hist(se_gp[i], alpha=0.25, color='r')
+	for i in range(0,len(se_stn)):
+		plt.hist(se_stn[i], alpha=0.25, color='b')
+	plt.savefig("spikes/measurements/comp_gp_stn/hist_all.png")
+	plt.clf()
+
+	# DENSITY SCATTER PLOTS FOR BOTH REGIONS
+	
 	
 
 def test():
@@ -366,7 +426,7 @@ def test():
 	#getInfo1Spike()
 	#getInfoSpikesRegion("sp_count_gp_sua.csv")
 	getInfoAllSpikes()
-	
+	#getInfoSpectEntropy()
 		
 
 #--------------------CALCULATION OF MEASURES--------------------
@@ -397,8 +457,8 @@ def ISI(spikeCountTrain):
 
 
 #returns the input sequence + time-lagged input sequence (with chosen number of lags)
-def laggedSequence(intervals, lags):
-	return np.roll(intervals,lags)
+def laggedSequence(seq, lags):
+	return np.roll(seq,lags)
 		
 
 # returns plot of joint interval density from same or different spike train, along with a histogram
@@ -467,12 +527,37 @@ def pdf(spikeCountTrain):
 # returns spectral entropy of the probability density distribution
 # output normalized to [0, 1]
 def spectral_entropy(spikeCountTrain):
-	p = pdf(spikeCountTrain)
-	n = len(p)
-	entr = np.zeros((n))
+	#from 350 original time windows, make partitions of 10 windows
+	#35 final values of spectral entropy per channel
+	final = []
+	i = 0
+	while i < 390: # FIX THIS
+		# for every block of 10 time windows:
+		p = pdf(spikeCountTrain[i:i+5])
+		n = len(p) #length of the pdf of the power spectrum
+		entr = np.zeros((n))
+		# formula for Shannon's entropy
+		for y in range(0,n):
+			entr[y] = p[y] * np.log2(p[y])
+		# the result is normalized to be within the range [0,1]
+		aux = - np.sum(entr)/ np.log2(n)
+		final.append(aux)
+		i = i+5
+	#correct format
+	np.stack(final)
+	print(len(final)) #should be 35
+	return final
+
+# returns sequence normalized to range [0,1]
+def normalize_sequence(seq):
+	n = len(seq)
+	max = np.amax(seq)
+	min = np.amin(seq)
+	aux = np.zeros((n))
 	for i in range(0,n):
-		entr[i] = p[i] * np.log2(p[i])
-	return - np.sum(entr)/ np.log2(n)
+		aux[i] = (seq[i] - min) / (max-min)
+	return aux
+
 
 #-------------------STATISTICS-------------------
 
