@@ -547,6 +547,7 @@ All results are produced taking 50 successive time windows of 0.5 seconds each.
 
 \subsection{Spiking rates}
 
+<<<<<<< HEAD
 Figure \ref{fig:ratesGP1} and figure \ref{fig:ratesSTN1} show the spiking rates for the channels in the GP and STN, respectively.
 Figure \ref{fig:ratesBoth1} shows the spiking rate functions of the channels of both regions (channels 0-6 are from the GP, channels 7-16 are from the STN).
 
@@ -563,6 +564,9 @@ Figure \ref{fig:ratesBoth1} shows the spiking rate functions of the channels of 
     \caption{Spiking rates of STN channels.}
     \label{fig:ratesSTN1}
 \end{figure}
+=======
+Figure \ref{fig:ratesBoth1} shows the spiking rate functions of the channels of both regions (channels 0-6 are from the GP, channels 7-16 are from the STN). Rows represent channels and columns represent time windows. 
+>>>>>>> 8911ee15287c9177f65dfcc01530d6fec9d8469c
 
 \begin{figure}[H]
     \centering
@@ -604,23 +608,12 @@ In the non-hexagonal scatterplots, there is one color per channel (in the case o
 
 \subsection{Serial correlation coefficients}
 
+<<<<<<< HEAD
 Figure \ref{fig:corr1} and figure \ref{fig:corr2} display the serial correlogram for spike count trains in the GP and STN, respectively. 
+=======
+>>>>>>> 8911ee15287c9177f65dfcc01530d6fec9d8469c
 Figure \ref{fig:corr3} shows the same information for all channels. Channels 0-6 are from GP, channels 7-16 are from STN
 Rows represent channels and columns represent time windows.
-
-\begin{figure}[H]
-    \centering
-    \centerline{\includegraphics[width=1\textwidth]{images/spiking/autocorr_gp.png}}
-    \caption{Serial correlograms of all channels in the GP.}
-    \label{fig:corr1}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \centerline{\includegraphics[width=1\textwidth]{images/spiking/autocorr_stn.png}}
-    \caption{Serial correlograms of all channels in the STN.}
-    \label{fig:corr2}
-\end{figure}
 
 \begin{figure}[H]
     \centering
@@ -631,23 +624,8 @@ Rows represent channels and columns represent time windows.
 
 \subsection{Power spectral density}
 
-Figure \ref{fig:PS1} and figure \ref{fig:PS2} show the power spectral density channels in the GP and STN (one color per channel). 
 Figure \ref{fig:PS3} shows the power spectrum of both regions (red for GP, blue for STN).
 The original spike data was recorded with a sampling frequency of 1 Hz, so the maximum frequency that is observable is 1 Hz.
-
-\begin{figure}[H]
-    \centering
-    \centerline{\includegraphics[width=1\textwidth]{images/spiking/powerSpec_gp.png}}
-    \caption{Power spectral density of all channels in the GP.}
-    \label{fig:PS1}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \centerline{\includegraphics[width=1\textwidth]{images/spiking/powerSpect_stn.png}}
-    \caption{Power spectral density of all channels in the STN.}
-    \label{fig:PS2}
-\end{figure}
 
 \begin{figure}[H]
     \centering
@@ -730,6 +708,8 @@ Interpreting this is beyond the experience of the authors.
 
 The model used to analyse spikes provides a set of measurements in both time and spectral domains that are used to attempt an observation of the distinctions in a broad collection of spiking activity data. These properties cannot be understood isolated, but related to each other. The measurements were taken in order to examine the spiking activity of the STN and GP regions, since the STN-GP network is relevant for PD, and to know whether there are differences in the activity of both regions. The results remain of interest even if their activity is finally found to be similar. Relying on previous research, another aim is to note a big degree of complexity or disorder in all channels, which belongs to a Parkinsonian state.
 
+\subsection{Spiking rates}
+
 With regard to the spiking rates that were obtained, no clear distinctions can be drawn between different regions, since their spiking rates remain within a range that stays constant across channels, except for two individual channels in the subthalamic nucleus that show significantly higher values. On the plots, a not entirely explicit but moderately identifiable firing pattern for each channel can be seen, with semi-regular spiking bursts (periods of time where the neuron fires more frequently). 
 
 The scatter diagrams of adjacent rates do show differences among channels and especially regions, which can be very clearly distinguished from each other. The spiking rate of the neurons in the STN varies in a range which is higher than those in the GP. 
@@ -737,7 +717,7 @@ These scatter diagrams may provide the best insight on how successive spiking ra
 Departures from independence between spiking rates are reflected in the symmetries of the scatter diagram itself. The diagrams show an overall upward trend, which indicates positive correlations between successive rates. That loosely means that short intervals between consecutive spikes tend to be followed by short ones, and long intervals by long ones. A downward trend would mean the opposite.
 Not taking into account all the available time windows when making the calculations is more convenient to see more specific dissimilarities among channels. Drawing results from a smaller time frame, for example 50 windows, allows identifications of channels that are more “silent” than others at a certain range of time, as can be seen in the scattergrams that differentiate each channel with a colour. 
 
-The values of the serial correlation coefficients give proof of the original dataset not being apt to be represented by a Poisson process; if it were, due to the complete independence of every Poisson variable from all the others (the value of a neuron’s firing rate would give no information as to the likelihood of its firing rate at any other point in time), the autocorrelation histogram of the channels would have been completely flat. From the serial correlograms it can be deducted that it is not such case. A similar thing would have happened with their power spectral densities; the power spectrum of a Poisson spike train is flat at all frequencies.
+\subsection{Spectral properties of the spike count sequences}
 
 Apart from properties in the time domain, other complex properties are present in basal ganglia spike sequences, like those in the spectral domain. Based on the power spectrums of the autocorrelation of the channels, an evident synchronization between the globus pallidus and subthalamic nucleus can be observed; both regions share similar power spectrograms, and the peaks in frequency stay within the same range of values; the estimated frequencies with the highest amount of variance (or noise) are between the values \textit{[0, 0.05]} and textit{[0.1, 0.2]}, and are common across all channels. Referring to the implications of noise on signal transmission theory which were mentioned in early sections, a high noise at a certain frequency is a limiting factor to information transmission between neurons at that frequency. 
 
