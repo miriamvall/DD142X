@@ -157,6 +157,8 @@ def getInfoSpikesRegion(dataType):
 		plt.plot(rates[i], alpha = 0.5)
 	fig = plt.gcf()
 	fig.set_size_inches(18.5, 10.5)
+
+	plt.rcParams.update({'font.size':24})
 	plt.title("Spiking Rate function")
 	plt.xlabel("time window")
 	plt.ylabel("spikes/second")
@@ -265,6 +267,7 @@ def getInfoAllSpikes():
 		plt.plot(sr_stn[i], 'b', alpha = 0.25)
 	fig = plt.gcf()
 	fig.set_size_inches(18.5, 10.5)
+	plt.rcParams.update({'font.size':24})
 	plt.title("Spiking Rate function")
 	plt.xlabel("time window")
 	plt.ylabel("spikes/second")
@@ -294,9 +297,13 @@ def getInfoAllSpikes():
 	plt.clf()
 
 	for i in range(0,len(sr_gp)):
-		plt.hist(sr_gp[i], alpha = 0.5,color='r')
+		x_gp = (np.amax(sr_gp[i]) - np.amin(sr_gp[i])) / 5
+		n_gp = math.ceil(x_gp) 
+		plt.hist(sr_gp[i], bins = n_gp, alpha = 0.5,color='r')
 	for i in range(0,len(sr_stn)):
-		plt.hist(sr_stn[i], alpha = 0.5,color='b')
+		x_stn = (np.amax(sr_stn[i]) - np.amin(sr_stn[i])) / 5
+		n_stn = math.ceil(x_stn)
+		plt.hist(sr_stn[i], bins = n_stn, alpha = 0.5,color='b')
 	plt.title("Rate function probability distribution")
 	plt.xlabel("Spiking rate")
 	plt.ylabel("Counts")
@@ -363,50 +370,34 @@ def getInfoAllSpikes():
 	all_se = np.concatenate((se_gp,se_stn))
 	np.savetxt("spikes/measurements/spec_entr.csv", all_se, delimiter=',', fmt='%f')
 	
-	# PDF of spectral entropies
-	for i in range(0,len(se_gp)):
-		xs, ys = aprx_pdf_1d(se_gp[i],1000,False)
-		plt.plot(xs,ys,'.',color='r')
-	for i in range(0,len(se_stn)):
-		xs, ys = aprx_pdf_1d(se_stn[i],1000,False)
-		plt.plot(xs,ys,'.',alpha = 0.5,color='b')
-	plt.savefig("spikes/measurements/comp_gp_stn/pdf_spec_entr")
-	plt.clf()
 
-	# another scatter plot for spectral entropies
+	# another scatter plot for spectral entropies with groups of time windows
 	blocks = np.arange(1,79)
 	for i in range(0,len(se_gp)):
 		plt.scatter(blocks,se_gp[i],color='r',alpha=0.5)
 	for i in range(0,len(se_stn)):
 		plt.scatter(blocks,se_stn[i],color='b',alpha=0.5)
+	plt.title("Spectral entropies of GP and STN channels")
+	plt.xlabel("groups of 5 time windows")
+	plt.ylabel("spectral entropy")
 	plt.savefig("spikes/measurements/comp_gp_stn/scatter_spect.png")
 	plt.clf()
 
-	# plot LFP against spiking spect entr
-
-	lfps = getInfoSpectEntropy()[0:8] # take just 7 channels
-	for i in range(0,len(se_gp)):
-		plt.scatter(lfps[i][0:78],se_gp[i],color='r',alpha=0.5)
-	plt.savefig("spikes/measurements/comp_gp_stn/lfp_spike.png")
-	plt.clf()
-
-	# histograms
+	# histograms of spect entr
 
 	# of channels in each region
 	for i in range(0,len(se_gp)):
-		plt.hist(se_gp[i], alpha=0.25)
-	plt.savefig("spikes/measurements/comp_gp_stn/hist_channels_gp.png")
-	plt.clf()
-	for i in range(0,len(se_gp)):
 		plt.hist(se_gp[i], alpha=0.25, color = 'r')
+	plt.title("Probability distribution of spectral entropy in GP")
+	plt.xlabel("spectral entropy")
+	plt.ylabel("counts")
 	plt.savefig("spikes/measurements/comp_gp_stn/hist_gp.png")
 	plt.clf()
 	for i in range(0,len(se_stn)):
-		plt.hist(se_stn[i], alpha=0.25)
-	plt.savefig("spikes/measurements/comp_gp_stn/hist_channels_stn.png")
-	plt.clf()
-	for i in range(0,len(se_stn)):
 		plt.hist(se_stn[i], alpha=0.25, color='b')
+	plt.title("Probability distribution of spectral entropy in STN")
+	plt.xlabel("spectral entropy")
+	plt.ylabel("counts")
 	plt.savefig("spikes/measurements/comp_gp_stn/hist_stn.png")
 	plt.clf()
 	# of channels in both regions
@@ -414,10 +405,24 @@ def getInfoAllSpikes():
 		plt.hist(se_gp[i], alpha=0.25, color='r')
 	for i in range(0,len(se_stn)):
 		plt.hist(se_stn[i], alpha=0.25, color='b')
+	plt.title("Probability distribution of spectral entropy in GP and STN")
+	plt.xlabel("spectral entropy")
+	plt.ylabel("counts")
 	plt.savefig("spikes/measurements/comp_gp_stn/hist_all.png")
 	plt.clf()
 
-	# DENSITY SCATTER PLOTS FOR BOTH REGIONS
+	# grayscale plots of spectr entr in both regions
+	ax = plt.gca()
+	im = plt.imshow(all_se, cmap = 'gray')
+	plt.title("Spectral entropy for groups of 5 time windows for GP and STN channels \n time window size = 0.5 seconds")
+	plt.xlabel("groups of 5 time windows")
+	plt.ylabel("Channel")
+	plt.yticks(np.arange(0,len(all_a)))
+	divider = make_axes_locatable(ax)
+	cax = divider.append_axes("right", size="3%", pad=0.25)
+	plt.colorbar(im, cax=cax)
+	plt.savefig("spikes/measurements/comp_gp_stn/spec_entr_5tw")
+	plt.clf()
 	
 	
 
@@ -531,7 +536,7 @@ def spectral_entropy(spikeCountTrain):
 	#35 final values of spectral entropy per channel
 	final = []
 	i = 0
-	while i < 390: # FIX THIS
+	while i < 390: 
 		# for every block of 10 time windows:
 		p = pdf(spikeCountTrain[i:i+5])
 		n = len(p) #length of the pdf of the power spectrum
@@ -557,97 +562,6 @@ def normalize_sequence(seq):
 	for i in range(0,n):
 		aux[i] = (seq[i] - min) / (max-min)
 	return aux
-
-
-#-------------------STATISTICS-------------------
-
-# input = power spectrum vectors of each channel
-# returns vectors with the means of the channels over the time windows
-def getMeansPw(data):
-	#(nchannels,2,197 values)
-	#correct format: (nchannels,197 values)
-	aux = np.zeros((len(data),197))
-	means = np.zeros((len(data),197))
-	for i in range(0, len(data)):
-		aux[i] = data[i][1]
-		means[i] = aux[i].mean()
-	return means
-
-def getStdDevsPw(data):
-	#(nchannels,2,197 values)
-	#correct format: (nchannels,197 values)
-	aux = np.zeros((len(data),197))
-	stds = np.zeros((len(data),197))
-	for i in range(0, len(data)):
-		aux[i] = data[i][1]
-		stds[i] = aux[i].std()
-	return stds
-
-def getMeans(data):
-	means = np.zeros((len(data),2))
-	for i in range(0,len(data)):
-		means[i][0] = data[i].mean()
-		means[i][1] = data[i].mean()
-	return means 
-
-def getStdDevs(data):
-	stds = np.zeros((len(data),2))
-	for i in range(0,len(data)):
-		stds[i][0] = data[i].std()
-		stds[i][1] = data[i].std()
-	return stds
-
-# to ease the plotting of the vectors
-# plots means, std deviations, ratio of means/std devs
-def plot_colors(type,data_gp, data_stn):
-	plt.clf()
-	
-	if type == "pwspec":
-		mean_gp = getMeansPw(data_gp)
-		mean_stn = getMeansPw(data_stn)
-		std_gp = getStdDevsPw(data_gp)
-		std_stn = getStdDevsPw(data_stn)
-	else:
-		mean_gp = getMeans(data_gp)
-		mean_stn = getMeans(data_stn)
-		std_gp = getStdDevs(data_gp)
-		std_stn = getStdDevs(data_stn)
-
-	mean_all = np.concatenate((mean_gp,mean_stn))
-	std_all = np.concatenate((std_gp,std_stn))
-
-	matrices = [
-		mean_gp, std_gp, std_gp / mean_gp,
-		mean_stn, std_stn, std_stn / mean_stn,
-		mean_all, std_all, std_all / mean_all
-	]
-
-	types = [
-	    (channel_type, measurement)
-	    for channel_type in ["gp", "stn", "all"]
-	    for measurement  in ["mean", "st. dev", "st. dev : mean"]
-	]
-
-	for matrix, (channel_type, measurement), index in zip(
-	    matrices,
-	    types,
-	    range(1, 10)
-	):
-		plt.rcParams["figure.figsize"] = (20, 10)
-		plt.subplot(5, 2, index) # plots displayed in a single image
-		# transpose to go from vertical to horizontal 
-		plt.imshow(matrix.transpose(), extent=[0, len(matrix), 0, 1]) # display data as image
-		plt.colorbar() # add colorbar to the plot
-		plt.title(str(measurement) + " of " + type + " of " + str(channel_type))
-		plt.xlabel("channels")
-		plt.yticks([])
-
-	fig = plt.gcf()
-	fig.set_size_inches(13.5, 13.5)
-	plt.savefig("spikes/measurements/statistics/" + type + ".png")
-	
-
-
 
 #---------------------MAIN---------------------------------
 
