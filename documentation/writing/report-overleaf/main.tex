@@ -92,21 +92,21 @@ The datasets used are instead assumed to have been produced/recorded to a satisf
 \newpage
 \chapter{Background}
 
-The most valuable contribution to the clarification of the functional changes occurring in PD has been provided by the animal models of the disease, particularly those applied to rodents and primates \parencite{Mallet}. 
-In rodents, chronic and acute dopaminergic denervation (obtained by inflicting a selective lesion of the BG that mimics the effects of PD) leads to excessive beta oscillatory activity in the BG's LFP that can be suppressed by treatment \parencite{Mallet}.
+Valuable contributions to the clarification of the functional changes occurring in PD have been provided by animal models of the disease, particularly those applied to rodents and primates \parencite{Mallet}. 
+In rodents, chronic and acute dopaminergic denervation (obtained by inflicting a selective lesion of the BG that mimics the effects of PD) leads to excessive beta oscillatory activity in the BG's local field potentials that can be suppressed by treatment \parencite{Mallet}.
 
 We will attempt to observe such oscillations and synchronization in the dataset we have acquired for this project, which consists of several different measurements of brain activity in dopamine-depleted rodents. 
 The used measurements of brain activity are:
 
 \begin{itemize}
     \item Local Field Potential (LFP): electrical signals generated in nervous tissues by the summed and synchronous activity of the individual neurons in that tissue.
-    \item Spiking activity (also called action potential), which is a rapid rise and fall in voltage or membrane potential across a neuron's membrane. We have it in the form of background unit activity (BUA) and signal unit activity (SUA).
+    \item Spiking activity (also called action potential): a rapid rise and fall in voltage or membrane potential across a neuron's membrane. We have it in the form of background unit activity (BUA) and signal unit activity (SUA).
 \end{itemize}
 
-They were recorded simultaneously from three previously mentioned different regions of the BG; globus pallidus, striatum, and subthalamic nucleus, in sessions of 100 seconds at a sampling frequency of 16000 Hz.
+The available recordings were recorded simultaneously from three previously mentioned different regions of the BG; globus pallidus, striatum, and subthalamic nucleus, in sessions of 100 seconds at a sampling frequency of 16000 Hz.
 
-Therefore, for these parts of the BG we dispose of information on LFP and spiking activity; the data for each specific type of recording (e.g. LFP in the GP), for a specific animal and recording session will be called a “channel”. 
-These continuous time series provide insight into the synchronous LFP and spike discharges of local neuronal ensembles, and are relevant to us as we aim to study the variation and synchrony of simultaneous brain activity in different regions of the BG and attempt to classify patients into different categories.
+The data for each specific type of recording (e.g. LFP in the GP), for a specific animal and recording session will be called a “channel”. 
+These continuous time series provide insight into the synchronous LFP and spike discharges of local neuronal ensembles, and are relevant in the aim to study the variation and synchrony of simultaneous brain activity in different regions of the BG and attempt to classify patients into different categories.
 
 \section{Beta oscillations and neuronal synchronization}\label{BG BetaOsc NeurSyn}
 
@@ -151,14 +151,17 @@ The PCs produced can also be used to visualize the data, and the individual comp
 
 \section{Spiking rates and spike bursts in Parkinson's disease}\label{BG SpikeRates}
 
-The symptoms of PD are accompanied by various changes in the neuronal activity in the basal ganglia: besides the increase in the power and duration of beta band oscillations, there is also an increased firing rate of neurons, increase of spike bursts, and increased synchrony in all BG regions \parencite{Bahu}. They are correlated with PD symptoms and their suppression ameliorates these symptoms; therefore, there is a great interest in understanding the mechanisms underlying their origin, which are still unclear. Several experimental results indicate that the GP-STN network plays an integral role in generating and modulating the oscillations\parencite{Bahu}.
-In PD models of rodents, increased spike bursting in the GP and STN is significantly higher than in healthy animals \parencite{Bahu}, but it remains unclear how increased spike bursting affects the duration and power of beta oscillations. Doing so in future research will be crucial to better understand the pathophysiology of PD.
+The symptoms of PD are accompanied by various changes in the neuronal activity in the basal ganglia: besides the increase in the power and duration of beta band oscillations, there is also an increased firing rate of neurons, increase of spike bursts, and increased synchrony in all BG regions. 
+They are correlated with PD symptoms and their suppression ameliorates these symptoms; therefore, there is a great interest in understanding the mechanisms underlying their origin, which are still unclear. 
+Several experimental results indicate that the GP-STN network plays an integral role in generating and modulating the oscillations.
+In PD models of rodents, increased spike bursting in the GP and STN is significantly higher than in healthy animals, but it remains unclear how increased spike bursting affects the duration and power of beta oscillations. 
+Doing so in future research will be crucial to better understand the pathophysiology of PD \parencite{Bahu}.
 
 \section{Spiking activity as a simple Poisson process}
 
 In neurosciences, the action potentials (spikes) are the main components for the real-time information processing in the brain \parencite{Eden}. 
 The duration of each spike is very small, about one millisecond. 
-It is consequently quite natural to assimilate a spike to a random event. 
+It is consequently quite natural to attribute a spike to a random event. 
 Therefore we can model a spike train (a sequence of recorded times at which a neuron fires a spike) as a stochastic process (or point process), since they are widely used to represent events that appear to vary in a random manner over time.
 
 A stochastic process may be specified in terms of spike counts. 
@@ -251,9 +254,10 @@ The denominator \begin{math}log_2 N\end{math} represents the maximal spectral en
 
 Much of the code/software produced and used within the scope of this project used third-party software libraries for non-trivial applications.
 
-\subsection{NumPy}\label{NumPy BG}
+\subsection{Basic programming environment}\label{NumPy BG}
 
-\textit{NumPy}, a software library, was used extensively throughout the entire project \parencite{numpy}.
+The python programming language \parencite{Python} was used to produce software in this project.
+\textit{NumPy}, a software library, was used extensively throughout the entire project, and was the main motivation for the choice python as programming language for this project. \parencite{numpy}.
 
 \textit{NumPy} provides useful tools for usage of the DFT in its' \texttt{fft} package, specifically the \texttt{numpy.fft.fft} function, an implementation of the DFT. 
 
@@ -284,10 +288,10 @@ For visualization of results, the \textit{matplotlib} and \textit{Seaborn} softw
 \chapter{Methods}
 
 Some methods in this project focused on amplitudes of activity in the spectral domain for the LFP data used in the scope of this project.
-The reasoning behind this is that previous research on Parkinson's disease has shown that LFP activity in the basal ganglia in the beta-range is abnormally synchronized compared to that of the same activity in subjects unaffected by Parkinson's disease, as was discussed in chapter \ref{BG BetaOsc NeurSyn} \parencite{Cagnan}.
+The reasoning behind this is that previous research on Parkinson's disease has shown that LFP activity in the BG in the beta-range is abnormally synchronized compared to that of the same activity in subjects unaffected by Parkinson's disease, as was discussed in section \ref{BG BetaOsc NeurSyn} \parencite{Cagnan}.
 This suggests that such activity might embed additional useful information for research, and possibly a means for classification. 
 
-Apart from focusing on LFP recordings, the analysis of spiking rates also provides insight into the activity and synchronization of the different basal ganglia regions, and can be used to extract relevant features which are apt for classification.
+In addition to analysis of LFP recordings, the analysis of spiking rates also provides insight into the activity and synchronization of the different basal ganglia regions, and can be used to extract relevant features which are apt for classification.
 
 \section{Spectrum feature extraction}\label{DFT Method}
 
@@ -327,7 +331,7 @@ The parameters used for \textit{k} for k-Means, the epochs size, and the range o
 
 \section{Usage of principal component analysis}\label{PCA Methods}
 
-In order to better describe the SFVs, PCA was used.
+In order to better understand the SFVs, PCA was used.
 
 The specific PCs of the SFVs are of interest, as they describe the spectrum-components along which LFP activity vary the most.
 Analyzing these specific PCs and how their prominence varies in different subsets could highlight key similarities and differences in the LFP activity of different brain regions or subjects.
@@ -343,10 +347,10 @@ PCs were produced for the entire set of SFVs that were produced from the LFP dat
 The original dataset consists of the number of spikes counted during successive time windows (each of them being half a second). 
 For each recorded channel in different regions of the basal ganglia, which in this case are the globus pallidus and subthalamic nucleus, 393 recorded time windows were available.
 
-The non-stationarity of the spiking rate over time makes it impossible to model the spike count trains as a homogeneous Poisson process with a constant rate; therefore, it was regarded as an inhomogeneous Poisson process.
+The non-stationarity of the spiking rate over time makes it impractical to model the spike count trains as a homogeneous Poisson process with a constant rate; therefore, it was regarded as an inhomogeneous Poisson process.
 
 It is possible to obtain the time-dependent spiking rate function by dividing each spike count by the duration of the time windows, namely 0.5 seconds. 
-We also produced an estimation of the rate probability distribution by plotting a histogram of the time series.
+An estimation of the rate probability distribution was also produced by making a histogram of the time series.
 
 \section{Renewal process}\label{RP Method}
 
@@ -374,7 +378,7 @@ Figure \ref{fig:GP1} shows 780 epochs, and figure \ref{fig:STR2} shows 778 epoch
 For both of these sessions the sampling frequency is 16 kHz. 
 For both of these sets of produced SFVs, the epoch size in amount of data points (sampled at sampling frequency) is 2048, resulting in an epoch size of 128 ms. 
 For each of these sets of produced SFVs, there are 46 frequencies sampled. 
-Specifically, the input was padded with to a length of 16384 in order to produce a higher fidelity output, and all frequency samples in the ranges of 5 Hz - 50 Hz were selected. 
+Specifically, the input was padded with zeros to a length of 16384 in order to produce a higher fidelity output, and all frequency samples in the ranges of 5 Hz - 50 Hz were selected. 
 This results in 46 equally-spaced frequency samples, the lowest being approximately 5.86 Hz and the highest being approximately 49.8 Hz. 
 The parameters can be considered arbitrary due to easily being changed.
 In this specific configuration, the frequency range was selected to be somewhat wider than the beta-range of frequencies.
@@ -386,14 +390,14 @@ These figures are, clearly, a very small subset of the total set of produced SFV
 \begin{figure}[H]
     \centering
     \centerline{\includegraphics[width=1\textwidth]{images/GP1.png}}
-    \caption{SFVs for Globus Pallidus LFP channel of a specific session.}
+    \caption{SFVs for GP LFP channel of a specific session.}
     \label{fig:GP1}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \centerline{\includegraphics[width=1\textwidth]{images/STR2.png}}
-    \caption{SFVs for Striatum LFP channel of a specific session.}
+    \caption{SFVs for STR LFP channel of a specific session.}
     \label{fig:STR2}
 \end{figure}
 
@@ -409,7 +413,6 @@ Each colored "slice" is the prediction of a single SFV to a class, the result of
 The particular channel names are not shown in these figures, but include both STR and GP channels, sorted such that channels 0 - 10 are GP channels and 11 - 14 are STR channels.
 The SFVs are identical in production parameters to those presented in section \ref{SFV Results}.
 
-The most important thing to note about these figures is how different channels in the same (or close) epochs tend to be given equal class assignments excessively. 
 The authors interpret the class assignments for adjacent epochs to often be "close", meaning that class assignments seem to be followed by slightly higher or slightly lower class assignments (referring to class index), this was however not researched more thoroughly and should be considered an informal observation.
 Also of note are "streaks" of higher class assignments for specific channels.
 Channel 11, notably, has multiple such streaks.
@@ -539,12 +542,11 @@ Notably, cross-correlation within STR channels is consistently low, while it is 
 
 \section{Spiking analysis results}
 
-This section is dedicated to the results of analysis of spiking rate data, by methods described in 
+This section is dedicated to the results of analysis of spiking rate data, by methods described in sections \ref{Poiss Method} and \ref{RP Method}.
 All results are produced taking 50 successive time windows of 0.5 seconds each.
 
 \subsection{Spiking rates}
 
-For all figures plots, rows represent channels and columns represent time windows. 
 Figure \ref{fig:ratesGP1} and figure \ref{fig:ratesSTN1} show the spiking rates for the channels in the GP and STN, respectively.
 Figure \ref{fig:ratesBoth1} shows the spiking rate functions of the channels of both regions (channels 0-6 are from the GP, channels 7-16 are from the STN).
 
@@ -602,7 +604,7 @@ In the non-hexagonal scatterplots, there is one color per channel (in the case o
 
 \subsection{Serial correlation coefficients}
 
-Figure \ref{fig:corr1} and figure \ref{fig:corr2} display the serial correlogram for one single spike count train (channel) in the GP. 
+Figure \ref{fig:corr1} and figure \ref{fig:corr2} display the serial correlogram for spike count trains in the GP and STN, respectively. 
 Figure \ref{fig:corr3} shows the same information for all channels. Channels 0-6 are from GP, channels 7-16 are from STN
 Rows represent channels and columns represent time windows.
 
@@ -694,11 +696,15 @@ This chapter is dedicated to discussion and interpretation of the produced resul
 
 This section discusses the methods described in sections \ref{DFT Method}, \ref{KM Method}, and \ref{PCA Methods}, with respective results in sections \ref{SFV Results}, \ref{KM Results}, and \ref{PCA Results}.
 
+\subsection{About spectrum feature vectors}
+
 The authors believe that SFVs, as described in this report, are an appropriate means of feature extraction in the context of this report. 
 This is not intended to be a proclamation of a groundbreaking discovery.
-Analyzing the spectrum of brain activity has previously shown interesting results \parencite{Cagnan}, and SFVs are just a generalized approach to describe the process of extracting such spectra, taking fidelity, epoch size, and range of spectra into account.
+Analyzing the spectrum of brain activity has previously shown interesting results, as previously discussed, \parencite{Cagnan}, and SFVs are just a generalized approach to describe the process of extracting such spectra, taking fidelity, epoch size, and range of spectra into account.
 Indeed, SFVs or similar methods have likely been described or used previously with a different name in previous research, not necessarily in this field of research.
 SFVs also provide a simple mean of visualizing LFP activity in a human-understandable way.
+
+\subsection{About the use of k-Means}
 
 To a layman in the study of neuroscience, the k-Means visualization heuristic applied in this project seems reasonable.
 The results produced show LFP activity being strikingly similar for different areas of the basal ganglia when compared simultaneously.
@@ -708,14 +714,16 @@ The authors imagine their chosen method and produced results may have serious fl
 The authors, however, consider these results to at least be a reason to consider more sophisticated methods to attempt to cluster SFVs.
 Such methods fall outside both the scope of this project, and the expertise of its' authors.
 
+\subsection{About the use of PCA}
+
 The authors believe that the produced PCs, or more specifically the method by which they were produced, show great potential for similar methods in the use of classification.
 As discussed, the authors consider SFVs a reasonable means of feature extraction, and PCA proved effective in further investigating these.
 A much smaller set of PCs than the number of features of their parent SFVs can describe them with great accuracy.
 These PCs could then reasonably be interpreted, in the quite literal sense, as components making up LFP activity.
 The PCs themselves could lend themselves to study and interpretation by more experienced scholars.
-The rather extreme discrepancies between the nature of the distributions of these PCs when comparing GP channels to STR channels (see figures \ref{fig:PCAPDF}, \ref{fig:PCAPDFLG2}, tables \ref{tab:corrcoefGP}, \ref{tab:corrcoefSTR}) could also lend insight into the workings of these different brain regions.
+The noticeable discrepancies between the nature of the distributions of these PCs when comparing GP channels to STR channels (see figures \ref{fig:PCAPDF}, \ref{fig:PCAPDFLG2}, tables \ref{tab:corrcoefGP}, \ref{tab:corrcoefSTR}) could also lend insight into the workings of these different brain regions.
 Notable are the consistently lesser amplitudes of activity in STR, and the consistently much lower cross-correlation of PCs in STR.
-While the PCs described in figure \ref{fig:PCS} are present almost independently in STR channels, they have clear correlation in GP channels.
+While the PCs described in figure \ref{fig:PCS} are present almost independently in STR channels (over the entire SFV-set), they have clear correlation in GP channels (over the entire SFV-set).
 Interpreting this is beyond the experience of the authors.
 
 \section{Spiking rate based methods of classification}
@@ -727,11 +735,11 @@ With regard to the spiking rates that were obtained, no clear distinctions can b
 The scatter diagrams of adjacent rates do show differences among channels and especially regions, which can be very clearly distinguished from each other. The spiking rate of the neurons in the STN varies in a range which is higher than those in the GP. 
 These scatter diagrams may provide the best insight on how successive spiking rates relate and depend on each other. Although the serial correlation coefficients allow a quantification of the time-dependent correlation of rates, they are not so useful to identify any inherent patterns in the scattergrams; identifying and quantifying in terms of density the clustered structures in such scattergrams is instead a better solution. 
 Departures from independence between spiking rates are reflected in the symmetries of the scatter diagram itself. The diagrams show an overall upward trend, which indicates positive correlations between successive rates. That loosely means that short intervals between consecutive spikes tend to be followed by short ones, and long intervals by long ones. A downward trend would mean the opposite.
-Not taking into account all the available time windows when making the calculations is more convenient to see more specific dissimilarities among channels. Drawing results from a smaller time frame, for example 50 windows, allows to identify channels that are more “silent” than others at a certain range of time, as can be seen in the scattergrams that differentiate each channel with a colour. 
+Not taking into account all the available time windows when making the calculations is more convenient to see more specific dissimilarities among channels. Drawing results from a smaller time frame, for example 50 windows, allows identifications of channels that are more “silent” than others at a certain range of time, as can be seen in the scattergrams that differentiate each channel with a colour. 
 
 The values of the serial correlation coefficients give proof of the original dataset not being apt to be represented by a Poisson process; if it were, due to the complete independence of every Poisson variable from all the others (the value of a neuron’s firing rate would give no information as to the likelihood of its firing rate at any other point in time), the autocorrelation histogram of the channels would have been completely flat. From the serial correlograms it can be deducted that it is not such case. A similar thing would have happened with their power spectral densities; the power spectrum of a Poisson spike train is flat at all frequencies.
 
-Apart from properties in the time domain, other complex properties are present in basal ganglia spike sequences, like those in the spectral domain. Based on the power spectrums of the autocorrelation of the channels, an evident synchronization between the globus pallidus and subthalamic nucleus can be observed; both regions share similar power spectrograms, and the peaks in frequency stay within the same range of values; the estimated frequencies with the highest amount of variance (or noise) are between the values [0, 0.05] and [0.1, 0.2], and are common across all channels. Referring to the implications of noise on signal transmission theory which were mentioned in early sections, a high noise at a certain frequency is a limiting factor to information transmission between neurons at that frequency. 
+Apart from properties in the time domain, other complex properties are present in basal ganglia spike sequences, like those in the spectral domain. Based on the power spectrums of the autocorrelation of the channels, an evident synchronization between the globus pallidus and subthalamic nucleus can be observed; both regions share similar power spectrograms, and the peaks in frequency stay within the same range of values; the estimated frequencies with the highest amount of variance (or noise) are between the values \textit{[0, 0.05]} and textit{[0.1, 0.2]}, and are common across all channels. Referring to the implications of noise on signal transmission theory which were mentioned in early sections, a high noise at a certain frequency is a limiting factor to information transmission between neurons at that frequency. 
 
 The spectral entropy values are then useful to quantify the general level of disorder or noise of each channel, based on the power spectrums. When computing the spectral entropies in bins of 25 time windows, both regions vary in the same way over time, and their estimated probability distributions are similar. Likewise, when calculating the spectral entropies using all 393 time windows, the values show no significant differences between the spectral entropies in the GP and those in the STN. They are all evenly distributed, and it can be affirmed that all channels have generally high spectral entropies going from approximately 0.6 to 0.9 (with 1 being the highest possible value). Despite having a high quantity of noise, they still have a small level of predictability. 
 
@@ -741,13 +749,13 @@ The spectral entropy values are then useful to quantify the general level of dis
 
 \textbf{This section is not at the same level of completion as previous sections.}
 
-The methods produced for classifying Parkinson's disease based on LFP activity show potential.
-While results shown have often been comparing e.g. categories of channels, or the activity within a single session, much of this can be generalized.
-Larger datasets could be used, and subjects could be compared instead of channel categories (and vice versa).
+The methods produced for classifying Parkinson's disease based on brain activity show potential.
+Many ideas considered in this project were never pursued due to limitations of time. 
+As such, many results produced are limited in scope (e.g. comparing brain regions rather than animals and vice versa).
 More extensive and sophisticated attempts at interpreting the use and results of the methods developed could be undertaken, and additional regions of the brain could be considered.
-It's likely that many additional avenues for further research could be explored, that are outside the imaginations of the authors.
+It's likely that many additional avenues for further research could be explored using the methods developed in this project, that are outside the imaginations of the authors.
 
-The authors believe that the methods and results developed based on LFP activity in the basal ganglia for the purpose of classification of Parkinson's disease show definitive potential for future research.
+In closing, the authors believe that the methods and results developed based on brain activity in the basal ganglia for the purpose of classification of Parkinson's disease show definitive potential for future research.
 
 \newpage
 \printbibliography[heading=bibintoc]
