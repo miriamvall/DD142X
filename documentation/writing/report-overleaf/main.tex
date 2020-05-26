@@ -1,6 +1,8 @@
-\documentclass{article}
+\documentclass{kththesis}
 \usepackage[utf8]{inputenc}
-\usepackage{natbib}
+\usepackage{csquotes}
+\usepackage[style=numeric,sorting=none,backend=biber]{biblatex}
+\addbibresource{sources.bib}
 \usepackage{url}
 \usepackage{amsmath}
 \usepackage{amssymb}
@@ -11,44 +13,57 @@
 \hypersetup{
 hidelinks
 }
-\bibliographystyle{agsm}
-\title{Classification of Population Activity in Parkinson's Disease}
-\author{Gustav Röhss, Míriam Vall}
-\date{VT 2020}
-\begin{document}
-\maketitle
 
-\section*{Abstract}
+\title{}
+\alttitle{Klassificering av hjärnaktivitet i Parkinsons Sjukdom}
+\author{}
+\email{}
+\supervisor{Arvind Kumar}
+\examiner{Pawel Herman}
+\programme{Bachelor in Computer Science}
+\school{School of Electrical Engineering and Computer Science}
+\date{\today}
+\kthcover{kth-cover.pdf}
+
+\begin{document}
+
+\frontmatter
+\titlepage
+
+\begin{abstract}
 
 This project has been concerned with creating methods for feature extraction for the purpose of classification of brain activity in parkinsonian brains. 
 Classification of LFP activity was based on feature vectors produced from the DFT of activity, and a heuristic-motivated visualization of these using the k-Means algorithm for prediction and classification.
 These feature vectors were also subject to principal component analysis as a further means of feature extraction and classification, highlighting differences in brain regions. 
 Classification of spiking activity was based on spiking rates, joint rate distributions, serial correlation coefficients, power spectral density, and spectral entropy.
+\end{abstract}
 
-\section*{Sammanfattning}
-
+\begin{otherlanguage}{swedish}
+\begin{abstract}
 \textit{Vissa korrekta översättningar okända.}
 Detta projekt har syftat att skapa metoder för att utvinna särdrag och att klassifiera hjärnaktivitet i parkinsonska hjärnor.
 Klassificering av lokal fältpotential baserades på särdragsvektorer producerade från DFT:n av aktivitet, och en heuristiskt motiverad visualisering av dessa användande k-Means algoritmen för förutsägning och klassificering.
 Dessa särdragsvektorer analyserades även med principalkomponentanalys för att utvinna ytterligare särdrag samt för klassificering, vilket påvisade skillnader i olika regioner av hjärnan.
 Klassificering av spetsaktivitet baserades på spetstakt, beroende taktfördelning, seriella korrelationskoefficenter, spektral effektdensitet, och spektral entropi.
+\end{abstract}
+\end{otherlanguage}
 
-\newpage
 \tableofcontents
 
-\newpage
-\section{Introduction}
+\mainmatter
+
+\chapter{Introduction}
 
 Parkinson's disease (PD) is a progressive neurodegenerative disorder of movement that is age-related. 
 It affects tens of millions of people worldwide, and the frequency and associated socioeconomic burden of the condition are set to increase as the elderly population grows.
 
-The disease is characterized by poverty of voluntary movements (akinesia), slowness and impaired scaling of voluntary movement (bradykinesia), muscle rigidity and tremor of the limbs at rest \citep{DeMaags}.
+The disease is characterized by poverty of voluntary movements (akinesia), slowness and impaired scaling of voluntary movement (bradykinesia), muscle rigidity and tremor of the limbs at rest \parencite{DeMaags}.
 
-The hallmark feature of PD is the degeneration of dopamine neurons in the basal ganglia (BG), which is the region of the brain responsible for functions such as learning or movement \citep{Hammond}. 
+The hallmark feature of PD is the degeneration of dopamine neurons in the basal ganglia (BG), which is the region of the brain responsible for functions such as learning or movement \parencite{Hammond}. 
 The BG consists of a few interconnected nuclei: the striatum (STR), globus pallidus (GP), subthalamic nucleus (STN), and substantia nigra (SN). 
 The dopamine deficiency leads to a cascade of functional changes in the basal ganglia circuitry, which are ultimately responsible for the development of the main features of PD.
 
-\subsection{Purpose}
+\section{Purpose}
 
 The purpose of this project is to attempt to find one or several methods for classification of the brain activity in patients with Parkinson's disease.
 
@@ -56,7 +71,7 @@ Furthermore this project aims to, to some extent, use any produced methods to ev
 It is of interest to consider what differences any such methods show when comparing brain activity from different brain regions.
 It is also of interest to make a similar comparison for the brain activity in different subjects.
 
-\subsection{Delimitations}
+\section{Delimitations}
 
 The authors of this report are not well educated or experienced in studying brain activity.
 The methods produced are mainly means to serve as a strong foundation for further research into deeper understanding of Parkinson's disease.
@@ -66,7 +81,7 @@ No software used, or produced, either by others or by the authors, is subject to
 The same is true for the datasets used within the scope of this project.
 The datasets used are instead assumed to have been produced/recorded to a satisfactory quality for their uses within the scope of this project.
 
-\subsection{Research questions}
+\section{Research questions}
 
 \begin{itemize}
     \item How can effective methods for classification of brain activity in patients with Parkinson's disease be produced?
@@ -75,10 +90,10 @@ The datasets used are instead assumed to have been produced/recorded to a satisf
 \end{itemize}
 
 \newpage
-\section{Background}
+\chapter{Background}
 
-The most valuable contribution to the clarification of the functional changes occurring in PD has been provided by the animal models of the disease, particularly those applied to rodents and primates \citep{Mallet}. 
-In rodents, chronic and acute dopaminergic denervation (obtained by inflicting a selective lesion of the BG that mimics the effects of PD) leads to excessive beta oscillatory activity in the BG's LFP that can be suppressed by treatment \citep{Mallet}.
+The most valuable contribution to the clarification of the functional changes occurring in PD has been provided by the animal models of the disease, particularly those applied to rodents and primates \parencite{Mallet}. 
+In rodents, chronic and acute dopaminergic denervation (obtained by inflicting a selective lesion of the BG that mimics the effects of PD) leads to excessive beta oscillatory activity in the BG's LFP that can be suppressed by treatment \parencite{Mallet}.
 
 We will attempt to observe such oscillations and synchronization in the dataset we have acquired for this project, which consists of several different measurements of brain activity in dopamine-depleted rodents. 
 The used measurements of brain activity are:
@@ -93,14 +108,14 @@ They were recorded simultaneously from three previously mentioned different regi
 Therefore, for these parts of the BG we dispose of information on LFP and spiking activity; the data for each specific type of recording (e.g. LFP in the GP), for a specific animal and recording session will be called a “channel”. 
 These continuous time series provide insight into the synchronous LFP and spike discharges of local neuronal ensembles, and are relevant to us as we aim to study the variation and synchrony of simultaneous brain activity in different regions of the BG and attempt to classify patients into different categories.
 
-\subsection{Beta oscillations and neuronal synchronization}\label{BG BetaOsc NeurSyn}
+\section{Beta oscillations and neuronal synchronization}\label{BG BetaOsc NeurSyn}
 
 Dopamine coordinates neuronal activity in the frequency domain. 
-When controlled by dopamine, beta oscillations (oscillations inside the range of 15 to 30 Hz) in basal ganglia circuits are important for normal movement \citep{Cagnan}. 
-However, dopamine loss in the basal ganglia may not only support but also actively promote the emergence of excessively synchronized beta oscillations at a network level, which indicate pathological synchronization between the regions of the BG \citep{Hammond}. 
+When controlled by dopamine, beta oscillations (oscillations inside the range of 15 to 30 Hz) in basal ganglia circuits are important for normal movement \parencite{Cagnan}. 
+However, dopamine loss in the basal ganglia may not only support but also actively promote the emergence of excessively synchronized beta oscillations at a network level, which indicate pathological synchronization between the regions of the BG \parencite{Hammond}. 
 This synchronization does not appear in non-parkinsonian brains, and it probably reflects a variety of pathophysiological mechanisms in the parkinsonian state.
 
-\subsection{Discrete Fourier transform}\label{DFT BG}
+\section{Discrete Fourier transform}\label{DFT BG}
 
 The Fourier transform, or more specifically, the family of Fourier transforms, are mathematical tools with a long and rich history and many use cases. 
 The Discrete Fourier Transform (DFT) is the version of the Fourier Transform used on discrete points of data (rather than e.g. a continuous function). 
@@ -108,9 +123,9 @@ One use case of the Fourier transform is to transform a function of time into a 
 The DFT can be said to convert data from the \textit{temporal} (time) domain to the \textit{spectral} (frequency) domain.
 
 Specifically, the Fourier transform can be used to approximately decompose a function, or a series, into a large number of waves of different frequencies and amplitudes. 
-This method can be used to approximate the amplitude or power of activity in specific frequencies in a signal made up of waves of many frequencies \citep{Fourier}.
+This method can be used to approximate the amplitude or power of activity in specific frequencies in a signal made up of waves of many frequencies \parencite{Fourier}.
 
-\subsection{k-Means}\label{KM BG}
+\section{k-Means}\label{KM BG}
 
 The k-Means algorithm is a clustering algorithm. 
 One noticeable peculiarity of the k-Means algorithm is that the user makes a choice of \textit{k}, the amount of clusters. 
@@ -123,39 +138,39 @@ The algorithm works iteratively.
     \item Each sample is assigned to the cluster for which the square distance is minimized.
     \item New cluster mean vectors are created from the mean of the new assignments of samples to clusters.
 \end{itemize}
-The iteration ends when the cluster mean vectors no longer change (possibly within some tolerance), or a set amount of iterations is reached \citep[p258-260]{PractStats}.
+The iteration ends when the cluster mean vectors no longer change (possibly within some tolerance), or a set amount of iterations is reached \parencite[p258-260]{PractStats}.
 
-\subsection{Principal component analysis}\label{PCA BG}
+\section{Principal component analysis}\label{PCA BG}
 
 One method for extracting lower-dimensional features from higher-dimensional data is by using principal component analysis (PCA).
 Specifically, PCA refers to the computation and use of principal components (PCs).
 For a set of data, a PC is a direction in the space of the data's features along which the data samples are highly variable.
 It's possible for a linear combination of PCs to describe all samples in a dataset with a great degree of accuracy.
 If the amount of PCs required for this is lower than the amount of features in the data samples, PCA becomes an effective means of feature reduction for that dataset.
-The PCs produced can also be used to visualize the data, and the individual components can be interesting for analyzing the data in their own right \citep[p374-380]{ISLR}.
+The PCs produced can also be used to visualize the data, and the individual components can be interesting for analyzing the data in their own right \parencite[p374-380]{ISLR}.
 
-\subsection{Spiking rates and spike bursts in Parkinson's disease}\label{BG SpikeRates}
+\section{Spiking rates and spike bursts in Parkinson's disease}\label{BG SpikeRates}
 
-The symptoms of PD are accompanied by various changes in the neuronal activity in the basal ganglia: besides the increase in the power and duration of beta band oscillations, there is also an increased firing rate of neurons, increase of spike bursts, and increased synchrony in all BG regions \citep{Bahu}. They are correlated with PD symptoms and their suppression ameliorates these symptoms; therefore, there is a great interest in understanding the mechanisms underlying their origin, which are still unclear. Several experimental results indicate that the GP-STN network plays an integral role in generating and modulating the oscillations\citep{Bahu}.
-In PD models of rodents, increased spike bursting in the GP and STN is significantly higher than in healthy animals \citep{Bahu}, but it remains unclear how increased spike bursting affects the duration and power of beta oscillations. Doing so in future research will be crucial to better understand the pathophysiology of PD.
+The symptoms of PD are accompanied by various changes in the neuronal activity in the basal ganglia: besides the increase in the power and duration of beta band oscillations, there is also an increased firing rate of neurons, increase of spike bursts, and increased synchrony in all BG regions \parencite{Bahu}. They are correlated with PD symptoms and their suppression ameliorates these symptoms; therefore, there is a great interest in understanding the mechanisms underlying their origin, which are still unclear. Several experimental results indicate that the GP-STN network plays an integral role in generating and modulating the oscillations\parencite{Bahu}.
+In PD models of rodents, increased spike bursting in the GP and STN is significantly higher than in healthy animals \parencite{Bahu}, but it remains unclear how increased spike bursting affects the duration and power of beta oscillations. Doing so in future research will be crucial to better understand the pathophysiology of PD.
 
-\subsection{Spiking activity as a simple Poisson process}
+\section{Spiking activity as a simple Poisson process}
 
-In neurosciences, the action potentials (spikes) are the main components for the real-time information processing in the brain \citep{Eden}. 
+In neurosciences, the action potentials (spikes) are the main components for the real-time information processing in the brain \parencite{Eden}. 
 The duration of each spike is very small, about one millisecond. 
 It is consequently quite natural to assimilate a spike to a random event. 
 Therefore we can model a spike train (a sequence of recorded times at which a neuron fires a spike) as a stochastic process (or point process), since they are widely used to represent events that appear to vary in a random manner over time.
 
 A stochastic process may be specified in terms of spike counts. 
-It is often useful, for constructing data analysis methods, to consider point processes in discrete time \citep{Eden}. 
+It is often useful, for constructing data analysis methods, to consider point processes in discrete time \parencite{Eden}. 
 One approach for constructing a discrete-time representation of a point process is to partition the whole recorded time into smaller time windows that are equally sized. 
 It is then possible to express a spike train in terms of discrete counts of spikes fired during successive time windows. 
 
 This discrete time description loses information about the precise timing of spikes within a time window. 
-However, in the limit as the discrete-time window size goes to zero, the discrete-time spike counts become as informative as the continuous-time descriptions, and the likelihoods and probability distributions associated with the discrete-time methods converge to their continuous-time counterparts \citep{Eden}. 
+However, in the limit as the discrete-time window size goes to zero, the discrete-time spike counts become as informative as the continuous-time descriptions, and the likelihoods and probability distributions associated with the discrete-time methods converge to their continuous-time counterparts \parencite{Eden}. 
 In many cases, the analysis methods are easier to develop and implement in discrete-time.    
 
-The first naive model that can be used is the most basic stochastic process: a homogeneous Poisson process, which is extensively used in neurosciences due to its simplicity \citep{Gerstner}. 
+The first naive model that can be used is the most basic stochastic process: a homogeneous Poisson process, which is extensively used in neurosciences due to its simplicity \parencite{Gerstner}. 
 As it is common in all Poisson processes, the number of spikes in each time window is completely independent of all the others. 
 This model is only based on the firing rate \begin{math}\lambda\end{math} of the process, which remains constant over time. 
 But it is precisely for this reason that several features of spike trains cannot be modelled, in particular: 
@@ -166,7 +181,7 @@ But it is precisely for this reason that several features of spike trains cannot
     \item The dependence with respect to spikes of other spike trains (i.e. neuronal synchronization).
 \end{itemize}
 
-\subsection{Inhomogeneous Poisson processes for spike count train modelling}
+\section{Inhomogeneous Poisson processes for spike count train modelling}
 
 As is likely the case with this project's dataset, the process could be non-stationary as the firing rate could vary depending on the time windows. 
 One of the easiest ways to take into account this non-stationarity is to allow the Poisson process to be inhomogeneous. 
@@ -181,35 +196,35 @@ Assuming that a spike count train is an inhomogeneous Poisson process with time-
 \end{itemize}
 
 As a result of the independence assumption, this process still has a memory-less property, by which the probability of spiking at any instant does not depend on occurrences or timing of past spikes; there is no history dependence. 
-However, history dependence is an important component of virtually all neural spiking activity and it must be taken into account if the objective is to identify patterns in said activity \citep{Perkel}. 
+However, history dependence is an important component of virtually all neural spiking activity and it must be taken into account if the objective is to identify patterns in said activity \parencite{Perkel}. 
 Therefore, it is necessary to further generalize the point process model by removing the independence assumption to capture the history dependent structure.
 
-\subsection{Renewal processes for representing history dependence}
+\section{Renewal processes for representing history dependence}
 
 The simplest type of point process with history dependence is the renewal process. 
-A renewal process is a point process for which the probability of firing a spike at any point in time can depend on the occurrence time of the last spike, but not on any spikes before then  \citep{Perkel}. 
+A renewal process is a point process for which the probability of firing a spike at any point in time can depend on the occurrence time of the last spike, but not on any spikes before then  \parencite{Perkel}. 
 
 Joint firing rate scattergrams can be employed in determining serial correlations between spiking intensities, where each point on the diagram then represents a pair of “adjacent” rates. 
 
 A quantitative measure of such correlation is provided by the serial correlation coefficient of firing rates, which are statistics based on the joint distributions of the rates. 
-The set of serial correlation coefficients is usually called a serial correlogram; it has sometimes been called "autocorrelogram" or simply "autocorrelation"  \citep{Perkel}. 
+The set of serial correlation coefficients is usually called a serial correlogram; it has sometimes been called "autocorrelogram" or simply "autocorrelation"  \parencite{Perkel}. 
 
 Given the autocorrelation function \textit{x(n)}, the power spectral density \begin{math}S(m) = |X(m)|^2\end{math}, where \textit{X(m)} is the DFT of \textit{x(n)}. 
 It is also called power spectrum or noise spectrum. 
-Noise is a limiting factor to all forms of information transmission; in this particular case, information transmission by neurons \citep{Gerstner}. 
+Noise is a limiting factor to all forms of information transmission; in this particular case, information transmission by neurons \parencite{Gerstner}. 
 An important concept of the theory of signal transmission is the signal-to-noise ratio. 
-A signal that is transmitted at a certain frequency \begin{math}\omega\end{math} should be stronger than (or at least of the same order of magnitude as) the noise at the same frequency \citep{Gerstner}. 
+A signal that is transmitted at a certain frequency \begin{math}\omega\end{math} should be stronger than (or at least of the same order of magnitude as) the noise at the same frequency \parencite{Gerstner}. 
 For this reason, the noise spectrum \begin{math}S(\omega)\end{math} of the transmission channel is of interest. 
 By observing the noise spectrum, the frequencies at which the variance or noise is higher (and lower) are identified.
 
-\subsection{Spectral entropy}
+\section{Spectral entropy}
 
 Since the beta oscillations are hypothesised to depend on the firing rate of the STN and GP neurons, to better visualize this relationship it is relevant to measure the spectral entropy of the network activity as a function of STN and GP firing rates. 
-It is a popular measure for the characterization of the complexity of Parkinsonian spike trains is the spectral entropy, which diminishes due to pharmacologic or stimulation treatment \citep{Andres}. 
+It is a popular measure for the characterization of the complexity of Parkinsonian spike trains is the spectral entropy, which diminishes due to pharmacologic or stimulation treatment \parencite{Andres}. 
 The values for the spectral entropy of the channels in the GP and STN are expected to be high for this particular spiking data, given the fact that it has been recorded from Parkinsonian rodents, and the results for both regions will show the state of the STN-GP network and their synchronization. From an information theory perspective, the higher the value, the more difficult the transmission of information between neurons, hence the symptoms of the disease are manifested. Therefore, spectral entropy is a critical parameter for the control of information transmission and information deterioration in the Parkinsonian, and could be viewed as a “diffusion coefficient” of the neuronal signals being transmitted.
 
 By normalizing the power spectrum to be seen as a probability density function, and later applying the standard formula for Shannon entropy to it, the spectral entropy of the spike train (or channel) can be obtained. 
-It serves as an entropy related index able to measure part of the structural complexity of the time series, as it quantifies the degree of order and predictability derived by the series' power spectrum \citep{Zacca}.
+It serves as an entropy related index able to measure part of the structural complexity of the time series, as it quantifies the degree of order and predictability derived by the series' power spectrum \parencite{Zacca}.
 
 Given the power spectral density \textit{S(m)}, the probability distribution \textit{P(m)} is:
 
@@ -232,17 +247,17 @@ H = -\frac{\sum_{m=1}^N P(m) log_2 P(m)}{log_2 N}
 Where N is the total amount of frequency points.
 The denominator \begin{math}log_2 N\end{math} represents the maximal spectral entropy of white noise, uniformly distributed in the frequency domain.
 
-\subsection{Software}
+\section{Software}
 
 Much of the code/software produced and used within the scope of this project used third-party software libraries for non-trivial applications.
 
-\subsubsection{NumPy}\label{NumPy BG}
+\subsection{NumPy}\label{NumPy BG}
 
-\textit{NumPy}, a software library, was used extensively throughout the entire project \citep{numpy}.
+\textit{NumPy}, a software library, was used extensively throughout the entire project \parencite{numpy}.
 
 \textit{NumPy} provides useful tools for usage of the DFT in its' \texttt{fft} package, specifically the \texttt{numpy.fft.fft} function, an implementation of the DFT. 
 
-The amplitude spectrum for \texttt{fft} output is obtained by taking the absolute values of the output from the \texttt{fft} complex-valued output array, (specifically using the \texttt{numpy.abs} function) \citep{numpy}.
+The amplitude spectrum for \texttt{fft} output is obtained by taking the absolute values of the output from the \texttt{fft} complex-valued output array, (specifically using the \texttt{numpy.abs} function) \parencite{numpy}.
 
 \texttt{fft} can be given an input argument to pad the input array with additional zeroes. 
 The user then receives a \textit{higher fidelity} output; output information for a larger amount of frequencies.
@@ -251,30 +266,30 @@ The output frequencies of \texttt{fft} can be interpreted with the helper functi
 The \texttt{fftfreq} function takes arguments \textit{window length} and \textit{sample spacing}, and returns an array of \textit{unit frequency bin centers}. 
 Specifically, when using \texttt{fft} on a time-signal (where time is in seconds) (such as in this project), \texttt{fftfreq} can be used to produce an array of \textit{array index to frequency in Hertz} mappings for \texttt{fft} output.
 
-\subsubsection{Scikit learn}\label{SK BG}
+\subsection{Scikit learn}\label{SK BG}
 
-The \textit{scikit learn} software library has an implementation of the k-Means algorithm in its' \texttt{sklearn.cluster.KMeans} module, and is the implementation used in this project \citep{SKLEARN}.
+The \textit{scikit learn} software library has an implementation of the k-Means algorithm in its' \texttt{sklearn.cluster.KMeans} module, and is the implementation used in this project \parencite{SKLEARN}.
 
 \textit{scikit learn} also enables easy computation of principal components using \texttt{sklearn.decomposition.PCA}.
 It also allows the user to transform members of a dataset into their respective representation under a certain set of PCs. 
 It should be noted that such a representation is often approximate.
 Furthermore, the user is able to see the \textit{explained variance} and \textit{ratio of explained variance} for each PC produced for a specific dataset. 
-This implementation was used in this project \citep{SKLEARN}.
+This implementation was used in this project \parencite{SKLEARN}.
 
-\subsubsection{Plots and figures}
+\subsection{Plots and figures}
 
-For visualization of results, the \textit{matplotlib} and \textit{Seaborn} software libraries were used \citep{MPL} \citep{Seaborn}.
+For visualization of results, the \textit{matplotlib} and \textit{Seaborn} software libraries were used \parencite{MPL} \parencite{Seaborn}.
 
 \newpage
-\section{Methods}
+\chapter{Methods}
 
 Some methods in this project focused on amplitudes of activity in the spectral domain for the LFP data used in the scope of this project.
-The reasoning behind this is that previous research on Parkinson's disease has shown that LFP activity in the basal ganglia in the beta-range is abnormally synchronized compared to that of the same activity in subjects unaffected by Parkinson's disease, as was discussed in subsection \ref{BG BetaOsc NeurSyn} \citep{Cagnan}.
+The reasoning behind this is that previous research on Parkinson's disease has shown that LFP activity in the basal ganglia in the beta-range is abnormally synchronized compared to that of the same activity in subjects unaffected by Parkinson's disease, as was discussed in chapter \ref{BG BetaOsc NeurSyn} \parencite{Cagnan}.
 This suggests that such activity might embed additional useful information for research, and possibly a means for classification. 
 
 Apart from focusing on LFP recordings, the analysis of spiking rates also provides insight into the activity and synchronization of the different basal ganglia regions, and can be used to extract relevant features which are apt for classification.
 
-\subsection{Spectrum feature extraction}\label{DFT Method}
+\section{Spectrum feature extraction}\label{DFT Method}
 
 One important method for feature extraction used in this project was the DFT. 
 LFP data was first split into uniform-sized (in array length, or equivalently length of time) \textit{epochs}.
@@ -282,21 +297,21 @@ Software implemented for this end was designed such that the \textit{epoch size}
 Each such epoch was then transformed using DFT.
 
 The amplitude spectrum of DFT output was produced by taking its' absolute values. 
-\texttt{fftfreq} (as described in sub-subsection \ref{NumPy BG}) was used to find indices in the DFT output representing frequencies in a certain range, and selecting such values.
+\texttt{fftfreq} (as described in section \ref{NumPy BG}) was used to find indices in the DFT output representing frequencies in a certain range, and selecting such values.
 This range was implemented to be variable.
 
 Using this process, for each epoch a \textit{feature vector} was produced. 
 Each value in the vector represents an amplitude of LFP activity for a specific frequency, epoch, channel, and session with a specific set of parameters for fidelity, epoch size, and range of frequencies.
 For ease of reference, these vectors will be referred to as \textit{spectrum feature vectors} (SFVs) in this report.
 
-\subsection{k-Means as a visualization heuristic}\label{KM Method}
+\section{k-Means as a visualization heuristic}\label{KM Method}
 
 Initially, k-Means was considered as a means for clustering SFVs in an attempt at classification. 
 Attempting to support this choice with an argument as to why it is an appropriate choice of algorithm for this particular use case proved difficult.
 However, a heuristic argument can be made.
 
 The SFVs represent a portion of an amplitude spectrum. 
-The square of an amplitude spectrum is a power spectrum \citep{numpy}.
+The square of an amplitude spectrum is a power spectrum \parencite{numpy}.
 The distance between a cluster mean vector (as generated by k-Means) and a SFV can therefor be interpreted as a "difference in amplitude"-spectrum.
 As such, the square of this distance can be interpreted as a "difference in power"-spectrum.
 Then, when using k-Means with the SFVs, the "distance" the algorithm will be attempting to minimize is the sum of this "difference in power"-spectrum; or just difference in power.
@@ -310,7 +325,7 @@ The resulting k-Means model was then used to classify (predict) the entire sessi
 This procedure was repeated for several different sessions.
 The parameters used for \textit{k} for k-Means, the epochs size, and the range of frequencies included in the SFVs are able to be varied in order to produce extensive results. 
 
-\subsection{Usage of principal component analysis}\label{PCA Methods}
+\section{Usage of principal component analysis}\label{PCA Methods}
 
 In order to better describe the SFVs, PCA was used.
 
@@ -323,7 +338,7 @@ Should the distribution of SFVs transformed into PC representations under this m
 
 PCs were produced for the entire set of SFVs that were produced from the LFP data available, and these were then subjected to analysis. 
 
-\subsection{Poisson process}\label{Poiss Method}
+\section{Poisson process}\label{Poiss Method}
 
 The original dataset consists of the number of spikes counted during successive time windows (each of them being half a second). 
 For each recorded channel in different regions of the basal ganglia, which in this case are the globus pallidus and subthalamic nucleus, 393 recorded time windows were available.
@@ -333,7 +348,7 @@ The non-stationarity of the spiking rate over time makes it impossible to model 
 It is possible to obtain the time-dependent spiking rate function by dividing each spike count by the duration of the time windows, namely 0.5 seconds. 
 We also produced an estimation of the rate probability distribution by plotting a histogram of the time series.
 
-\subsection{Renewal process}\label{RP Method}
+\section{Renewal process}\label{RP Method}
 
 Because of the fact that even as an inhomogeneous Poisson process the dependence between spikes cannot be accounted for, the spike count trains were also modelled as a renewal process.
 
@@ -346,11 +361,11 @@ Next, the power spectral density was drawn from the autocorrelation measure, by 
 Lastly, using the power spectral density values, the spectral entropy of each channel was obtained to measure the complexity of the signals.
 
 \newpage
-\section{Results}
+\chapter{Results}
 
-This subsection is dedicated to presenting results that were produced from the methods described in the previous section.
+This chapter is dedicated to presenting results that were produced from the methods described in the previous chapter.
 
-\subsection{Spectrum feature vectors}\label{SFV Results}
+\section{Spectrum feature vectors}\label{SFV Results}
 
 Figure \ref{fig:GP1} and figure \ref{fig:STR2} show SFVs for channels \texttt{gp\_lfp1} and \texttt{str\_lfp10} for sessions \texttt{NPR052e.10} and \texttt{NPR064.b08}, respectively. 
 For both figures, each column represents a single SFV, generated for a specific epoch of activity, displayed chronologically. 
@@ -363,7 +378,7 @@ Specifically, the input was padded with to a length of 16384 in order to produce
 This results in 46 equally-spaced frequency samples, the lowest being approximately 5.86 Hz and the highest being approximately 49.8 Hz. 
 The parameters can be considered arbitrary due to easily being changed.
 In this specific configuration, the frequency range was selected to be somewhat wider than the beta-range of frequencies.
-The epoch size was chosen to be somewhat longer than the shortest length of a beta-burst \citep{Cagnan}.
+The epoch size was chosen to be somewhat longer than the shortest length of a beta-burst \parencite{Cagnan}.
 The fidelity was chosen arbitrarily.
 
 These figures are, clearly, a very small subset of the total set of produced SFVs. They also represent only a very small subset of possible configurations of SFVs in regards to epoch size, sampled frequencies, and amount of frequency samples.
@@ -382,17 +397,17 @@ These figures are, clearly, a very small subset of the total set of produced SFV
     \label{fig:STR2}
 \end{figure}
 
-\subsection{k-Means-based visualization}\label{KM Results}
+\section{k-Means-based visualization}\label{KM Results}
 
 Some of the produced k-Means prediction visualizations are shown in figures \ref{fig:KM4} and \ref{fig:KM16}.
-In order to better relate to the heuristic argument presented in subsection \ref{KM Method}, the colors for class assignments were chosen to be sorted by the "sum of power spectrum" (sum of squares) of the cluster centers.
+In order to better relate to the heuristic argument presented in section \ref{KM Method}, the colors for class assignments were chosen to be sorted by the "sum of power spectrum" (sum of squares) of the cluster centers.
 Lower class index (refer to color bar in either figure) represents lower sum of power spectrum.
 
 In the figures, each row represents the class assignments for a specific channel in the set.
 The columns represent epochs.
 Each colored "slice" is the prediction of a single SFV to a class, the result of a trained k-Means model.
 The particular channel names are not shown in these figures, but include both STR and GP channels, sorted such that channels 0 - 10 are GP channels and 11 - 14 are STR channels.
-The SFVs are identical in production parameters to those presented in subsection \ref{SFV Results}.
+The SFVs are identical in production parameters to those presented in section \ref{SFV Results}.
 
 The most important thing to note about these figures is how different channels in the same (or close) epochs tend to be given equal class assignments excessively. 
 The authors interpret the class assignments for adjacent epochs to often be "close", meaning that class assignments seem to be followed by slightly higher or slightly lower class assignments (referring to class index), this was however not researched more thoroughly and should be considered an informal observation.
@@ -414,9 +429,9 @@ Informally, there also appears to be a certain "verticality" to most epochs, whe
     \label{fig:KM16}
 \end{figure}
 
-\subsection{Principal component analysis of spectrum feature vectors}\label{PCA Results}
+\section{Principal component analysis of spectrum feature vectors}\label{PCA Results}
 
-The method outlined in subsection \ref{PCA Methods} was performed using a set of 362,184 SFVs produced with parameters identical to those described in subsection \ref{SFV Results}.
+The method outlined in section \ref{PCA Methods} was performed using a set of 362,184 SFVs produced with parameters identical to those described in section \ref{SFV Results}.
 Indeed, the SFVs shown in figures \ref{fig:GP1} and \ref{fig:STR2} are part of the set used to compute the PCA model.
 
 The first thing to consider about the PCs computed for the set of SFVs are the PCs themselves.
@@ -466,7 +481,7 @@ Notably, GP channels exhibit distributions with more width and higher peaks.
 \end{figure}
 
 Additionally, equivalent figures can be used to consider differences in the LFP activity of different animals, by producing the distributions (and differences of such) in different sessions.
-Figures \ref{fig:PCAAnimals} and \ref{fig:PCAAnimalslg2} show such visualizations, for sessions \textit{NPR-076.c09} in red, \textit{NPR064.c09} in blue, and \textit{NPR065e.03} in green.
+Figures \ref{fig:PCAAnimals} and \ref{fig:PCAAnimalslg2} show such visualizations, for sessions \texttt{NPR-076.c09} in red, \texttt{NPR064.c09} in blue, and \texttt{NPR065e.03} in green.
 
 \begin{figure}[H]
     \centering
@@ -522,12 +537,12 @@ Notably, cross-correlation within STR channels is consistently low, while it is 
     \label{tab:corrcoefSTR}
 \end{table}
 
-\subsection{Spiking analysis results}
+\section{Spiking analysis results}
 
-This subsection is dedicated to the results of analysis of spiking rate data, by methods described in 
+This section is dedicated to the results of analysis of spiking rate data, by methods described in 
 All results are produced taking 50 successive time windows of 0.5 seconds each.
 
-\subsubsection{Spiking rates}
+\subsection{Spiking rates}
 
 For all figures plots, rows represent channels and columns represent time windows. 
 Figure \ref{fig:ratesGP1} and figure \ref{fig:ratesSTN1} show the spiking rates for the channels in the GP and STN, respectively.
@@ -554,7 +569,7 @@ Figure \ref{fig:ratesBoth1} shows the spiking rate functions of the channels of 
     \label{fig:ratesBoth1}
 \end{figure}
 
-\subsubsection{Joint rate distributions}
+\subsection{Joint rate distributions}
 
 The data is displayed in the form of scatter diagrams, in which the sequence of firing rates (represented by the abscissa) is plotted against the same sequence with a lag of one time window (represented by the ordinate). 
 Each point on the diagram then represents a pair of “adjacent” rates.
@@ -585,7 +600,7 @@ In the non-hexagonal scatterplots, there is one color per channel (in the case o
     \label{fig:JP3}
 \end{figure}
 
-\subsubsection{Serial correlation coefficients}
+\subsection{Serial correlation coefficients}
 
 Figure \ref{fig:corr1} and figure \ref{fig:corr2} display the serial correlogram for one single spike count train (channel) in the GP. 
 Figure \ref{fig:corr3} shows the same information for all channels. Channels 0-6 are from GP, channels 7-16 are from STN
@@ -612,7 +627,7 @@ Rows represent channels and columns represent time windows.
     \label{fig:corr3}
 \end{figure}
 
-\subsubsection{Power spectral density}
+\subsection{Power spectral density}
 
 Figure \ref{fig:PS1} and figure \ref{fig:PS2} show the power spectral density channels in the GP and STN (one color per channel). 
 Figure \ref{fig:PS3} shows the power spectrum of both regions (red for GP, blue for STN).
@@ -639,7 +654,7 @@ The original spike data was recorded with a sampling frequency of 1 Hz, so the m
     \label{fig:PS3}
 \end{figure}
 
-\subsubsection{Spectral entropies}
+\subsection{Spectral entropies}
 
 Table \ref{tab:spec_entr} shows spectral entropies of select channels (channels 0-6 from the GP, channels 7-16 from the STN).
 
@@ -671,17 +686,17 @@ Table \ref{tab:spec_entr} shows spectral entropies of select channels (channels 
 \end{table}
 
 \newpage
-\section{Discussion}
+\chapter{Discussion}
 
-This section is dedicated to discussion and interpretation of the produced results in the context of the research questions for this project.
+This chapter is dedicated to discussion and interpretation of the produced results in the context of the research questions for this project.
 
-\subsection{LFP activity based methods of classification}
+\section{LFP activity based methods of classification}
 
-This subsection discusses the methods described in subsections \ref{DFT Method}, \ref{KM Method}, and \ref{PCA Methods}, with respective results in subsections \ref{SFV Results}, \ref{KM Results}, and \ref{PCA Results}.
+This section discusses the methods described in sections \ref{DFT Method}, \ref{KM Method}, and \ref{PCA Methods}, with respective results in sections \ref{SFV Results}, \ref{KM Results}, and \ref{PCA Results}.
 
 The authors believe that SFVs, as described in this report, are an appropriate means of feature extraction in the context of this report. 
 This is not intended to be a proclamation of a groundbreaking discovery.
-Analyzing the spectrum of brain activity has previously shown interesting results \citep{Cagnan}, and SFVs are just a generalized approach to describe the process of extracting such spectra, taking fidelity, epoch size, and range of spectra into account.
+Analyzing the spectrum of brain activity has previously shown interesting results \parencite{Cagnan}, and SFVs are just a generalized approach to describe the process of extracting such spectra, taking fidelity, epoch size, and range of spectra into account.
 Indeed, SFVs or similar methods have likely been described or used previously with a different name in previous research, not necessarily in this field of research.
 SFVs also provide a simple mean of visualizing LFP activity in a human-understandable way.
 
@@ -703,7 +718,7 @@ Notable are the consistently lesser amplitudes of activity in STR, and the consi
 While the PCs described in figure \ref{fig:PCS} are present almost independently in STR channels, they have clear correlation in GP channels.
 Interpreting this is beyond the experience of the authors.
 
-\subsection{Spiking rate based methods of classification}
+\section{Spiking rate based methods of classification}
 
 The model used to analyse spikes provides a set of measurements in both time and spectral domains that are used to attempt an observation of the distinctions in a broad collection of spiking activity data. These properties cannot be understood isolated, but related to each other. The measurements were taken in order to examine the spiking activity of the STN and GP regions, since the STN-GP network is relevant for PD, and to know whether there are differences in the activity of both regions. The results remain of interest even if their activity is finally found to be similar. Relying on previous research, another aim is to note a big degree of complexity or disorder in all channels, which belongs to a Parkinsonian state.
 
@@ -722,7 +737,7 @@ The spectral entropy values are then useful to quantify the general level of dis
 
 
 \newpage
-\section{Conclusion}
+\chapter{Conclusion}
 
 \textbf{This section is not at the same level of completion as previous sections.}
 
@@ -735,7 +750,6 @@ It's likely that many additional avenues for further research could be explored,
 The authors believe that the methods and results developed based on LFP activity in the basal ganglia for the purpose of classification of Parkinson's disease show definitive potential for future research.
 
 \newpage
-\section{References}
-\bibliography{sources}
+\printbibliography[heading=bibintoc]
 
 \end{document}
