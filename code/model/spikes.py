@@ -299,11 +299,11 @@ def getInfoAllSpikes():
 	for i in range(0,len(sr_gp)):
 		x_gp = (np.amax(sr_gp[i]) - np.amin(sr_gp[i])) / 5
 		n_gp = math.ceil(x_gp) 
-		plt.hist(sr_gp[i], bins = n_gp, alpha = 0.5,color='r')
+		plt.hist(sr_gp[i], bins = n_gp,color='r')
 	for i in range(0,len(sr_stn)):
 		x_stn = (np.amax(sr_stn[i]) - np.amin(sr_stn[i])) / 5
 		n_stn = math.ceil(x_stn)
-		plt.hist(sr_stn[i], bins = n_stn, alpha = 0.5,color='b')
+		plt.hist(sr_stn[i], bins = n_stn,color='b')
 	plt.title("Rate function probability distribution")
 	plt.xlabel("Spiking rate")
 	plt.ylabel("Counts")
@@ -387,14 +387,14 @@ def getInfoAllSpikes():
 
 	# of channels in each region
 	for i in range(0,len(se_gp)):
-		plt.hist(se_gp[i], alpha=0.25, color = 'r')
+		plt.hist(se_gp[i], color = 'r')
 	plt.title("Probability distribution of spectral entropy in GP")
 	plt.xlabel("spectral entropy")
 	plt.ylabel("counts")
 	plt.savefig("spikes/measurements/comp_gp_stn/hist_gp.png")
 	plt.clf()
 	for i in range(0,len(se_stn)):
-		plt.hist(se_stn[i], alpha=0.25, color='b')
+		plt.hist(se_stn[i], color='b')
 	plt.title("Probability distribution of spectral entropy in STN")
 	plt.xlabel("spectral entropy")
 	plt.ylabel("counts")
@@ -404,7 +404,7 @@ def getInfoAllSpikes():
 	for i in range(0,len(se_gp)):
 		plt.hist(se_gp[i], alpha=0.25, color='r')
 	for i in range(0,len(se_stn)):
-		plt.hist(se_stn[i], alpha=0.25, color='b')
+		plt.hist(se_stn[i], color='b')
 	plt.title("Probability distribution of spectral entropy in GP and STN")
 	plt.xlabel("spectral entropy")
 	plt.ylabel("counts")
