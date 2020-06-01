@@ -32,22 +32,22 @@ hidelinks
 
 \begin{abstract}
 
-This project has been concerned with developing methods for feature extraction for the purpose of classification of brain activity in the basal ganglia in parkinsonian brains. 
-Classification of local field potential activity was based on feature vectors produced from the discrete Fourier transform of activity.
+This project has been concerned with developing methods for dimensionality reduction and feature extraction of brain activity in the basal ganglia in parkinsonian brains. 
+Dimensionality reduction of local field potential activity was based on feature vectors produced from the discrete Fourier transform of activity.
 A heuristic-motivated visualization of these feature vectors using the k-Means algorithm for prediction and classification was used.
-The feature vectors were also subject to principal component analysis as a further means of feature extraction and classification.
-Classification of spiking activity was based on spiking rates, joint rate distributions, serial correlation coefficients, power spectral density, and spectral entropy.
-The methods for feature extraction and classification developed were used to show similarities in simultaneous brain activity, notable characteristics of brain activity, and notable similarities and differences in the brain activity when comparing activity from different sub-regions of the basal ganglia and when comparing brain activity from different animals.
+The feature vectors were also subject to principal component analysis as a further means of feature extraction and analysis.
+Dimensionality reduction of spiking activity was based on spiking rates, joint rate distributions, serial correlation coefficients, power spectral density, and spectral entropy.
+The methods for dimensionality reduction and feature extraction developed were used to show similarities in simultaneous brain activity, notable characteristics of brain activity, and notable similarities and differences in the brain activity when comparing activity from different sub-regions of the basal ganglia and when comparing brain activity from different animals.
 We believe that the methods developed in this project show promise in further research of Parkinson's disease.
 \end{abstract}
 
 \begin{otherlanguage}{swedish}
 \begin{abstract}
-Detta projekt har syftat till att utveckla metoder för att utvinna särdrag och att klassifiera hjärnaktivitet i basala ganglierna i hjärnor med parkinsonism.
-Klassificering av lokal fältpotential baserades på särdragsvektorer producerade från diskret Fouriertransform av aktivitet. 
+Detta projekt har syftat till att utveckla metoder för att minska dimensionalitet och utvinna särdrag från hjärnaktivitet i basala ganglierna i hjärnor med parkinsonism.
+Klassificering av lokala fältpotentialer baserades på särdragsvektorer producerade från diskret Fouriertransform av aktivitet. 
 En heuristiskt motiverad visualisering av dessa användande k-Means algoritmen för förutsägning och klassificering användes.
-Dessa särdragsvektorer analyserades även med principalkomponentanalys för att utvinna ytterligare särdrag, samt för klassificering.
-Klassificering av nervimpulser baserades på impulsfrekvens, betingad impulsfrekvensfördelning, seriella korrelationskoefficenter, effektspektrum, och spektral entropi.
+Dessa särdragsvektorer analyserades även med principalkomponentanalys för att utvinna ytterligare särdrag samt för analys.
+Dimensionalitetreduktion av nervimpulser baserades på impulsfrekvens, betingad impulsfrekvensfördelning, seriella korrelationskoefficenter, effektspektrum, och spektral entropi.
 Metoderna som togs fram för särdragsutvinning och klassificering användes för att visa likheter i simultan hjärnaktivitet, viss karakteristik av hjärnaktivitet, och vissa likheter och skillnader i hjärnaktivitet vid jämförelse av aktivitet från olika delar av basala ganglierna och vid jämförande av aktivitet från olika djur.
 Vi tror att metoderna som har utvecklats i detta projekt visar potential i vidare forskning av Parkinsons sjukdom.
 \end{abstract}
@@ -94,12 +94,15 @@ The dataset used is instead assumed to have been produced/recorded to a satisfac
     \item How can such methods be used to distinguish between brain activity from different patients with Parkinson's disease?
 \end{itemize}
 
-\section{Dataset source}
+\section{Dataset and acknowledgements}
 
 The dataset used in this project was produced at Medical Research Brain Network Dynamics Unit, Department of Pharmacology, University of Oxford, as part of research by \textcite{Cagnan}.
-It was made available to the authors by the supervisor of this project, Dr. Arvind Kumar, through correspondence with one of the authors of \textcite{Cagnan}, Associate Prof. Andrew Sharott.
+It was made available to the authors by the supervisor of this project, Dr. Arvind Kumar, through correspondence with one of the authors of said research, Associate Prof. Andrew Sharott.
 
 It has been a pleasure and great learning experience to work with, and the importance of this contribution to this project is immeasurable.
+
+Futhermore, Arvind has been engaged with the project and provided key insights and feedback actively through its entire duration.
+It has been a joy to conduct research under his guidance.
 
 \section{Ethics and Sustainability}
 
@@ -166,7 +169,7 @@ One method for extracting lower-dimensional features from higher-dimensional dat
 Specifically, PCA refers to the computation and use of principal components (PCs).
 For a set of data, a PC is a direction in the space of the data's features along which the data samples are highly variable.
 It's possible for a linear combination of PCs to describe all samples in a dataset with a great degree of accuracy.
-If the amount of PCs required for this is lower than the amount of features in the data samples, PCA becomes an effective means of feature reduction for that dataset.
+If the amount of PCs required for this is lower than the amount of features in the data samples, PCA becomes an effective means of feature reduction for that dataset, by projecting the data onto the PCs.
 The PCs produced can also be used to visualize the data, and the individual components can be interesting for analyzing the data in their own right \parencite[p374-380]{ISLR}.
 
 \section{Spiking rates and spike bursts in Parkinson's disease}\label{BG SpikeRates}
@@ -411,14 +414,14 @@ These figures are, clearly, a very small subset of the total set of produced SFV
 
 \begin{figure}[H]
     \centering
-    \centerline{\includegraphics[width=1\textwidth]{images/GP1.png}}
+    \centerline{\includegraphics[width=1.1\textwidth]{images/GP1.png}}
     \caption{SFVs for GP LFP channel of a specific session.}
     \label{fig:GP1}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \centerline{\includegraphics[width=1\textwidth]{images/STR2.png}}
+    \centerline{\includegraphics[width=1.1\textwidth]{images/STR2.png}}
     \caption{SFVs for STR LFP channel of a specific session.}
     \label{fig:STR2}
 \end{figure}
@@ -426,19 +429,20 @@ These figures are, clearly, a very small subset of the total set of produced SFV
 \section{k-Means-based visualization}\label{KM Results}
 
 Some of the produced k-Means prediction visualizations are shown in figures \ref{fig:KM4} and \ref{fig:KM16}.
-In order to better relate to the heuristic argument presented in section \ref{KM Method}, the colors for class assignments were chosen to be sorted by the \textit{"sum of power spectrum"} (sum of squares) of the cluster centers.
-Lower class index (refer to color bar in either figure) represents lower sum of power spectrum.
 
-In the figures, each row represents the class assignments for a specific channel in the set.
+In the figures, each row represents the class assignments for a specific channel in the session.
 The columns represent epochs.
 Each colored "slice" is the prediction of a single SFV to a class, as predicted by the trained k-Means model.
+The clusters are sorted by the sum of their amplitude spectrum, such that higher class index indicates higher sum of amplitude.
 The particular channel names are not shown in these figures, but include both STR and GP channels, sorted such that channels 0 - 10 are GP channels and 11 - 14 are STR channels.
 The SFVs are identical in production parameters to those presented in section \ref{SFV Results}.
+Additionally, the amount of different classes present in each epoch are shown as red dots.
 
-The authors interpret the class assignments for adjacent epochs to often be "close", meaning that class assignments seem to be followed by slightly higher or slightly lower class assignments (referring to class index), this was however not researched more thoroughly and should be considered an informal observation.
-Also of note are "streaks" of higher class assignments for specific channels.
+Of note are "streaks" of "higher" class assignments for specific channels.
 Channel 11, notably, has multiple such streaks.
-Informally, there also appears to be a certain "verticality" to most epochs, where assignments over multiple channels are excessively similar at simultaneous epochs.
+Even when using 16 clusters, all SFVs of an epoch are sometimes given the same prediction.
+A majority of epochs have at most 4 distinct class assignments when using 16 clusters, and none has more than 8. 
+When using just 4 clusters, while most epochs contain at most 2 distinct class assignments, many still have 3 or 4.
 
 \begin{figure}[H]
     \centering
@@ -457,6 +461,7 @@ Informally, there also appears to be a certain "verticality" to most epochs, whe
 \section{Principal component analysis of spectrum feature vectors}\label{PCA Results}
 
 The method outlined in section \ref{PCA Methods} was performed using a set of 362,184 SFVs produced with parameters identical to those described in section \ref{SFV Results}.
+131,208 were from STR channels, the rest (320,976) being from GP channels.
 Indeed, the SFVs shown in figures \ref{fig:GP1} and \ref{fig:STR2} are part of the set used to compute the PCA model.
 
 The first thing to consider about the PCs computed for the set of SFVs are the PCs themselves.
@@ -466,79 +471,80 @@ A linear combination of these PCs can describe the entire set of SFVs with a gre
 
 \begin{figure}[H]
     \centering
-    \centerline{\includegraphics[width=1\textwidth]{images/PCA/PCS.png}}
+    \centerline{\includegraphics[width=1.2\textwidth]{images/PCA/PCS.png}}
     \caption{Principal components of SFV-set.}
     \label{fig:PCS}
 \end{figure}
 
-Having computed these PCs, the approximate probability distributions of the individual components as they appear in the set of "PCA-transformed" SFVs are shown in figure \ref{fig:PCAPDF}. 
-In order to better visualize the long tails of these distributions, the probability distributions of the logarithms (base 2) of the individual components are shown in figure \ref{fig:PCAPDFLG2}.
+Having computed these PCs, the approximate probability distributions of the individual components as they appear in the set of "PCA-transformed" (projected onto the PCs) SFVs are shown in figure \ref{fig:PCAPDF}. 
+In order to better visualize the long tails of these distributions, the same information is shown in a logarithmic plot in figure \ref{fig:PCAPDFLG2}.
 
 \begin{figure}[H]
     \centering
-    \centerline{\includegraphics[width=1\textwidth]{images/PCA/PCAPDF.png}}
+    \centerline{\includegraphics[width=1.2\textwidth]{images/PCA/PCAPDF.png}}
     \caption{Approximate distributions of principal components of SFV-set.}
     \label{fig:PCAPDF}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \centerline{\includegraphics[width=1\textwidth]{images/PCA/PCAPDFLG2.png}}
-    \caption{Approximate distributions of \begin{math}log_2\end{math} of principal components of SFV-set.}
+    \centerline{\includegraphics[width=1.2\textwidth]{images/PCA/PCAPDFLG2.png}}
+    \caption{Approximate distributions of of principal components of SFV-set.}
     \label{fig:PCAPDFLG2}
 \end{figure}
 
 The information shown in figures \ref{fig:PCAPDF} and \ref{fig:PCAPDFLG2} is also shown in figures \ref{fig:PCAPDFBOTH} and \ref{fig:PCAPDFBOTHLG2}, except with channels from STR kept separate from those of GP.
-Notably, GP channels exhibit distributions with more width and higher peaks.
+The distributions appear to differ only very slightly (notably in the logarithmic plots). 
 
 \begin{figure}[H]
     \centering
-    \centerline{\includegraphics[width=1\textwidth]{images/PCA/PCABOTH.png}}
+    \centerline{\includegraphics[width=1.2\textwidth]{images/PCA/PCABOTH.png}}
     \caption{Approximate distributions of principal components of SFV-set, separated by channel type.}
     \label{fig:PCAPDFBOTH}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \centerline{\includegraphics[width=1\textwidth]{images/PCA/PCABOTHLG2.png}}
+    \centerline{\includegraphics[width=1.2\textwidth]{images/PCA/PCABOTHLG2.png}}
     \caption{Approximate distributions of \begin{math}log_2\end{math} of principal components of SFV-set, separated by channel type.}
     \label{fig:PCAPDFBOTHLG2}
 \end{figure}
 
-Additionally, equivalent figures can be used to consider differences in the LFP activity of different animals, by producing the distributions (and differences of such) in different sessions.
+Additionally, equivalent figures can be used to consider differences in the LFP activity of different animals.
 Figures \ref{fig:PCAAnimals} and \ref{fig:PCAAnimalslg2} show such visualizations, for sessions \texttt{NPR-076.c09} in red, \texttt{NPR064.c09} in blue, and \texttt{NPR065e.03} in green.
+There are only very minor differences.
 
 \begin{figure}[H]
     \centering
-    \centerline{\includegraphics[width=1\textwidth]{images/PCA/PCAAnimalsnormal.png}}
-    \caption{Approximate distributions of \begin{math}log_2\end{math} of principal components of SFV-set, separated by session.}
+    \centerline{\includegraphics[width=1.2\textwidth]{images/PCA/PCAAnimalsnormal.png}}
+    \caption{Approximate distributions of principal components of SFV-set, separated by session.}
     \label{fig:PCAAnimals}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \centerline{\includegraphics[width=1\textwidth]{images/PCA/PCAAnimalslg2.png}}
-    \caption{Approximate distributions of \begin{math}log_2\end{math} of principal components of SFV-set, separated by session.}
+    \centerline{\includegraphics[width=1.2\textwidth]{images/PCA/PCAAnimalslg2.png}}
+    \caption{Approximate distributions of principal components of SFV-set, separated by session.}
     \label{fig:PCAAnimalslg2}
 \end{figure}
 
 These figures, of course, don't show how these distributions correlate.
 Tables \ref{tab:corrcoefGP} and \ref{tab:corrcoefSTR} show the cross-correlations of PCs of "PCA-transformed" SFVs, for GP and STR channels respectively.
-Notably, cross-correlation within STR channels is consistently low, while it is consistently considerably higher within GP channels.
+There are some minor notable differences, such as the differences in cross-correlation of PCs 1 and 2, as well as when comparing PCs 2 and 4.
 
 \begin{table}[H]
     \centering
     \begin{tabular}{|c|c|c|c|c|c|c|c|c|}
     \hline
-          & PC 0 & PC 1 & PC 2 & PC 3  & PC 4 & PC 5 & PC 6 & PC 7 \\ \hline
-     PC 0 & 1.0  & 0.43 & 0.17 & 0.44  & 0.23 & 0.39 & 0.44 & 0.5  \\ \hline
-     PC 1 & 0.43 & 1.0  & 0.1  & 0.26  & 0.13 & 0.26 & 0.26 & 0.31 \\ \hline
-     PC 2 & 0.17 & 0.1  & 1.0  & 0.11  & 0.07 & 0.08 & 0.12 & 0.13 \\ \hline
-     PC 3 & 0.44 & 0.26 & 0.11 & 1.0   & 0.16 & 0.26 & 0.31 & 0.35 \\ \hline
-     PC 4 & 0.23 & 0.13 & 0.07 & 0.16  & 1.0  & 0.13 & 0.16 & 0.19 \\ \hline
-     PC 5 & 0.39 & 0.26 & 0.08 & 0.26  & 0.13 & 1.0  & 0.27 & 0.32 \\ \hline
-     PC 6 & 0.44 & 0.26 & 0.12 & 0.31  & 0.16 & 0.27 & 1.0  & 0.35 \\ \hline
-     PC 7 & 0.5  & 0.31 & 0.13 & 0.35  & 0.19 & 0.32 & 0.35 & 1.0  \\ \hline
+          & PC 1  & PC 2  & PC 3  & PC 4  & PC 5  & PC 6  & PC 7  & PC 8    \\ \hline
+     PC 1 & 1.0   & 0.04  & -0.01 & -0.0  & -0.01 & 0.0   & 0.0   & -0.0    \\ \hline
+     PC 2 & 0.04  & 1.0   & -0.02 & -0.04 & -0.01 & 0.0   & -0.02 & -0.02   \\ \hline
+     PC 3 & -0.01 & -0.02 & 1.0   & -0.02 & 0.01  & -0.01 & -0.01 & 0.01    \\ \hline
+     PC 4 & -0.0  & -0.04 & -0.02 & 1.0   & 0.0   & -0.02 & 0.01  & -0.01   \\ \hline
+     PC 5 & -0.01 & -0.01 & 0.01  & 0.0   & 1.0   & -0.01 & -0.0  & 0.0     \\ \hline
+     PC 6 & 0.0   & 0.0   & -0.01 & -0.02 & -0.01 & 1.0   & 0.0   & 0.01    \\ \hline
+     PC 7 & 0.0   & -0.02 & -0.01 & 0.01  & -0.0  & 0.0   & 1.0   & -0.0    \\ \hline
+     PC 8 & -0.0  & -0.02 & 0.01  & -0.01 & 0.0   & 0.01  & -0.0  & 1.0     \\ \hline
     \end{tabular}
     \caption{Cross-correlation of PCs, GP channels, rounded to two decimals.}
     \label{tab:corrcoefGP}
@@ -548,15 +554,15 @@ Notably, cross-correlation within STR channels is consistently low, while it is 
     \centering
     \begin{tabular}{|c|c|c|c|c|c|c|c|c|}
     \hline
-          & PC 0  &  PC 1 &  PC 2 &  PC 3 &  PC 4 &  PC 5 &  PC 6 &  PC 7 \\ \hline
-     PC 0 &  1.0  & -0.05 &  0.01 &  0.0  &  0.0  & -0.01 & -0.0  &  0.01 \\ \hline
-     PC 1 & -0.05 &  1.0  &  0.05 &  0.08 &  0.03 &  0.01 &  0.04 &  0.03 \\ \hline
-     PC 2 &  0.01 &  0.05 &  1.0  &  0.03 & -0.02 &  0.02 &  0.02 & -0.01 \\ \hline
-     PC 3 &  0.0  &  0.08 &  0.03 &  1.0  & -0.0  &  0.03 & -0.02 &  0.01 \\ \hline
-     PC 4 &  0.0  &  0.03 & -0.02 & -0.0  &  1.0  &  0.01 &  0.01 & -0.0  \\ \hline
-     PC 5 & -0.01 &  0.01 &  0.02 &  0.03 &  0.01 &  1.0 &  -0.0  & -0.01 \\ \hline
-     PC 6 & -0.0  &  0.04 &  0.02 & -0.02 &  0.01 & -0.0 &   1.0  &  0.0  \\ \hline
-     PC 7 &  0.01 &  0.03 & -0.01 &  0.01 & -0.0  & -0.01 &  0.0  &  1.0  \\ \hline
+          &  PC 1 &  PC 2 &  PC 3 &  PC 4 &  PC 5 &  PC 6 &  PC 7 &  PC 8 \\ \hline
+     PC 1 &  1.0  & -0.05 &  0.01 &  0.0  &  0.0  & -0.01 & -0.0  &  0.01 \\ \hline
+     PC 2 & -0.05 &  1.0  &  0.05 &  0.08 &  0.03 &  0.01 &  0.04 &  0.03 \\ \hline
+     PC 3 &  0.01 &  0.05 &  1.0  &  0.03 & -0.02 &  0.02 &  0.02 & -0.01 \\ \hline
+     PC 4 &  0.0  &  0.08 &  0.03 &  1.0  & -0.0  &  0.03 & -0.02 &  0.01 \\ \hline
+     PC 5 &  0.0  &  0.03 & -0.02 & -0.0  &  1.0  &  0.01 &  0.01 & -0.0  \\ \hline
+     PC 6 & -0.01 &  0.01 &  0.02 &  0.03 &  0.01 &  1.0 &  -0.0  & -0.01 \\ \hline
+     PC 7 & -0.0  &  0.04 &  0.02 & -0.02 &  0.01 & -0.0 &   1.0  &  0.0  \\ \hline
+     PC 8 &  0.01 &  0.03 & -0.01 &  0.01 & -0.0  & -0.01 &  0.0  &  1.0  \\ \hline
     \end{tabular}
     \caption{Cross-correlation of PCs, STR channels, rounded to two decimals.}
     \label{tab:corrcoefSTR}
@@ -702,24 +708,25 @@ SFVs also provide a simple mean of visualizing LFP activity in a human-understan
 \subsection{About the use of k-Means}
 
 To a layman in the study of neuroscience, the k-Means visualization heuristic applied in this project seems reasonable.
-The results produced show LFP activity being strikingly similar for different areas of the basal ganglia when compared simultaneously.
-Furthermore, the "outliers" present in figures \ref{fig:KM4} and \ref{fig:KM16} make intuitive sense, as one would expect outliers in any dataset.
-This intuition, to reiterate, is that of a layman.
-The authors imagine their chosen method and produced results may have serious flaws.
-The authors, however, consider these results to at least be a reason to consider more sophisticated methods to attempt to cluster SFVs.
-Such methods fall outside both the scope of this project, and the expertise of its' authors.
+The results produced show LFP activity being strikingly similar for different areas of the basal ganglia when compared simultaneously, which is interesting to note.
+Furthermore, the "outliers" of higher activity present in figures \ref{fig:KM4} and \ref{fig:KM16} make intuitive sense, as one would expect outliers in any dataset.
+The relatively, (and sometimes extraordinarily) low amount of predicted classes per epoch in figure \ref{fig:KM16} is an interesting results. 
+It would also be interesting to consider some similarity metric of classes predicted within an epoch.
+The fact that more than three different classes are predicted per-epoch for figure \ref{fig:KM4} very rarely suggests that the clusters generated are enough to perform some relevant separation.
+The authors believe that the results are a reason to consider more sophisticated methods to attempt to cluster SFVs.
+Such methods fall outside both the scope of this project.
 
 \subsection{On PCA results}
 
 The authors believe that the produced PCs, or more specifically the method by which they were produced, show great potential for similar methods in the use of dimensionality reduction and further research.
 As discussed, the authors consider SFVs a reasonable means of feature extraction, and PCA proved effective in further investigating these.
+
 A much smaller set of PCs than the number of features of their parent SFVs can describe them with great accuracy.
 These PCs could then reasonably be interpreted, in the quite literal sense, as components making up LFP activity.
-The PCs themselves could lend themselves to study and interpretation by more experienced scholars.
-The noticeable discrepancies between the nature of the distributions of these PCs when comparing GP channels to STR channels (see figures \ref{fig:PCAPDF}, \ref{fig:PCAPDFLG2}, tables \ref{tab:corrcoefGP}, \ref{tab:corrcoefSTR}) could also lend insight into the workings of these different brain regions.
-Notable are the consistently lesser amplitudes of activity in STR, and the consistently much lower cross-correlation of PCs in STR.
-While the PCs described in figure \ref{fig:PCS} are present almost independently in STR channels (over the entire SFV-set), they have clear correlation in GP channels (over the entire SFV-set).
-Interpreting the significance this is beyond the scope of this project.
+The PCs themselves could lend themselves to further study and interpretation.
+There are only minor discrepancies between the nature of the distributions of these PCs when comparing GP channels to STR channels (see figures \ref{fig:PCAPDF}, \ref{fig:PCAPDFLG2}, tables \ref{tab:corrcoefGP}, \ref{tab:corrcoefSTR}).
+There being small differences in the distributions and crosscorrelations of the PCs of different channels types at all, however, indicates that additional information could still be extracted from here.
+One specific avenue for further research is that of how PC distributions vary over time, and how different activity in different BG regions influences the others.
 
 \section{Spiking rate based methods of dimensionality reduction}
 
@@ -765,11 +772,12 @@ Despite containing a high quantity of noise, they still have a small level of pr
 
 The methods produced for classifying Parkinson's disease based on brain activity show potential.
 Many ideas considered in this project were never pursued due to limitations of time. 
-As such, many results produced are limited in scope (e.g. comparing brain regions rather than animals and vice versa).
+As such, many results produced are limited in scope (e.g. not comparing activity from different animals).
 More extensive and sophisticated attempts at interpreting the use and results of the methods developed could be undertaken, and additional regions of the brain could be considered.
-It's likely that many additional avenues for further research could be explored using the methods developed in this project, that are outside the imaginations of the authors.
+Furthermore, the methods for dimensionality reduction presented in this report could be used in tandem as a means to more extensively describe activity.
+More complex interactions of the sub-regions of the BG and how they interact could be taken into account.
 
-In closing, the authors believe that the methods and results developed based on brain activity in the basal ganglia for the purpose of classification of Parkinson's disease show definitive potential for future research.
+In closing, the authors believe that the methods and results developed based on brain activity in the basal ganglia for the purpose of dimensionality reduction of brain activity in Parkinson's disease show definitive potential for future research.
 
 \newpage
 \printbibliography[heading=bibintoc]
