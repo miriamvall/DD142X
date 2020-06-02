@@ -267,7 +267,7 @@ def getInfoAllSpikes():
 		plt.plot(sr_stn[i], 'b', alpha = 0.25)
 	fig = plt.gcf()
 	fig.set_size_inches(18.5, 10.5)
-	plt.rcParams.update({'font.size':24})
+	plt.rcParams.update({'font.size':22})
 	plt.title("Spiking Rate function")
 	plt.xlabel("time window")
 	plt.ylabel("spikes/second")

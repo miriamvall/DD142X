@@ -617,7 +617,7 @@ In the non-hexagonal scatterplots, there is one color per channel (in the case o
 
 \subsection{Serial correlation coefficients}
 
-Figure \ref{fig:corr3} shows the same information for all channels. Channels 0-6 are from GP, channels 7-16 are from STN
+Figure \ref{fig:corr3} shows the serial correlograms of all channels. Channels 0-6 are from GP, channels 7-16 are from STN
 Rows represent channels and columns represent time windows.
 
 \begin{figure}[H]
@@ -670,7 +670,7 @@ When computing the total values of the spectral entropies for all channels, the 
     \label{tab:spec_entr}
 \end{table}
 
-However, by partitioning the time windows in groups of 5 successive windows, the spectral entropies can be visualized as a time series, shown in Figure \ref{fig:SE1} (red for GP, blue for STN).  
+However, by partitioning the time windows in groups of 5 successive windows, the spectral entropies for each of these groups can be visualized, shown in Figure \ref{fig:SE1} (red for GP, blue for STN).  
 
 \begin{figure}[H]
     \centering
@@ -683,7 +683,7 @@ Computing the histogram for the spectral entropies of both regions gives an esti
 
 \begin{figure}[H]
     \centering
-    \centerline{\includegraphics[width=1\textwidth]{images/spiking/spec_entr_hist.png}}
+    \centerline{\includegraphics[width=1\textwidth]{images/spiking/hist_se.png}}
     \caption{Probability distributions of the spectral entropies during successive groups of 5 time windows, for channels in GP and STN}
     \label{fig:SE2}
 \end{figure}
@@ -760,7 +760,7 @@ Based on the power spectrums of the autocorrelation of the channels, an evident 
 Referring to the implications of noise on signal transmission theory which were mentioned in early sections, a high noise at a certain frequency is a limiting factor to information transmission between neurons at that frequency. 
 
 The spectral entropy values are then useful to quantify the general level of disorder or noise of each channel, based on the power spectrums. 
-When computing the spectral entropies in bins of 5 time windows, both regions vary in the same way over time, and their estimated probability distributions are similar; there is an evident concentration of points around two bands near the values of 0.2 and 0.85.
+When computing the spectral entropies in bins of 5 time windows, both regions vary in the same way, and their estimated probability distributions are similar; there is an evident concentration of points around two bands near the values of 0.2 and 0.85.
 Their estimated probability distributions corroborate the observed synchonization. 
 Likewise, when calculating the spectral entropies using all 393 time windows, the values show no significant differences between the spectral entropies in the GP and those in the STN. 
 They are all evenly distributed, and it can be affirmed that all channels have generally high spectral entropies going from approximately 0.6 to 0.9 (with 1 being the highest possible value). 
