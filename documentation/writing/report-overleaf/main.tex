@@ -210,15 +210,15 @@ But it is precisely for this reason that several features of spike trains cannot
 \section{Inhomogeneous Poisson processes for spike count train modelling}
 
 As is likely the case with this project's dataset, the process could be non-stationary as the firing rate could vary depending on the time windows. 
-One of the easiest ways to take into account this non-stationarity is to allow the Poisson process to be inhomogeneous. 
+One of the easiest ways to take into account this non-stationarity is to allow the Poisson process to be inhomogeneous \parencite{Eden}. 
 In this case, the firing rate is now time-dependent and is modelled by a function \begin{math}\lambda(t)\end{math}, which is the spiking rate (or intensity) of the inhomogeneous Poisson process. 
 This function is constituted by the quotients of the spike counts and the time length of the windows.
 
 Assuming that a spike count train is an inhomogeneous Poisson process with time-dependent firing rate \begin{math}\lambda(t)\end{math}:
 
 \begin{itemize}
-    \item For two disjoint time windows \textit{I} and \textit{J}, their spike counts \textit{N(I)} and \textit{N(J)} are independent.
-    \item For any time window \textit{I}, \textit{N(I)} is a Poisson variable.
+    \item For two disjoint time windows \textit{I} and \textit{J}, their spike counts \textit{N(I)} and \textit{N(J)} are independent \parencite{Nenadic}.
+    \item For any time window \textit{I}, \textit{N(I)} is a Poisson variable \parencite{Nenadic}.
 \end{itemize}
 
 As a result of the independence assumption, this process still has a memory-less property, by which the probability of spiking at any instant does not depend on occurrences or timing of past spikes; there is no history dependence. 
@@ -235,7 +235,7 @@ Joint firing rate scattergrams can be employed in determining serial correlation
 A quantitative measure of such correlation is provided by the serial correlation coefficient of firing rates, which are statistics based on the joint distributions of the rates. 
 The set of serial correlation coefficients is usually called a serial correlogram; it is sometimes called "autocorrelogram" or simply "autocorrelation"  \parencite{Perkel}. 
 
-Given the autocorrelation function \textit{x(n)}, the power spectral density \begin{math}S(m) = |X(m)|^2\end{math}, where \textit{X(m)} is the DFT of \textit{x(n)}. 
+Given the autocorrelation function \textit{x(n)}, the power spectral density \begin{math}S(m) = |X(m)|^2\end{math}, where \textit{X(m)} is the DFT of \textit{x(n)} (\textit{n} being the size of the autocorrelation function and \textit{m} being the size of the Fourier transform of the autocorrelation function). 
 It is also called power spectrum or noise spectrum. 
 Noise is a limiting factor to all forms of information transmission; in this particular case, information transmission by neurons \parencite{Gerstner}. 
 An important concept of the theory of signal transmission is the signal-to-noise ratio. 

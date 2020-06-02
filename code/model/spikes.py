@@ -160,14 +160,14 @@ def getInfoSpikesRegion(dataType):
 
 	plt.rcParams.update({'font.size':24})
 	plt.title("Spiking Rate function")
-	plt.xlabel("time window")
-	plt.ylabel("spikes/second")
+	plt.xlabel("Time window")
+	plt.ylabel("Spikes/second")
 	plt.savefig("spikes/measurements/"+ dataType[:-4] +"/spikingRates-" + dataType[:-4] +".png")
 	plt.clf()
 	for i in range(0,len(autocorr)):
 		plt.plot(autocorr[i], alpha = 0.5)
 	plt.title("Serial Correlation Coefficients")
-	plt.xlabel("time window")
+	plt.xlabel("Time window")
 	fig = plt.gcf()
 	fig.set_size_inches(16.5, 13.5)
 	plt.savefig("spikes/measurements/"+ dataType[:-4] +"/autocorrelation-" + dataType[:-4] +".png")
@@ -175,7 +175,7 @@ def getInfoSpikesRegion(dataType):
 	for i in range(0,len(pwspec)):
 		plt.plot(pwspec[i][0],pwspec[i][1], alpha = 0.5)
 	plt.title("Power Spectral Density")
-	plt.xlabel("freqs")
+	plt.xlabel("Freqs")
 	fig = plt.gcf()
 	fig.set_size_inches(18.5, 10.5)
 	plt.savefig("spikes/measurements/"+ dataType[:-4] +"/powerSpectrum-" + dataType[:-4] +".png")
@@ -190,7 +190,7 @@ def getInfoSpikesRegion(dataType):
 	plt.clf()
 	for i in range(0,ntrains):
 		lagged_rates = laggedSequence(rates[i],1)
-		aux = (sns.jointplot(rates[i],lagged_rates,kind="hex")).set_axis_labels("rate function","rate function of lag 1")
+		aux = (sns.jointplot(rates[i],lagged_rates,kind="hex")).set_axis_labels("Rate function","Rate function of lag 1")
 	plt.subplots_adjust(left=0.2, right=0.8, top=0.8, bottom=0.2)  # shrink fig so cbar is visible
 	cbar_ax = aux.fig.add_axes([.85, .25, .05, .4])
 	plt.colorbar(cax=cbar_ax)
@@ -221,7 +221,7 @@ def getInfoSpikesRegion(dataType):
 		plt.title("Rate function for 50 time windows for " + dataType[9:11] + " channels \n time window size = 0.5 seconds, rates in spikes/second")
 	else:
 		plt.title("Rate function for 50 time windows for " + dataType[9:12] + " channels \n time window size = 0.5 seconds, rates in spikes/second")
-	plt.xlabel("time window")
+	plt.xlabel("Time window")
 	plt.ylabel("Channel")
 	plt.yticks(np.arange(0,len(autocorr)))
 	divider = make_axes_locatable(ax)
@@ -238,7 +238,7 @@ def getInfoSpikesRegion(dataType):
 		plt.title("Serial correlation coefficients for 50 time windows for " + dataType[9:11] + " channels \n time window size = 0.5 seconds")
 	else:
 		plt.title("Serial correlation coefficients for 50 time windows for " + dataType[9:12] + " channels \n time window size = 0.5 seconds")
-	plt.xlabel("time window")
+	plt.xlabel("Time window")
 	plt.ylabel("Channel")
 	plt.yticks(np.arange(0,len(rates)))
 	divider = make_axes_locatable(ax)
@@ -269,8 +269,8 @@ def getInfoAllSpikes():
 	fig.set_size_inches(18.5, 10.5)
 	plt.rcParams.update({'font.size':22})
 	plt.title("Spiking Rate function")
-	plt.xlabel("time window")
-	plt.ylabel("spikes/second")
+	plt.xlabel("Time window")
+	plt.ylabel("Spikes/second")
 	plt.savefig("spikes/measurements/comp_gp_stn/spikingRates-gp_stn.png")
 	plt.clf()
 
@@ -279,7 +279,7 @@ def getInfoAllSpikes():
 	for i in range(0,len(ac_stn)):
 		plt.plot(ac_stn[i], 'b', alpha = 0.25)
 	plt.title("Serial Correlation Coefficients")
-	plt.xlabel("time window")
+	plt.xlabel("Time window")
 	fig = plt.gcf()
 	fig.set_size_inches(16.5, 13.5)
 	plt.savefig("spikes/measurements/comp_gp_stn/autocorrelation-gp_stn.png")
@@ -290,7 +290,7 @@ def getInfoAllSpikes():
 	for i in range(0,len(ps_stn)):
 		plt.plot(ps_stn[i][0],ps_stn[i][1], 'b', alpha = 0.25)
 	plt.title("Power Spectral Density")
-	plt.xlabel("freqs")
+	plt.xlabel("Freqs")
 	fig = plt.gcf()
 	fig.set_size_inches(18.5, 10.5)
 	plt.savefig("spikes/measurements/comp_gp_stn/powerSpectrum-gp_stn.png")
@@ -315,7 +315,7 @@ def getInfoAllSpikes():
 		sns.jointplot(sr_gp[i],lagged_rates,kind="hex", color='r')
 	for i in range(0,len(sr_stn)):
 		lagged_rates = laggedSequence(sr_stn[i],1)
-		aux = (sns.jointplot(sr_stn[i],lagged_rates,kind="hex", color='b')).set_axis_labels("rate function","rate function of lag 1")
+		aux = (sns.jointplot(sr_stn[i],lagged_rates,kind="hex", color='b')).set_axis_labels("Rate function","Rate function of lag 1")
 	plt.subplots_adjust(left=0.2, right=0.8, top=0.8, bottom=0.2)  # shrink fig so cbar is visible
 	cbar_ax = aux.fig.add_axes([.85, .25, .05, .4])
 	plt.colorbar(cax=cbar_ax)
@@ -344,8 +344,8 @@ def getInfoAllSpikes():
 	all_r = np.concatenate((sr_gp,sr_stn))
 	ax = plt.gca()
 	im = plt.imshow(all_r, cmap = 'gray')
-	plt.title("Rate function for 50 time windows for GP and STN channels \n time window size = 0.5 seconds, rates in spikes/second")
-	plt.xlabel("time window")
+	plt.title("Rate function for 50 time windows for GP and STN channels \n Time window size = 0.5 seconds, rates in spikes/second")
+	plt.xlabel("Time window")
 	plt.ylabel("Channel")
 	plt.yticks(np.arange(0,len(all_r)))
 	divider = make_axes_locatable(ax)
@@ -357,8 +357,8 @@ def getInfoAllSpikes():
 	all_a = np.concatenate((ac_gp,ac_stn))
 	ax = plt.gca()
 	im = plt.imshow(all_a, cmap = 'gray')
-	plt.title("Serial correlation coefficients for 50 time windows for GP and STN channels \n time window size = 0.5 seconds")
-	plt.xlabel("time window")
+	plt.title("Serial correlation coefficients for 50 time windows for GP and STN channels \n Time window size = 0.5 seconds")
+	plt.xlabel("Time window")
 	plt.ylabel("Channel")
 	plt.yticks(np.arange(0,len(all_a)))
 	divider = make_axes_locatable(ax)
@@ -378,8 +378,8 @@ def getInfoAllSpikes():
 	for i in range(0,len(se_stn)):
 		plt.scatter(blocks,se_stn[i],color='b',alpha=0.5)
 	plt.title("Spectral entropies of GP and STN channels")
-	plt.xlabel("groups of 5 time windows")
-	plt.ylabel("spectral entropy")
+	plt.xlabel("Groups of 5 time windows")
+	plt.ylabel("Spectral entropy")
 	plt.savefig("spikes/measurements/comp_gp_stn/scatter_spect.png")
 	plt.clf()
 
@@ -389,15 +389,15 @@ def getInfoAllSpikes():
 	for i in range(0,len(se_gp)):
 		plt.hist(se_gp[i], color = 'r')
 	plt.title("Probability distribution of spectral entropy in GP")
-	plt.xlabel("spectral entropy")
-	plt.ylabel("counts")
+	plt.xlabel("Spectral entropy")
+	plt.ylabel("Counts")
 	plt.savefig("spikes/measurements/comp_gp_stn/hist_gp.png")
 	plt.clf()
 	for i in range(0,len(se_stn)):
 		plt.hist(se_stn[i], color='b')
 	plt.title("Probability distribution of spectral entropy in STN")
-	plt.xlabel("spectral entropy")
-	plt.ylabel("counts")
+	plt.xlabel("Spectral entropy")
+	plt.ylabel("Counts")
 	plt.savefig("spikes/measurements/comp_gp_stn/hist_stn.png")
 	plt.clf()
 	# of channels in both regions
@@ -406,16 +406,16 @@ def getInfoAllSpikes():
 	for i in range(0,len(se_stn)):
 		plt.hist(se_stn[i], color='b')
 	plt.title("Probability distribution of spectral entropy in GP and STN")
-	plt.xlabel("spectral entropy")
-	plt.ylabel("counts")
+	plt.xlabel("Spectral entropy")
+	plt.ylabel("Counts")
 	plt.savefig("spikes/measurements/comp_gp_stn/hist_all.png")
 	plt.clf()
 
 	# grayscale plots of spectr entr in both regions
 	ax = plt.gca()
 	im = plt.imshow(all_se, cmap = 'gray')
-	plt.title("Spectral entropy for groups of 5 time windows for GP and STN channels \n time window size = 0.5 seconds")
-	plt.xlabel("groups of 5 time windows")
+	plt.title("Spectral entropy for groups of 5 time windows for GP and STN channels \n Time window size = 0.5 seconds")
+	plt.xlabel("Groups of 5 time windows")
 	plt.ylabel("Channel")
 	plt.yticks(np.arange(0,len(all_a)))
 	divider = make_axes_locatable(ax)
